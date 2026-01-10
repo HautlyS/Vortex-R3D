@@ -1,9 +1,6 @@
 // Disable console on Windows for release builds
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use bevy::asset::AssetMetaCheck;
-use bevy::prelude::*;
-
 fn main() {
     #[cfg(all(feature = "desktop", not(feature = "vr")))]
     run_desktop();
@@ -17,6 +14,8 @@ fn main() {
 
 #[cfg(all(feature = "desktop", not(feature = "vr")))]
 fn run_desktop() {
+    use bevy::asset::AssetMetaCheck;
+    use bevy::prelude::*;
     use techno_sutra::GamePlugin;
 
     let mut app = App::new();
