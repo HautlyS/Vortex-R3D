@@ -10,6 +10,10 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
+  # ============================================
+  # CHECKS (fast feedback)
+  # ============================================
+  
   check-desktop:
     name: Check Desktop (Linux)
     runs-on: ubuntu-latest
@@ -100,3 +104,44 @@ jobs:
       
       - name: Clippy
         run: cargo clippy --features desktop -- -D warnings
+
+  # ============================================
+  # BUILDS (all platforms)
+  # ============================================
+
+  build-linux:
+    name: 🐧 Build Linux
+    needs: [check-desktop, fmt, clippy]
+    uses: ./.github/workflows/_build-linux.yml
+    with:
+      features: desktop
+      artifact_prefix: techno-sutra
+      retention_days: 7
+
+  build-windows:
+    name: 🪟 Build Windows
+    needs: [check-windows, fmt]
+    uses: ./.github/workflows/_build-windows.yml
+    with:
+      features: desktop
+      artifact_prefix: techno-sutra
+      retention_days: 7
+
+  build-macos:
+    name: 🍎 Build macOS
+    needs: [fmt, clippy]
+    uses: ./.github/workflows/_build-macos.yml
+    with:
+      features: desktop
+      artifact_prefix: techno-sutra
+      retention_days: 7
+
+  build-wasm:
+    name: 🌐 Build WASM
+    needs: [check-wasm, fmt]
+    uses: ./.github/workflows/_build-wasm.yml
+    with:
+      optimize: true
+      artifact_name: techno-sutra-web
+      features: webxr
+      retention_days: 7
