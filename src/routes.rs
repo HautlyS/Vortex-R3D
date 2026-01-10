@@ -6,7 +6,7 @@
 pub enum AppMode {
     #[default]
     FullExperience, // / or default - Full experience
-    UploadRoom,     // /upload or --upload - User upload room
+    UploadRoom, // /upload or --upload - User upload room
 }
 
 /// Get the current app mode
