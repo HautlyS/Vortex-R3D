@@ -19,28 +19,40 @@ fn main() {
 fn run_desktop() {
     use techno_sutra::GamePlugin;
 
-    App::new()
-        .insert_resource(ClearColor(Color::srgb(0.05, 0.05, 0.1)))
-        .add_plugins(
-            DefaultPlugins
-                .set(WindowPlugin {
-                    primary_window: Some(Window {
-                        title: "🕉️ Techno Sutra: Virtual Wisdom".into(),
-                        resolution: (1280, 720).into(),
-                        canvas: Some("#bevy".into()),
-                        fit_canvas_to_parent: true,
-                        prevent_default_event_handling: false,
-                        ..default()
-                    }),
-                    ..default()
-                })
-                .set(AssetPlugin {
-                    meta_check: AssetMetaCheck::Never,
+    let mut app = App::new();
+    app.insert_resource(ClearColor(Color::srgb(0.05, 0.05, 0.1)));
+
+    // Mobile/WASM performance settings
+    #[cfg(target_arch = "wasm32")]
+    {
+        use bevy::render::settings::WgpuSettings;
+        app.insert_resource(WgpuSettings {
+            power_preference: bevy::render::settings::PowerPreference::LowPower,
+            ..default()
+        });
+    }
+
+    app.add_plugins(
+        DefaultPlugins
+            .set(WindowPlugin {
+                primary_window: Some(Window {
+                    title: "🕉️ Techno Sutra: Virtual Wisdom".into(),
+                    resolution: (1280, 720).into(),
+                    canvas: Some("#bevy".into()),
+                    fit_canvas_to_parent: true,
+                    prevent_default_event_handling: true, // Better touch handling
                     ..default()
                 }),
-        )
-        .add_plugins(GamePlugin)
-        .run();
+                ..default()
+            })
+            .set(AssetPlugin {
+                meta_check: AssetMetaCheck::Never,
+                ..default()
+            })
+            .set(ImagePlugin::default_nearest()), // Faster texture sampling
+    )
+    .add_plugins(GamePlugin)
+    .run();
 }
 
 #[cfg(feature = "vr")]

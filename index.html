@@ -2,11 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="format-detection" content="telephone=no">
     <title>Panorama Viewer</title>
-    <link data-trunk rel="icon" href="build/windows/icon.ico">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕉️</text></svg>">
     <link data-trunk rel="copy-file" href="assets"/>
     <style>
+        * { box-sizing: border-box; }
         html, body {
             margin: 0;
             padding: 0;
@@ -14,11 +20,25 @@
             height: 100%;
             overflow: hidden;
             background-color: #1a1a2e;
+            touch-action: none;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            overscroll-behavior: none;
+        }
+        
+        /* iOS safe area */
+        body {
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
         }
         
         #bevy {
             width: 100%;
             height: 100%;
+            display: block;
+            touch-action: none;
+            -webkit-touch-callout: none;
         }
         
         .loading {
@@ -27,21 +47,26 @@
             left: 50%;
             transform: translate(-50%, -50%);
             color: #fff;
-            font-family: 'Segoe UI', sans-serif;
-            font-size: 24px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: clamp(16px, 4vw, 24px);
             text-align: center;
+            z-index: 1000;
         }
         
-        .loading::after {
-            content: '';
-            display: block;
-            width: 40px;
-            height: 40px;
+        .loading-spinner {
+            width: clamp(30px, 8vw, 40px);
+            height: clamp(30px, 8vw, 40px);
             margin: 20px auto;
-            border: 4px solid #333;
+            border: 3px solid rgba(255,255,255,0.2);
             border-top-color: #00d4ff;
             border-radius: 50%;
-            animation: spin 1s linear infinite;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        .loading-progress {
+            margin-top: 12px;
+            font-size: 14px;
+            color: rgba(255,255,255,0.6);
         }
         
         @keyframes spin {
@@ -50,57 +75,141 @@
         
         .controls {
             position: fixed;
-            bottom: 20px;
-            left: 20px;
+            bottom: max(20px, env(safe-area-inset-bottom));
+            left: max(20px, env(safe-area-inset-left));
             color: rgba(255, 255, 255, 0.7);
-            font-family: 'Segoe UI', sans-serif;
-            font-size: 14px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: clamp(12px, 2.5vw, 14px);
             background: rgba(0, 0, 0, 0.5);
-            padding: 15px;
+            padding: clamp(10px, 3vw, 15px);
             border-radius: 8px;
             pointer-events: none;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            max-width: calc(100vw - 40px);
+        }
+        
+        /* Hide desktop controls on mobile */
+        @media (max-width: 768px), (hover: none) {
+            .controls { display: none; }
         }
         
         .controls h3 {
-            margin: 0 0 10px 0;
+            margin: 0 0 8px 0;
             color: #00d4ff;
+            font-size: 1em;
         }
         
         .controls ul {
             margin: 0;
-            padding-left: 20px;
+            padding-left: 16px;
         }
         
         .controls li {
-            margin: 5px 0;
+            margin: 4px 0;
+        }
+        
+        /* Mobile touch hint */
+        .touch-hint {
+            position: fixed;
+            bottom: max(80px, calc(env(safe-area-inset-bottom) + 60px));
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255,255,255,0.5);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 14px;
+            text-align: center;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        @media (hover: none) and (pointer: coarse) {
+            .touch-hint { opacity: 1; }
+        }
+        
+        /* Error state */
+        .error {
+            color: #ff6b6b;
+            background: rgba(255,107,107,0.1);
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 80vw;
         }
     </style>
 </head>
 <body>
-    <div class="loading" id="loading">Loading Panorama Viewer...</div>
+    <div class="loading" id="loading">
+        <div>Loading Panorama Viewer</div>
+        <div class="loading-spinner"></div>
+        <div class="loading-progress" id="progress">Initializing...</div>
+    </div>
     
     <div class="controls" id="controls" style="display: none;">
         <h3>Controls</h3>
         <ul>
             <li><strong>Click</strong> - Capture mouse</li>
             <li><strong>Mouse</strong> - Look around</li>
-            <li><strong>WASD / Arrows</strong> - Look around</li>
+            <li><strong>WASD</strong> - Look around</li>
             <li><strong>+/-</strong> - Adjust FOV</li>
-            <li><strong>Space</strong> - Toggle audio</li>
-            <li><strong>Escape</strong> - Release mouse</li>
+            <li><strong>Esc</strong> - Release mouse</li>
         </ul>
     </div>
+    
+    <div class="touch-hint" id="touch-hint">Drag to look around • Pinch to zoom</div>
     
     <canvas id="bevy"></canvas>
     
     <script type="module">
+        const progress = document.getElementById('progress');
+        const loading = document.getElementById('loading');
+        const controls = document.getElementById('controls');
+        const touchHint = document.getElementById('touch-hint');
+        
+        // Detect mobile
+        const isMobile = /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
+            || (navigator.maxTouchPoints > 0 && window.matchMedia('(hover: none)').matches);
+        
+        // Prevent default touch behaviors
+        document.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+        document.addEventListener('gesturestart', e => e.preventDefault());
+        document.addEventListener('gesturechange', e => e.preventDefault());
+        
+        // iOS audio unlock
+        let audioUnlocked = false;
+        const unlockAudio = () => {
+            if (audioUnlocked) return;
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            ctx.resume().then(() => { audioUnlocked = true; ctx.close(); });
+        };
+        document.addEventListener('touchstart', unlockAudio, { once: true });
+        document.addEventListener('click', unlockAudio, { once: true });
+        
+        // Safari WebGL context loss handling
+        const canvas = document.getElementById('bevy');
+        canvas.addEventListener('webglcontextlost', (e) => {
+            e.preventDefault();
+            progress.textContent = 'WebGL context lost. Reloading...';
+            setTimeout(() => location.reload(), 1000);
+        });
+        
+        progress.textContent = 'Loading WASM...';
+        
         import init from './techno_sutra.js';
         
         init().then(() => {
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('controls').style.display = 'block';
+            loading.style.display = 'none';
+            if (!isMobile) {
+                controls.style.display = 'block';
+            }
+            // Hide touch hint after 3s
+            setTimeout(() => { touchHint.style.opacity = '0'; }, 3000);
         }).catch((error) => {
-            document.getElementById('loading').textContent = 'Error loading: ' + error;
+            loading.innerHTML = `<div class="error">
+                <div>Failed to load</div>
+                <div style="font-size:12px;margin-top:10px;opacity:0.7">${error.message || error}</div>
+                <button onclick="location.reload()" style="margin-top:15px;padding:8px 16px;cursor:pointer">Retry</button>
+            </div>`;
             console.error('WASM init error:', error);
         });
     </script>

@@ -8,7 +8,7 @@ mod vr;
 pub mod webxr;
 
 #[cfg(feature = "desktop")]
-pub use desktop::DesktopPlatformPlugin;
+pub use desktop::{DesktopConfig, DesktopPlatformPlugin};
 #[cfg(feature = "vr")]
 pub use vr::VrPlatformPlugin;
 #[cfg(feature = "webxr")]
