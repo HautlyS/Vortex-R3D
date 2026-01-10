@@ -1,0 +1,51 @@
+﻿2026-01-10T19:34:13.7943587Z ##[group]Run Swatinem/rust-cache@v2
+2026-01-10T19:34:13.7943877Z with:
+2026-01-10T19:34:13.7944054Z   shared-key: wasm-webxr
+2026-01-10T19:34:13.7944270Z   cache-all-crates: true
+2026-01-10T19:34:13.7944469Z   prefix-key: v0-rust
+2026-01-10T19:34:13.7944663Z   add-job-id-key: true
+2026-01-10T19:34:13.7944876Z   add-rust-environment-hash-key: true
+2026-01-10T19:34:13.7945133Z   cache-targets: true
+2026-01-10T19:34:13.7945334Z   cache-workspace-crates: false
+2026-01-10T19:34:13.7945556Z   save-if: true
+2026-01-10T19:34:13.7945748Z   cache-provider: github
+2026-01-10T19:34:13.7945952Z   cache-bin: true
+2026-01-10T19:34:13.7946137Z   lookup-only: false
+2026-01-10T19:34:13.7946315Z env:
+2026-01-10T19:34:13.7946486Z   CARGO_TERM_COLOR: always
+2026-01-10T19:34:13.7946690Z   TRUNK_VERSION: 0.21.4
+2026-01-10T19:34:13.7946902Z   CARGO_HOME: /home/runner/.cargo
+2026-01-10T19:34:13.7947129Z   CARGO_INCREMENTAL: 0
+2026-01-10T19:34:13.7947332Z ##[endgroup]
+2026-01-10T19:34:16.8327168Z ##[group]Cache Configuration
+2026-01-10T19:34:16.8327735Z Cache Provider:
+2026-01-10T19:34:16.8328430Z     github
+2026-01-10T19:34:16.8328720Z Workspaces:
+2026-01-10T19:34:16.8329252Z     /home/runner/work/Vortex-R3D/Vortex-R3D
+2026-01-10T19:34:16.8329735Z Cache Paths:
+2026-01-10T19:34:16.8330045Z     /home/runner/.cargo/bin
+2026-01-10T19:34:16.8330447Z     /home/runner/.cargo/.crates.toml
+2026-01-10T19:34:16.8330887Z     /home/runner/.cargo/.crates2.json
+2026-01-10T19:34:16.8331344Z     /home/runner/.cargo/registry
+2026-01-10T19:34:16.8331765Z     /home/runner/.cargo/git
+2026-01-10T19:34:16.8332211Z     /home/runner/work/Vortex-R3D/Vortex-R3D/target
+2026-01-10T19:34:16.8332704Z Restore Key:
+2026-01-10T19:34:16.8333063Z     v0-rust-wasm-webxr-Linux-x64-826f3078
+2026-01-10T19:34:16.8333507Z Cache Key:
+2026-01-10T19:34:16.8333890Z     v0-rust-wasm-webxr-Linux-x64-826f3078-f048a6b1
+2026-01-10T19:34:16.8334407Z .. Prefix:
+2026-01-10T19:34:16.8334740Z   - v0-rust-wasm-webxr-Linux-x64
+2026-01-10T19:34:16.8335179Z .. Environment considered:
+2026-01-10T19:34:16.8335827Z   - Rust Version: 1.92.0 x86_64-unknown-linux-gnu (ded5c06cf21d2b93bffd5d884aa6e96934ee4234)
+2026-01-10T19:34:16.8336558Z   - CARGO_HOME
+2026-01-10T19:34:16.8336875Z   - CARGO_INCREMENTAL
+2026-01-10T19:34:16.8337233Z   - CARGO_TERM_COLOR
+2026-01-10T19:34:16.8337581Z .. Lockfiles considered:
+2026-01-10T19:34:16.8338091Z   - /home/runner/work/Vortex-R3D/Vortex-R3D/.cargo/config.toml
+2026-01-10T19:34:16.8338751Z   - /home/runner/work/Vortex-R3D/Vortex-R3D/Cargo.toml
+2026-01-10T19:34:16.8339731Z   - /home/runner/work/Vortex-R3D/Vortex-R3D/examples/bevy_basic_portals/Cargo.toml
+2026-01-10T19:34:16.8340669Z   - /home/runner/work/Vortex-R3D/Vortex-R3D/examples/bevy_oxr/.cargo/config.toml
+2026-01-10T19:34:16.8341627Z ##[endgroup]
+2026-01-10T19:34:16.8341826Z 
+2026-01-10T19:34:16.8341962Z ... Restoring cache ...
+2026-01-10T19:34:17.0210662Z No cache found.

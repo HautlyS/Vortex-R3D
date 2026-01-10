@@ -1,0 +1,44 @@
+﻿2026-01-10T19:47:35.6237078Z Post job cleanup.
+2026-01-10T19:47:35.7184908Z [command]/usr/bin/git version
+2026-01-10T19:47:35.7222298Z git version 2.52.0
+2026-01-10T19:47:35.7264679Z Temporarily overriding HOME='/home/runner/work/_temp/fc08e938-7a1f-4b8d-b09a-0cc9ad9af5df' before making global git config changes
+2026-01-10T19:47:35.7265007Z Adding repository directory to the temporary git global config as a safe directory
+2026-01-10T19:47:35.7277095Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Vortex-R3D/Vortex-R3D
+2026-01-10T19:47:35.7310815Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-01-10T19:47:35.7342656Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-01-10T19:47:35.7550979Z Entering 'examples/bevy_basic_portals'
+2026-01-10T19:47:35.7594211Z Entering 'examples/bevy_fps_controller'
+2026-01-10T19:47:35.7636111Z Entering 'examples/bevy_oxr'
+2026-01-10T19:47:35.7679708Z Entering 'examples/bevy_shadertoy_wgsl'
+2026-01-10T19:47:35.7722623Z Entering 'examples/big-brain'
+2026-01-10T19:47:35.7783705Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-01-10T19:47:35.7805431Z http.https://github.com/.extraheader
+2026-01-10T19:47:35.7816475Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-01-10T19:47:35.7847033Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-01-10T19:47:35.8053023Z Entering 'examples/bevy_basic_portals'
+2026-01-10T19:47:35.8076625Z http.https://github.com/.extraheader
+2026-01-10T19:47:35.8110150Z Entering 'examples/bevy_fps_controller'
+2026-01-10T19:47:35.8133197Z http.https://github.com/.extraheader
+2026-01-10T19:47:35.8166805Z Entering 'examples/bevy_oxr'
+2026-01-10T19:47:35.8191579Z http.https://github.com/.extraheader
+2026-01-10T19:47:35.8226179Z Entering 'examples/bevy_shadertoy_wgsl'
+2026-01-10T19:47:35.8250572Z http.https://github.com/.extraheader
+2026-01-10T19:47:35.8284419Z Entering 'examples/big-brain'
+2026-01-10T19:47:35.8309412Z http.https://github.com/.extraheader
+2026-01-10T19:47:35.8359585Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-01-10T19:47:35.8394020Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-01-10T19:47:35.8614471Z Entering 'examples/bevy_basic_portals'
+2026-01-10T19:47:35.8633781Z file:/home/runner/work/Vortex-R3D/Vortex-R3D/.git/modules/examples/bevy_basic_portals/config	remote.origin.url
+2026-01-10T19:47:35.8651291Z Entering 'examples/bevy_fps_controller'
+2026-01-10T19:47:35.8670854Z file:/home/runner/work/Vortex-R3D/Vortex-R3D/.git/modules/examples/bevy_fps_controller/config	remote.origin.url
+2026-01-10T19:47:35.8688509Z Entering 'examples/bevy_oxr'
+2026-01-10T19:47:35.8707217Z file:/home/runner/work/Vortex-R3D/Vortex-R3D/.git/modules/examples/bevy_oxr/config	remote.origin.url
+2026-01-10T19:47:35.8725082Z Entering 'examples/bevy_shadertoy_wgsl'
+2026-01-10T19:47:35.8743853Z file:/home/runner/work/Vortex-R3D/Vortex-R3D/.git/modules/examples/bevy_shadertoy_wgsl/config	remote.origin.url
+2026-01-10T19:47:35.8762750Z Entering 'examples/big-brain'
+2026-01-10T19:47:35.8781242Z file:/home/runner/work/Vortex-R3D/Vortex-R3D/.git/modules/examples/big-brain/config	remote.origin.url
+2026-01-10T19:47:35.8821688Z [command]/usr/bin/git config --file /home/runner/work/Vortex-R3D/Vortex-R3D/.git/modules/examples/bevy_basic_portals/config --name-only --get-regexp ^includeIf\.gitdir:
+2026-01-10T19:47:35.8851467Z [command]/usr/bin/git config --file /home/runner/work/Vortex-R3D/Vortex-R3D/.git/modules/examples/bevy_fps_controller/config --name-only --get-regexp ^includeIf\.gitdir:
+2026-01-10T19:47:35.8881034Z [command]/usr/bin/git config --file /home/runner/work/Vortex-R3D/Vortex-R3D/.git/modules/examples/bevy_oxr/config --name-only --get-regexp ^includeIf\.gitdir:
+2026-01-10T19:47:35.8908064Z [command]/usr/bin/git config --file /home/runner/work/Vortex-R3D/Vortex-R3D/.git/modules/examples/bevy_shadertoy_wgsl/config --name-only --get-regexp ^includeIf\.gitdir:
+2026-01-10T19:47:35.8936201Z [command]/usr/bin/git config --file /home/runner/work/Vortex-R3D/Vortex-R3D/.git/modules/examples/big-brain/config --name-only --get-regexp ^includeIf\.gitdir:

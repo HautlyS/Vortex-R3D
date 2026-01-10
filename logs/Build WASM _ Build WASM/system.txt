@@ -1,0 +1,14 @@
+2026-01-10T19:34:00.5300000Z Evaluating build.if
+2026-01-10T19:34:00.5300000Z Evaluating: success()
+2026-01-10T19:34:00.5300000Z Result: true
+2026-01-10T19:34:00.5300000Z Evaluating build.build.if
+2026-01-10T19:34:00.5300000Z Evaluating: success()
+2026-01-10T19:34:00.5300000Z Result: true
+2026-01-10T19:34:01.0270000Z Job is about to start running on the hosted runner: GitHub Actions 1000000836
+2026-01-10T19:34:01.0260000Z Job is waiting for a hosted runner to come online.
+2026-01-10T19:34:01.0250000Z Requested labels: ubuntu-latest
+2026-01-10T19:34:01.0250000Z Job defined at: HautlyS/Vortex-R3D/.github/workflows/_build-wasm.yml@refs/heads/main
+2026-01-10T19:34:01.0250000Z Reusable workflow chain:
+2026-01-10T19:34:01.0250000Z HautlyS/Vortex-R3D/.github/workflows/deploy-pages.yml@refs/heads/main (3e1fc8d178b232173858a33a25bea3c081537ff4)
+2026-01-10T19:34:01.0250000Z -> HautlyS/Vortex-R3D/.github/workflows/_build-wasm.yml@refs/heads/main (3e1fc8d178b232173858a33a25bea3c081537ff4)
+2026-01-10T19:34:01.0250000Z Waiting for a runner to pick up this job...

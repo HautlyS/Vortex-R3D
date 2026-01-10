@@ -1,0 +1,20 @@
+﻿2026-01-10T19:34:17.0795662Z ##[group]Run actions/cache@v4
+2026-01-10T19:34:17.0795917Z with:
+2026-01-10T19:34:17.0796115Z   path: ~/.cargo/bin/trunk
+~/.cache/trunk
+
+2026-01-10T19:34:17.0796378Z   key: trunk-0.21.4-Linux-
+2026-01-10T19:34:17.0796616Z   restore-keys: trunk-0.21.4-Linux-
+
+2026-01-10T19:34:17.0796864Z   enableCrossOsArchive: false
+2026-01-10T19:34:17.0797092Z   fail-on-cache-miss: false
+2026-01-10T19:34:17.0797300Z   lookup-only: false
+2026-01-10T19:34:17.0797489Z   save-always: false
+2026-01-10T19:34:17.0797662Z env:
+2026-01-10T19:34:17.0797826Z   CARGO_TERM_COLOR: always
+2026-01-10T19:34:17.0798034Z   TRUNK_VERSION: 0.21.4
+2026-01-10T19:34:17.0798237Z   CARGO_HOME: /home/runner/.cargo
+2026-01-10T19:34:17.0798466Z   CARGO_INCREMENTAL: 0
+2026-01-10T19:34:17.0798656Z   CACHE_ON_FAILURE: false
+2026-01-10T19:34:17.0798856Z ##[endgroup]
+2026-01-10T19:34:17.3920769Z Cache not found for input keys: trunk-0.21.4-Linux-, trunk-0.21.4-Linux-

@@ -1,0 +1,137 @@
+﻿2026-01-10T19:34:05.5163340Z ##[group]Run actions/checkout@v4
+2026-01-10T19:34:05.5164875Z with:
+2026-01-10T19:34:05.5165757Z   submodules: recursive
+2026-01-10T19:34:05.5166696Z   repository: HautlyS/Vortex-R3D
+2026-01-10T19:34:05.5167868Z   token: ***
+2026-01-10T19:34:05.5168609Z   ssh-strict: true
+2026-01-10T19:34:05.5169502Z   ssh-user: git
+2026-01-10T19:34:05.5170308Z   persist-credentials: true
+2026-01-10T19:34:05.5171166Z   clean: true
+2026-01-10T19:34:05.5171939Z   sparse-checkout-cone-mode: true
+2026-01-10T19:34:05.5172875Z   fetch-depth: 1
+2026-01-10T19:34:05.5173618Z   fetch-tags: false
+2026-01-10T19:34:05.5174384Z   show-progress: true
+2026-01-10T19:34:05.5175160Z   lfs: false
+2026-01-10T19:34:05.5175884Z   set-safe-directory: true
+2026-01-10T19:34:05.5176991Z env:
+2026-01-10T19:34:05.5177700Z   CARGO_TERM_COLOR: always
+2026-01-10T19:34:05.5178557Z   TRUNK_VERSION: 0.21.4
+2026-01-10T19:34:05.5179519Z ##[endgroup]
+2026-01-10T19:34:05.6261147Z Syncing repository: HautlyS/Vortex-R3D
+2026-01-10T19:34:05.6263633Z ##[group]Getting Git version info
+2026-01-10T19:34:05.6265007Z Working directory is '/home/runner/work/Vortex-R3D/Vortex-R3D'
+2026-01-10T19:34:05.6266803Z [command]/usr/bin/git version
+2026-01-10T19:34:05.6320692Z git version 2.52.0
+2026-01-10T19:34:05.6348263Z ##[endgroup]
+2026-01-10T19:34:05.6362742Z Temporarily overriding HOME='/home/runner/work/_temp/ca72dce4-13d5-4c8d-a74b-aed48dd3002d' before making global git config changes
+2026-01-10T19:34:05.6365435Z Adding repository directory to the temporary git global config as a safe directory
+2026-01-10T19:34:05.6375398Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Vortex-R3D/Vortex-R3D
+2026-01-10T19:34:05.6414428Z Deleting the contents of '/home/runner/work/Vortex-R3D/Vortex-R3D'
+2026-01-10T19:34:05.6417944Z ##[group]Initializing the repository
+2026-01-10T19:34:05.6422213Z [command]/usr/bin/git init /home/runner/work/Vortex-R3D/Vortex-R3D
+2026-01-10T19:34:05.6521794Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-01-10T19:34:05.6524909Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-01-10T19:34:05.6527493Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-01-10T19:34:05.6529722Z hint: call:
+2026-01-10T19:34:05.6530420Z hint:
+2026-01-10T19:34:05.6531311Z hint: 	git config --global init.defaultBranch <name>
+2026-01-10T19:34:05.6532554Z hint:
+2026-01-10T19:34:05.6533894Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-01-10T19:34:05.6535687Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-01-10T19:34:05.6537108Z hint:
+2026-01-10T19:34:05.6538231Z hint: 	git branch -m <name>
+2026-01-10T19:34:05.6539262Z hint:
+2026-01-10T19:34:05.6540423Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-01-10T19:34:05.6542300Z Initialized empty Git repository in /home/runner/work/Vortex-R3D/Vortex-R3D/.git/
+2026-01-10T19:34:05.6545223Z [command]/usr/bin/git remote add origin https://github.com/HautlyS/Vortex-R3D
+2026-01-10T19:34:05.6573040Z ##[endgroup]
+2026-01-10T19:34:05.6574362Z ##[group]Disabling automatic garbage collection
+2026-01-10T19:34:05.6576369Z [command]/usr/bin/git config --local gc.auto 0
+2026-01-10T19:34:05.6605156Z ##[endgroup]
+2026-01-10T19:34:05.6606401Z ##[group]Setting up auth
+2026-01-10T19:34:05.6611414Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-01-10T19:34:05.6640630Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-01-10T19:34:05.6964386Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-01-10T19:34:05.6993803Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-01-10T19:34:05.7213361Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-01-10T19:34:05.7244708Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-01-10T19:34:05.7464177Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-01-10T19:34:05.7497957Z ##[endgroup]
+2026-01-10T19:34:05.7499668Z ##[group]Fetching the repository
+2026-01-10T19:34:05.7507124Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +3e1fc8d178b232173858a33a25bea3c081537ff4:refs/remotes/origin/main
+2026-01-10T19:34:06.5238997Z From https://github.com/HautlyS/Vortex-R3D
+2026-01-10T19:34:06.5240192Z  * [new ref]         3e1fc8d178b232173858a33a25bea3c081537ff4 -> origin/main
+2026-01-10T19:34:06.5271513Z ##[endgroup]
+2026-01-10T19:34:06.5272274Z ##[group]Determining the checkout info
+2026-01-10T19:34:06.5274402Z ##[endgroup]
+2026-01-10T19:34:06.5279552Z [command]/usr/bin/git sparse-checkout disable
+2026-01-10T19:34:06.5317471Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-01-10T19:34:06.5343051Z ##[group]Checking out the ref
+2026-01-10T19:34:06.5346708Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-01-10T19:34:06.6167431Z Switched to a new branch 'main'
+2026-01-10T19:34:06.6168340Z branch 'main' set up to track 'origin/main'.
+2026-01-10T19:34:06.6181354Z ##[endgroup]
+2026-01-10T19:34:06.6182110Z ##[group]Setting up auth for fetching submodules
+2026-01-10T19:34:06.6187366Z [command]/usr/bin/git config --global http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-01-10T19:34:06.6225157Z [command]/usr/bin/git config --global --unset-all url.https://github.com/.insteadOf
+2026-01-10T19:34:06.6252494Z [command]/usr/bin/git config --global --add url.https://github.com/.insteadOf git@github.com:
+2026-01-10T19:34:06.6280555Z [command]/usr/bin/git config --global --add url.https://github.com/.insteadOf org-140983146@github.com:
+2026-01-10T19:34:06.6305238Z ##[endgroup]
+2026-01-10T19:34:06.6305756Z ##[group]Fetching submodules
+2026-01-10T19:34:06.6309392Z [command]/usr/bin/git submodule sync --recursive
+2026-01-10T19:34:06.6535209Z [command]/usr/bin/git -c protocol.version=2 submodule update --init --force --depth=1 --recursive
+2026-01-10T19:34:06.6749485Z Submodule 'examples/bevy_basic_portals' (https://github.com/Selene-Amanita/bevy_basic_portals.git) registered for path 'examples/bevy_basic_portals'
+2026-01-10T19:34:06.6753433Z Submodule 'examples/bevy_fps_controller' (https://github.com/qhdwight/bevy_fps_controller) registered for path 'examples/bevy_fps_controller'
+2026-01-10T19:34:06.6758325Z Submodule 'examples/bevy_oxr' (https://github.com/awtterpip/bevy_oxr) registered for path 'examples/bevy_oxr'
+2026-01-10T19:34:06.6763125Z Submodule 'examples/bevy_shadertoy_wgsl' (https://github.com/eliotbo/bevy_shadertoy_wgsl) registered for path 'examples/bevy_shadertoy_wgsl'
+2026-01-10T19:34:06.6767263Z Submodule 'examples/big-brain' (https://github.com/zkat/big-brain) registered for path 'examples/big-brain'
+2026-01-10T19:34:06.6793244Z Cloning into '/home/runner/work/Vortex-R3D/Vortex-R3D/examples/bevy_basic_portals'...
+2026-01-10T19:34:07.1818861Z Cloning into '/home/runner/work/Vortex-R3D/Vortex-R3D/examples/bevy_fps_controller'...
+2026-01-10T19:34:07.7813662Z Cloning into '/home/runner/work/Vortex-R3D/Vortex-R3D/examples/bevy_oxr'...
+2026-01-10T19:34:08.3525245Z Cloning into '/home/runner/work/Vortex-R3D/Vortex-R3D/examples/bevy_shadertoy_wgsl'...
+2026-01-10T19:34:09.5292684Z Cloning into '/home/runner/work/Vortex-R3D/Vortex-R3D/examples/big-brain'...
+2026-01-10T19:34:10.1823275Z Submodule path 'examples/bevy_basic_portals': checked out 'e7c35fc5a8782a4a40a8118e01eaf90b6be231e6'
+2026-01-10T19:34:10.1957546Z Submodule path 'examples/bevy_fps_controller': checked out '572b8eb786295f61bb272f9a223ff6b88a0fc115'
+2026-01-10T19:34:10.2094639Z Submodule path 'examples/bevy_oxr': checked out '11bf9442e1167a7ad86d5246836e69827a16bf72'
+2026-01-10T19:34:10.4073218Z Submodule path 'examples/bevy_shadertoy_wgsl': checked out 'e3221a81dd6f1668d7d6695f06353b373db47979'
+2026-01-10T19:34:10.4211333Z Submodule path 'examples/big-brain': checked out '12ffd46498f4703dd80b0121c9b964b413f887ee'
+2026-01-10T19:34:10.4242416Z [command]/usr/bin/git submodule foreach --recursive git config --local gc.auto 0
+2026-01-10T19:34:10.4456135Z Entering 'examples/bevy_basic_portals'
+2026-01-10T19:34:10.4493969Z Entering 'examples/bevy_fps_controller'
+2026-01-10T19:34:10.4531402Z Entering 'examples/bevy_oxr'
+2026-01-10T19:34:10.4569405Z Entering 'examples/bevy_shadertoy_wgsl'
+2026-01-10T19:34:10.4606290Z Entering 'examples/big-brain'
+2026-01-10T19:34:10.4650999Z ##[endgroup]
+2026-01-10T19:34:10.4651642Z ##[group]Persisting credentials for submodules
+2026-01-10T19:34:10.4661397Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'url\.https\:\/\/github\.com\/\.insteadOf' && git config --local --unset-all 'url.https://github.com/.insteadOf' || :"
+2026-01-10T19:34:10.4878577Z Entering 'examples/bevy_basic_portals'
+2026-01-10T19:34:10.4921509Z Entering 'examples/bevy_fps_controller'
+2026-01-10T19:34:10.4963830Z Entering 'examples/bevy_oxr'
+2026-01-10T19:34:10.5005868Z Entering 'examples/bevy_shadertoy_wgsl'
+2026-01-10T19:34:10.5049440Z Entering 'examples/big-brain'
+2026-01-10T19:34:10.5103166Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local 'http.https://github.com/.extraheader' 'AUTHORIZATION: basic ***' && git config --local --show-origin --name-only --get-regexp remote.origin.url"
+2026-01-10T19:34:10.5317016Z Entering 'examples/bevy_basic_portals'
+2026-01-10T19:34:10.5354678Z file:/home/runner/work/Vortex-R3D/Vortex-R3D/.git/modules/examples/bevy_basic_portals/config	remote.origin.url
+2026-01-10T19:34:10.5374231Z Entering 'examples/bevy_fps_controller'
+2026-01-10T19:34:10.5412889Z file:/home/runner/work/Vortex-R3D/Vortex-R3D/.git/modules/examples/bevy_fps_controller/config	remote.origin.url
+2026-01-10T19:34:10.5431850Z Entering 'examples/bevy_oxr'
+2026-01-10T19:34:10.5469421Z file:/home/runner/work/Vortex-R3D/Vortex-R3D/.git/modules/examples/bevy_oxr/config	remote.origin.url
+2026-01-10T19:34:10.5488766Z Entering 'examples/bevy_shadertoy_wgsl'
+2026-01-10T19:34:10.5526280Z file:/home/runner/work/Vortex-R3D/Vortex-R3D/.git/modules/examples/bevy_shadertoy_wgsl/config	remote.origin.url
+2026-01-10T19:34:10.5546434Z Entering 'examples/big-brain'
+2026-01-10T19:34:10.5583585Z file:/home/runner/work/Vortex-R3D/Vortex-R3D/.git/modules/examples/big-brain/config	remote.origin.url
+2026-01-10T19:34:10.5646141Z [command]/usr/bin/git submodule foreach --recursive git config --local --add 'url.https://github.com/.insteadOf' 'git@github.com:'
+2026-01-10T19:34:10.5858128Z Entering 'examples/bevy_basic_portals'
+2026-01-10T19:34:10.5895745Z Entering 'examples/bevy_fps_controller'
+2026-01-10T19:34:10.5932617Z Entering 'examples/bevy_oxr'
+2026-01-10T19:34:10.5969454Z Entering 'examples/bevy_shadertoy_wgsl'
+2026-01-10T19:34:10.6006833Z Entering 'examples/big-brain'
+2026-01-10T19:34:10.6057464Z [command]/usr/bin/git submodule foreach --recursive git config --local --add 'url.https://github.com/.insteadOf' 'org-140983146@github.com:'
+2026-01-10T19:34:10.6265977Z Entering 'examples/bevy_basic_portals'
+2026-01-10T19:34:10.6302955Z Entering 'examples/bevy_fps_controller'
+2026-01-10T19:34:10.6339548Z Entering 'examples/bevy_oxr'
+2026-01-10T19:34:10.6375985Z Entering 'examples/bevy_shadertoy_wgsl'
+2026-01-10T19:34:10.6413353Z Entering 'examples/big-brain'
+2026-01-10T19:34:10.6457747Z ##[endgroup]
+2026-01-10T19:34:10.6494346Z [command]/usr/bin/git log -1 --format=%H
+2026-01-10T19:34:10.6521994Z 3e1fc8d178b232173858a33a25bea3c081537ff4
