@@ -89,22 +89,20 @@ fn handle_spin_trigger(
     time: Res<Time>,
 ) {
     // CTRL+R triggers transversal spin
-    if keys.pressed(KeyCode::ControlLeft) && keys.just_pressed(KeyCode::KeyR) {
-        if !spin.active {
-            // Random spin directions
-            let seed = time.elapsed_secs();
-            spin.active = true;
-            spin.time = 0.0;
-            spin.base_yaw = state.yaw;
-            spin.base_pitch = state.pitch;
+    if keys.pressed(KeyCode::ControlLeft) && keys.just_pressed(KeyCode::KeyR) && !spin.active {
+        // Random spin directions
+        let seed = time.elapsed_secs();
+        spin.active = true;
+        spin.time = 0.0;
+        spin.base_yaw = state.yaw;
+        spin.base_pitch = state.pitch;
 
-            // Randomize spin velocities for transversal effect
-            spin.yaw_speed = (seed * 17.3).sin() * 4.0 + 2.0; // 2-6 rad/s
-            spin.pitch_speed = (seed * 23.7).cos() * 3.0; // -3 to 3 rad/s
-            spin.roll_speed = (seed * 31.1).sin() * 2.0; // -2 to 2 rad/s
+        // Randomize spin velocities for transversal effect
+        spin.yaw_speed = (seed * 17.3).sin() * 4.0 + 2.0; // 2-6 rad/s
+        spin.pitch_speed = (seed * 23.7).cos() * 3.0; // -3 to 3 rad/s
+        spin.roll_speed = (seed * 31.1).sin() * 2.0; // -2 to 2 rad/s
 
-            info!("🌀 Transversal spin activated!");
-        }
+        info!("🌀 Transversal spin activated!");
     }
 
     // ESC cancels spin
@@ -172,7 +170,7 @@ fn apply_camera_transform(
     // Add roll during spin for transversal effect
     if spin.intensity > 0.01 {
         let roll = (spin.time * spin.roll_speed * 3.0).sin() * 0.15 * spin.intensity;
-        rotation = rotation * Quat::from_rotation_z(roll);
+        rotation *= Quat::from_rotation_z(roll);
     }
 
     transform.rotation = rotation;

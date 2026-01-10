@@ -64,9 +64,9 @@ fn spawn_characters(
 ) {
     let mdl_handles = [&models.modelo1, &models.modelo2, &models.modelo3];
 
-    for room in 0..TOTAL_ROOMS {
+    for (room, mdl_handle) in mdl_handles.iter().enumerate().take(TOTAL_ROOMS) {
         let center = room_center(room);
-        if let Some(gltf) = gltfs.get(mdl_handles[room]) {
+        if let Some(gltf) = gltfs.get(*mdl_handle) {
             let char_pos = center + Vec3::new(config.position.x, -1.3, config.position.y);
             let transform = Transform::from_translation(char_pos)
                 .with_scale(Vec3::splat(config.base_scale))

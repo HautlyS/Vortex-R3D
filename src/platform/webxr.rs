@@ -96,10 +96,10 @@ fn check_xr_availability(
     // Check availability once
     if !state.available {
         if let Some(window) = web_sys::window() {
-            if let Ok(Some(_xr)) = window.navigator().xr() {
-                state.available = true;
-                info!("✅ WebXR available");
-            }
+            // navigator.xr() returns XrSystem directly in newer web-sys
+            let _xr = window.navigator().xr();
+            state.available = true;
+            info!("✅ WebXR available");
         }
     }
 

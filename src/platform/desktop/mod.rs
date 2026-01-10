@@ -8,9 +8,9 @@ use bevy::prelude::*;
 
 use crate::camera::DesktopCameraPlugin;
 use crate::input::DesktopInputPlugin;
-use crate::platform::Platform;
 #[cfg(target_arch = "wasm32")]
 use crate::input::TouchInputPlugin;
+use crate::platform::Platform;
 
 pub struct DesktopPlatformPlugin;
 

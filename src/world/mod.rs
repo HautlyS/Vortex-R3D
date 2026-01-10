@@ -104,12 +104,12 @@ fn setup_world(
     ));
 
     // Skyboxes for each room
-    for room in 0..TOTAL_ROOMS {
+    for (room, pano) in panos.iter().enumerate().take(TOTAL_ROOMS) {
         let center = room_center(room);
         cmd.spawn((
             Mesh3d(sky_mesh.clone()),
             MeshMaterial3d(mats.add(StandardMaterial {
-                base_color_texture: Some(panos[room].clone()),
+                base_color_texture: Some((*pano).clone()),
                 unlit: true,
                 double_sided: true,
                 cull_mode: None,

@@ -97,6 +97,7 @@ fn handle_transition_input(
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 fn animate_transition(
     time: Res<Time>,
     mut state: ResMut<TransitionState>,

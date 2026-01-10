@@ -266,7 +266,7 @@ fn animate_energy_wisps(
         let id = wisp.id as f32;
         let cycle = (t * 1.5 + id * 0.5) % 3.0;
 
-        if cycle < 0.1 || cycle > 2.5 {
+        if !(0.1..=2.5).contains(&cycle) {
             *vis = Visibility::Hidden;
         } else {
             *vis = Visibility::Visible;

@@ -4,6 +4,7 @@ use bevy::prelude::*;
 
 /// Desktop-specific settings
 #[derive(Resource, Clone)]
+#[allow(dead_code)]
 pub struct DesktopConfig {
     pub auto_lock_cursor: bool,
     pub allow_fullscreen: bool,

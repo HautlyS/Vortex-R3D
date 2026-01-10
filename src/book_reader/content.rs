@@ -37,8 +37,20 @@ pub const PAGES: &[Page] = &[
 pub const CHARACTER_BIO: &str = "A wanderer between digital realms, the Seeker has traversed countless virtual landscapes in pursuit of the ultimate truth: the source code of consciousness itself.\n\nNow they walk the path of the Techno Sutra, gathering wisdom from ancient shader monks and modern compute prophets alike.";
 
 pub const ABILITIES: &[(&str, &str, &str)] = &[
-    ("🔮", "Digital Sight", "See through textures to the wireframe beneath"),
-    ("⚡", "Frame Skip", "Move between moments, bypassing time itself"),
+    (
+        "🔮",
+        "Digital Sight",
+        "See through textures to the wireframe beneath",
+    ),
+    (
+        "⚡",
+        "Frame Skip",
+        "Move between moments, bypassing time itself",
+    ),
     ("🌀", "Shader Weave", "Manipulate light and shadow at will"),
-    ("💫", "Buffer Overflow", "Channel excess data into raw power"),
+    (
+        "💫",
+        "Buffer Overflow",
+        "Channel excess data into raw power",
+    ),
 ];

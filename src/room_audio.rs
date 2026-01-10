@@ -159,7 +159,7 @@ fn handle_narration(
         // Stop any playing narration
         for handle in state.narrations.iter().flatten() {
             if let Some(instance) = instances.get_mut(handle) {
-                let _ = instance.stop(AudioTween::new(
+                instance.stop(AudioTween::new(
                     Duration::from_millis(500),
                     AudioEasing::Linear,
                 ));
@@ -188,10 +188,10 @@ fn handle_narration(
             if let Some(instance) = instances.get_mut(handle) {
                 match instance.state() {
                     PlaybackState::Playing { .. } => {
-                        let _ = instance.pause(AudioTween::default());
+                        instance.pause(AudioTween::default());
                     }
                     PlaybackState::Paused { .. } => {
-                        let _ = instance.resume(AudioTween::default());
+                        instance.resume(AudioTween::default());
                     }
                     _ => {}
                 }

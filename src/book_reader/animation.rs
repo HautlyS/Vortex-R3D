@@ -21,7 +21,12 @@ impl Default for AnimatedScale {
 
 pub fn animate_panel(
     mut query: Query<
-        (&mut Visibility, &mut AnimatedScale, &mut Transform, &mut BackgroundColor),
+        (
+            &mut Visibility,
+            &mut AnimatedScale,
+            &mut Transform,
+            &mut BackgroundColor,
+        ),
         With<BookPanel>,
     >,
     state: Res<BookState>,
@@ -63,7 +68,11 @@ pub fn animate_panel(
 pub fn animate_buttons(
     mut buttons: Query<
         (&Interaction, &mut BackgroundColor, &mut Transform),
-        (With<Button>, Without<super::TabButton>, Changed<Interaction>),
+        (
+            With<Button>,
+            Without<super::TabButton>,
+            Changed<Interaction>,
+        ),
     >,
     theme: Res<super::BookTheme>,
 ) {

@@ -124,7 +124,10 @@ fn close_book_input(keyboard: Res<ButtonInput<KeyCode>>, mut state: ResMut<BookS
 
 fn handle_tab_buttons(
     mut state: ResMut<BookState>,
-    mut tabs: Query<(&Interaction, &TabButton, &mut BackgroundColor, &Children), Changed<Interaction>>,
+    mut tabs: Query<
+        (&Interaction, &TabButton, &mut BackgroundColor, &Children),
+        Changed<Interaction>,
+    >,
     mut texts: Query<&mut TextColor>,
     theme: Res<BookTheme>,
 ) {
@@ -168,16 +171,56 @@ fn update_page_content(
     state: Res<BookState>,
     mut book_content: Query<&mut Node, (With<BookContent>, Without<CharacterContent>)>,
     mut char_content: Query<&mut Node, (With<CharacterContent>, Without<BookContent>)>,
-    mut chapter: Query<&mut Text, (With<PageChapter>, Without<PageTitle>, Without<PageContent>, Without<PageCounter>)>,
-    mut title: Query<&mut Text, (With<PageTitle>, Without<PageChapter>, Without<PageContent>, Without<PageCounter>)>,
-    mut content: Query<&mut Text, (With<PageContent>, Without<PageChapter>, Without<PageTitle>, Without<PageCounter>)>,
-    mut counter: Query<&mut Text, (With<PageCounter>, Without<PageChapter>, Without<PageTitle>, Without<PageContent>)>,
+    mut chapter: Query<
+        &mut Text,
+        (
+            With<PageChapter>,
+            Without<PageTitle>,
+            Without<PageContent>,
+            Without<PageCounter>,
+        ),
+    >,
+    mut title: Query<
+        &mut Text,
+        (
+            With<PageTitle>,
+            Without<PageChapter>,
+            Without<PageContent>,
+            Without<PageCounter>,
+        ),
+    >,
+    mut content: Query<
+        &mut Text,
+        (
+            With<PageContent>,
+            Without<PageChapter>,
+            Without<PageTitle>,
+            Without<PageCounter>,
+        ),
+    >,
+    mut counter: Query<
+        &mut Text,
+        (
+            With<PageCounter>,
+            Without<PageChapter>,
+            Without<PageTitle>,
+            Without<PageContent>,
+        ),
+    >,
 ) {
     if let Ok(mut node) = book_content.single_mut() {
-        node.display = if state.tab == Tab::Book { Display::Flex } else { Display::None };
+        node.display = if state.tab == Tab::Book {
+            Display::Flex
+        } else {
+            Display::None
+        };
     }
     if let Ok(mut node) = char_content.single_mut() {
-        node.display = if state.tab == Tab::Character { Display::Flex } else { Display::None };
+        node.display = if state.tab == Tab::Character {
+            Display::Flex
+        } else {
+            Display::None
+        };
     }
 
     if state.tab == Tab::Book {
@@ -192,7 +235,7 @@ fn update_page_content(
             t.0 = page.content.into();
         }
         if let Ok(mut t) = counter.single_mut() {
-            t.0 = format!("— {} / {} —", state.page + 1, PAGES.len()).into();
+            t.0 = format!("— {} / {} —", state.page + 1, PAGES.len());
         }
     }
 }

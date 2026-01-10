@@ -106,7 +106,10 @@ fn spawn_tabs(parent: &mut ChildSpawnerCommands, theme: &BookTheme) {
             ..default()
         })
         .with_children(|row| {
-            for (tab, label) in [(Tab::Book, "📜 Sacred Text"), (Tab::Character, "👤 Character")] {
+            for (tab, label) in [
+                (Tab::Book, "📜 Sacred Text"),
+                (Tab::Character, "👤 Character"),
+            ] {
                 let selected = tab == Tab::Book;
                 row.spawn((
                     Button,
@@ -293,7 +296,12 @@ fn spawn_character_content(content: &mut ChildSpawnerCommands, theme: &BookTheme
                         },
                     ));
 
-                    for (stat, val) in [("Wisdom", 42), ("Focus", 78), ("Insight", 65), ("Karma", 91)] {
+                    for (stat, val) in [
+                        ("Wisdom", 42),
+                        ("Focus", 78),
+                        ("Insight", 65),
+                        ("Karma", 91),
+                    ] {
                         stats.spawn((
                             Text::new(format!("{stat}: {val}/100")),
                             TextFont::from_font_size(12.0),

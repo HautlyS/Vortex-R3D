@@ -3,8 +3,8 @@
 use bevy::prelude::*;
 use bevy_egui::{egui, EguiContexts};
 
-use super::{UploadState, UploadSphere, UploadModel};
 use super::file_picker::{pick_file, FileKind};
+use super::{UploadModel, UploadSphere, UploadState};
 
 pub fn upload_hud(
     mut ctx: EguiContexts,
@@ -60,7 +60,11 @@ pub fn upload_hud(
         .show(egui_ctx, |ui| {
             // Header
             ui.horizontal(|ui| {
-                ui.label(egui::RichText::new("⚙ Scene").strong().color(egui::Color32::from_rgb(180, 180, 220)));
+                ui.label(
+                    egui::RichText::new("⚙ Scene")
+                        .strong()
+                        .color(egui::Color32::from_rgb(180, 180, 220)),
+                );
                 ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                     if ui.button("✕").clicked() {
                         state.hud_open = false;
@@ -70,14 +74,24 @@ pub fn upload_hud(
             ui.add_space(6.0);
 
             // Upload buttons
-            let btn_size = if is_mobile { egui::vec2(120.0, 40.0) } else { egui::vec2(100.0, 28.0) };
+            let btn_size = if is_mobile {
+                egui::vec2(120.0, 40.0)
+            } else {
+                egui::vec2(100.0, 28.0)
+            };
             if is_mobile {
                 ui.vertical_centered(|ui| {
-                    if ui.add_sized(btn_size, egui::Button::new("📷 Panorama")).clicked() {
+                    if ui
+                        .add_sized(btn_size, egui::Button::new("📷 Panorama"))
+                        .clicked()
+                    {
                         pick_file(FileKind::Image);
                     }
                     ui.add_space(4.0);
-                    if ui.add_sized(btn_size, egui::Button::new("🎭 Model")).clicked() {
+                    if ui
+                        .add_sized(btn_size, egui::Button::new("🎭 Model"))
+                        .clicked()
+                    {
                         pick_file(FileKind::Model);
                     }
                 });
@@ -97,12 +111,23 @@ pub fn upload_hud(
             ui.add_space(4.0);
 
             // Skybox controls
-            ui.label(egui::RichText::new("Skybox").small().color(egui::Color32::GRAY));
+            ui.label(
+                egui::RichText::new("Skybox")
+                    .small()
+                    .color(egui::Color32::GRAY),
+            );
             let slider_width = if is_mobile { 140.0 } else { 100.0 };
 
             ui.horizontal(|ui| {
                 ui.label("Brightness");
-                if ui.add_sized([slider_width, 20.0], egui::Slider::new(&mut state.skybox_brightness, 0.1..=2.0).show_value(false)).changed() {
+                if ui
+                    .add_sized(
+                        [slider_width, 20.0],
+                        egui::Slider::new(&mut state.skybox_brightness, 0.1..=2.0)
+                            .show_value(false),
+                    )
+                    .changed()
+                {
                     if let Ok(mat_h) = sphere_mats.single() {
                         if let Some(mat) = materials.get_mut(&mat_h.0) {
                             let b = state.skybox_brightness;
@@ -114,7 +139,10 @@ pub fn upload_hud(
 
             ui.horizontal(|ui| {
                 ui.label("Refraction");
-                ui.add_sized([slider_width, 20.0], egui::Slider::new(&mut state.refraction, 0.0..=2.0).show_value(false));
+                ui.add_sized(
+                    [slider_width, 20.0],
+                    egui::Slider::new(&mut state.refraction, 0.0..=2.0).show_value(false),
+                );
             });
 
             ui.add_space(8.0);
@@ -123,7 +151,10 @@ pub fn upload_hud(
 
             // Clear button
             let clear_btn = if is_mobile {
-                ui.add_sized([btn_size.x, btn_size.y], egui::Button::new("🗑 Clear Objects"))
+                ui.add_sized(
+                    [btn_size.x, btn_size.y],
+                    egui::Button::new("🗑 Clear Objects"),
+                )
             } else {
                 ui.button("🗑 Clear 3D Objects")
             };

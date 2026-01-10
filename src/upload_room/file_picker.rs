@@ -5,7 +5,7 @@ use bevy::gltf::Gltf;
 use bevy::prelude::*;
 use std::sync::Mutex;
 
-use super::{UploadState, UploadSphere, UploadModel};
+use super::{UploadModel, UploadSphere, UploadState};
 
 pub static PENDING_IMAGE: Mutex<Option<Vec<u8>>> = Mutex::new(None);
 pub static PENDING_GLB: Mutex<Option<Vec<u8>>> = Mutex::new(None);
