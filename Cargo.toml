@@ -73,8 +73,8 @@ bevy_kira_audio = { version = "0.24", features = ["ogg", "wav"] }
 # Asset loading
 bevy_asset_loader = { version = "0.24", default-features = false }
 
-# Portals (local)
-bevy_basic_portals = { path = "examples/bevy_basic_portals", default-features = false }
+# Portals
+bevy_basic_portals = { git = "https://github.com/Selene-Amanita/bevy_basic_portals", branch = "main", default-features = false }
 
 # Egui + KBGP for keyboard/gamepad navigation
 bevy_egui = "0.38"
@@ -157,8 +157,3 @@ features = [
 
 [build-dependencies]
 embed-resource = "1"
-
-[workspace]
-members = [
-    "examples/bevy_basic_portals",
-]
