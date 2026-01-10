@@ -1,0 +1,18 @@
+[submodule "examples/LostInTime"]
+	path = examples/LostInTime
+	url = https://github.com/RaminKav/LostInTime
+[submodule "examples/bevy_basic_portals"]
+	path = examples/bevy_basic_portals
+	url = https://github.com/Selene-Amanita/bevy_basic_portals.git
+[submodule "examples/bevy_fps_controller"]
+	path = examples/bevy_fps_controller
+	url = https://github.com/qhdwight/bevy_fps_controller
+[submodule "examples/bevy_oxr"]
+	path = examples/bevy_oxr
+	url = https://github.com/awtterpip/bevy_oxr
+[submodule "examples/bevy_shadertoy_wgsl"]
+	path = examples/bevy_shadertoy_wgsl
+	url = https://github.com/eliotbo/bevy_shadertoy_wgsl
+[submodule "examples/big-brain"]
+	path = examples/big-brain
+	url = https://github.com/zkat/big-brain

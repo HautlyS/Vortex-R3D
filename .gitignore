@@ -1,0 +1,29 @@
+# Build artifacts
+/target
+/dist
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Rust
+**/*.rs.bk
+Cargo.lock
+
+# WASM
+/pkg
+*.wasm
+
+# Assets (keep structure, ignore large files)
+*.psd
+*.blend
+*.blend1
+
+# Logs
+*.log
+examples/LostInTime

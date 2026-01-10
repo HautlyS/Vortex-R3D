@@ -1,0 +1,184 @@
+use bevy::prelude::*;
+use bevy::render::render_resource::AsBindGroup;
+use bevy::shader::ShaderRef;
+use crate::{panorama::PanoramaSphere, GameState};
+
+pub struct VortexTransitionPlugin;
+
+impl Plugin for VortexTransitionPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_plugins(MaterialPlugin::<VortexMaterial>::default())
+            .init_resource::<TransitionState>()
+            .add_systems(Update, (
+                handle_transition_input,
+                animate_transition,
+            ).chain().run_if(in_state(GameState::Viewing)));
+    }
+}
+
+#[derive(Resource)]
+pub struct TransitionState {
+    current_index: usize,
+    paths: Vec<&'static str>,
+    transitioning: bool,
+    progress: f32,
+    current_texture: Option<Handle<Image>>,
+    next_texture: Option<Handle<Image>>,
+    loading: bool,
+}
+
+impl Default for TransitionState {
+    fn default() -> Self {
+        Self {
+            current_index: 0,
+            paths: vec!["panoramas/demo.jpg", "panoramas/demo1.jpg", "panoramas/demo2.jpg"],
+            transitioning: false,
+            progress: 0.0,
+            current_texture: None,
+            next_texture: None,
+            loading: false,
+        }
+    }
+}
+
+#[derive(Asset, TypePath, AsBindGroup, Clone)]
+pub struct VortexMaterial {
+    #[texture(0)]
+    #[sampler(2)]
+    pub texture_a: Handle<Image>,
+    #[texture(1)]
+    pub texture_b: Handle<Image>,
+    #[uniform(3)]
+    pub progress: f32,
+}
+
+impl Material for VortexMaterial {
+    fn fragment_shader() -> ShaderRef {
+        "shaders/vortex_transition.wgsl".into()
+    }
+}
+
+#[derive(Component)]
+pub struct VortexSphere;
+
+fn handle_transition_input(
+    keyboard: Res<ButtonInput<KeyCode>>,
+    mut state: ResMut<TransitionState>,
+    asset_server: Res<AssetServer>,
+    sphere: Query<&MeshMaterial3d<StandardMaterial>, With<PanoramaSphere>>,
+    materials: Res<Assets<StandardMaterial>>,
+) {
+    let shift = keyboard.pressed(KeyCode::ShiftLeft) || keyboard.pressed(KeyCode::ShiftRight);
+    
+    if shift && keyboard.just_pressed(KeyCode::Space) && !state.transitioning && !state.loading {
+        // Capture current texture from sphere
+        if state.current_texture.is_none() {
+            if let Ok(mat_handle) = sphere.single() {
+                if let Some(mat) = materials.get(&mat_handle.0) {
+                    state.current_texture = mat.base_color_texture.clone();
+                }
+            }
+        }
+        
+        let next = (state.current_index + 1) % state.paths.len();
+        let path = state.paths[next];
+        
+        state.next_texture = Some(asset_server.load(path));
+        state.loading = true;
+        state.current_index = next;
+        
+        info!("🌀 Loading panorama {}: {}", next, path);
+    }
+}
+
+fn animate_transition(
+    time: Res<Time>,
+    mut state: ResMut<TransitionState>,
+    asset_server: Res<AssetServer>,
+    sphere_std: Query<(Entity, &MeshMaterial3d<StandardMaterial>), (With<PanoramaSphere>, Without<VortexSphere>)>,
+    sphere_vortex: Query<(Entity, &MeshMaterial3d<VortexMaterial>), With<VortexSphere>>,
+    mut commands: Commands,
+    mut vortex_materials: ResMut<Assets<VortexMaterial>>,
+    mut std_materials: ResMut<Assets<StandardMaterial>>,
+) {
+    // Handle loading state
+    if state.loading {
+        let next_handle = state.next_texture.clone();
+        if let Some(handle) = next_handle {
+            match asset_server.get_load_state(&handle) {
+                Some(bevy::asset::LoadState::Loaded) => {
+                    state.loading = false;
+                    state.transitioning = true;
+                    state.progress = 0.0;
+                    
+                    // Swap to vortex material
+                    if let Ok((entity, std_mat_handle)) = sphere_std.single() {
+                        let current = if let Some(mat) = std_materials.get(&std_mat_handle.0) {
+                            mat.base_color_texture.clone().unwrap_or_else(|| handle.clone())
+                        } else {
+                            handle.clone()
+                        };
+                        
+                        state.current_texture = Some(current.clone());
+                        
+                        let vortex = vortex_materials.add(VortexMaterial {
+                            texture_a: current,
+                            texture_b: handle,
+                            progress: 0.0,
+                        });
+                        
+                        commands.entity(entity)
+                            .remove::<MeshMaterial3d<StandardMaterial>>()
+                            .insert((MeshMaterial3d(vortex), VortexSphere));
+                    }
+                    
+                    info!("✨ Starting vortex transition");
+                }
+                Some(bevy::asset::LoadState::Failed(_)) => {
+                    warn!("⚠️ Failed to load panorama, looping to start");
+                    state.loading = false;
+                    state.next_texture = None;
+                    state.current_index = 0;
+                }
+                _ => {}
+            }
+        }
+        return;
+    }
+
+    if !state.transitioning {
+        return;
+    }
+
+    state.progress += time.delta_secs() * 0.9;
+
+    // Update vortex material progress
+    if let Ok((_, vortex_handle)) = sphere_vortex.single() {
+        if let Some(mat) = vortex_materials.get_mut(&vortex_handle.0) {
+            mat.progress = state.progress.min(1.0);
+        }
+    }
+
+    // Complete transition
+    if state.progress >= 1.0 {
+        if let Ok((entity, _)) = sphere_vortex.single() {
+            let new_mat = std_materials.add(StandardMaterial {
+                base_color_texture: state.next_texture.clone(),
+                unlit: true,
+                double_sided: true,
+                cull_mode: None,
+                ..default()
+            });
+            
+            commands.entity(entity)
+                .remove::<MeshMaterial3d<VortexMaterial>>()
+                .remove::<VortexSphere>()
+                .insert(MeshMaterial3d(new_mat));
+            
+            state.current_texture = state.next_texture.take();
+        }
+        
+        state.transitioning = false;
+        info!("✅ Vortex transition complete");
+    }
+}

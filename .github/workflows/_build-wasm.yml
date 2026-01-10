@@ -1,0 +1,99 @@
+name: Build WASM (Reusable)
+
+on:
+  workflow_call:
+    inputs:
+      public_url:
+        description: 'Base URL path for assets (e.g., /repo-name/ for GitHub Pages)'
+        required: false
+        type: string
+        default: '/'
+      optimize:
+        description: 'Run wasm-opt optimization'
+        required: false
+        type: boolean
+        default: true
+      artifact_name:
+        description: 'Name for the uploaded artifact'
+        required: false
+        type: string
+        default: 'wasm-dist'
+      retention_days:
+        description: 'Artifact retention days'
+        required: false
+        type: number
+        default: 7
+      features:
+        description: 'Cargo features to enable'
+        required: false
+        type: string
+        default: 'webxr'
+    outputs:
+      artifact_name:
+        description: 'Name of the uploaded artifact'
+        value: ${{ jobs.build.outputs.artifact_name }}
+
+env:
+  CARGO_TERM_COLOR: always
+  TRUNK_VERSION: '0.21.4'
+
+jobs:
+  build:
+    name: Build WASM
+    runs-on: ubuntu-latest
+    outputs:
+      artifact_name: ${{ inputs.artifact_name }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: wasm-build
+          cache-targets: true
+
+      - name: Cache Trunk
+        id: cache-trunk
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/bin/trunk
+          key: trunk-${{ env.TRUNK_VERSION }}-${{ runner.os }}
+
+      - name: Install Trunk
+        if: steps.cache-trunk.outputs.cache-hit != 'true'
+        run: cargo install --locked trunk@${{ env.TRUNK_VERSION }}
+
+      - name: Install Binaryen (wasm-opt)
+        if: ${{ inputs.optimize }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y binaryen
+
+      - name: Build WASM
+        run: |
+          trunk build --release \
+            --features ${{ inputs.features }} \
+            --public-url "${{ inputs.public_url }}"
+
+      - name: Optimize WASM
+        if: ${{ inputs.optimize }}
+        run: |
+          for wasm_file in dist/*.wasm; do
+            if [ -f "$wasm_file" ]; then
+              echo "Optimizing: $wasm_file"
+              wasm-opt -Oz -o "$wasm_file" "$wasm_file"
+            fi
+          done
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.artifact_name }}
+          path: dist/
+          retention-days: ${{ inputs.retention_days }}
+          if-no-files-found: error

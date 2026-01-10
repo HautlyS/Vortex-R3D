@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Redirecting...</title>
+    <script>
+        // GitHub Pages SPA redirect
+        // Converts /Vortex-R3D/upload to /?p=/upload
+        const path = window.location.pathname;
+        const base = '/Vortex-R3D';
+        const route = path.replace(base, '') || '/';
+        
+        // Store route and redirect to index
+        sessionStorage.setItem('route', route);
+        window.location.replace(base + '/?p=' + encodeURIComponent(route));
+    </script>
+</head>
+<body>
+    <p>Redirecting...</p>
+</body>
+</html>

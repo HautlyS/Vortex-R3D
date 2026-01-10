@@ -1,0 +1,48 @@
+name: Build Android (Quest)
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build-quest:
+    name: Build Quest APK
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Rust Android target
+        run: rustup target add aarch64-linux-android
+      
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+      
+      - name: Install Android NDK
+        run: |
+          sdkmanager --install "ndk;25.2.9519653"
+          echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/25.2.9519653" >> $GITHUB_ENV
+      
+      - name: Install cargo-apk
+        run: cargo install cargo-apk
+      
+      - uses: Swatinem/rust-cache@v2
+      
+      - name: Build APK
+        run: |
+          cargo apk build --release --features vr --no-default-features \
+            --target aarch64-linux-android
+      
+      - uses: actions/upload-artifact@v4
+        with:
+          name: techno-sutra-quest
+          path: target/release/apk/*.apk

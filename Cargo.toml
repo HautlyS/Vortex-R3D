@@ -1,0 +1,162 @@
+[package]
+name = "techno_sutra"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.82"
+publish = false
+authors = ["Techno Sutra"]
+description = "Techno Sutra: Virtual Wisdom - Immersive panorama viewer with VR support"
+exclude = ["dist", "build", "assets", "credits"]
+
+[profile.dev.package."*"]
+opt-level = 3
+
+[profile.dev]
+opt-level = 1
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+strip = true
+
+[profile.dist]
+inherits = "release"
+opt-level = 3
+lto = true
+
+[features]
+default = ["desktop"]
+desktop = ["particles"]
+particles = ["bevy_hanabi"]
+vr = ["bevy_mod_openxr", "bevy_mod_xr", "particles"]
+webxr = []
+dev = ["bevy/dynamic_linking"]
+
+[dependencies]
+bevy = { version = "0.17", default-features = false, features = [
+    "bevy_debug_stepping",
+    "bevy_animation",
+    "bevy_asset",
+    "bevy_core_pipeline",
+    "bevy_gltf",
+    "bevy_pbr",
+    "bevy_render",
+    "bevy_scene",
+    "bevy_state",
+    "bevy_text",
+    "bevy_ui",
+    "bevy_winit",
+    "bevy_gilrs",
+    "bevy_picking",
+    "bevy_input_focus",
+    "bevy_post_process",
+    "default_font",
+    "hdr",
+    "png",
+    "jpeg",
+    "multi_threaded",
+    "x11",
+    "wayland",
+    "webgl2",
+    "tonemapping_luts",
+    "zstd_rust",
+    "ghost_nodes",
+    "experimental_bevy_ui_widgets",
+    "experimental_bevy_feathers",
+    "smaa_luts",
+] }
+
+# Audio
+bevy_kira_audio = { version = "0.24", features = ["ogg", "wav"] }
+
+# Asset loading
+bevy_asset_loader = "0.24"
+
+# Portals (local)
+bevy_basic_portals = { path = "examples/bevy_basic_portals" }
+
+# Egui + KBGP for keyboard/gamepad navigation
+bevy_egui = "0.38"
+bevy-egui-kbgp = "0.28"
+
+# Particles (desktop only - not WASM compatible)
+bevy_hanabi = { version = "0.17", default-features = false, features = ["3d"], optional = true }
+
+# Image processing
+image = { version = "0.25", default-features = false, features = ["png", "jpeg"] }
+
+# Logging
+log = { version = "0.4", features = ["max_level_debug", "release_max_level_warn"] }
+
+# Async runtime
+async-channel = "2.3"
+
+# File dialogs (desktop only - not WASM compatible)
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+rfd = "0.17"
+
+# VR/XR support (optional)
+bevy_mod_openxr = { git = "https://github.com/awtterpip/bevy_oxr", tag = "v0.4.0", optional = true, features = ["vulkan"] }
+bevy_mod_xr = { git = "https://github.com/awtterpip/bevy_oxr", tag = "v0.4.0", optional = true }
+
+# WebXR/WASM support
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+wasm-bindgen = "0.2"
+wasm-bindgen-futures = "0.4"
+js-sys = "0.3"
+
+[target.'cfg(target_arch = "wasm32")'.dependencies.web-sys]
+version = "0.3"
+features = [
+    "Navigator",
+    "Window",
+    "Document",
+    "Location",
+    "Storage",
+    "Element",
+    "HtmlElement",
+    "HtmlCanvasElement",
+    "HtmlButtonElement",
+    "HtmlInputElement",
+    "File",
+    "FileList",
+    "FileReader",
+    "Blob",
+    "Url",
+    "Event",
+    "EventTarget",
+    "XrSystem",
+    "XrSession",
+    "XrSessionMode",
+    "XrSessionInit",
+    "XrRenderState",
+    "XrRenderStateInit",
+    "XrFrame",
+    "XrView",
+    "XrViewerPose",
+    "XrPose",
+    "XrRigidTransform",
+    "XrReferenceSpace",
+    "XrReferenceSpaceType",
+    "XrWebGlLayer",
+    "XrViewport",
+    "XrInputSource",
+    "XrInputSourceArray",
+    "XrInputSourceEvent",
+    "XrHand",
+    "XrTargetRayMode",
+    "XrHandedness",
+    "XrSpace",
+    "WebGlRenderingContext",
+    "WebGl2RenderingContext",
+    "console",
+]
+
+[build-dependencies]
+embed-resource = "1"
+
+[workspace]
+members = [
+    "examples/bevy_basic_portals",
+]

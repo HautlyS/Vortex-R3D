@@ -1,0 +1,19 @@
+[build]
+target = "wasm32-unknown-unknown"
+dist = "dist"
+
+[watch]
+ignore = ["assets", "dist", "target"]
+
+# Copy 404.html for GitHub Pages SPA routing
+[[hooks]]
+stage = "post_build"
+command = "sh"
+command_arguments = ["-c", "cp 404.html dist/ 2>/dev/null || true"]
+
+# Note: wasm-opt is handled by the CI workflow for production builds
+# The hook below is for local development optimization (optional)
+[[hooks]]
+stage = "post_build"
+command = "sh"
+command_arguments = ["-c", "for f in dist/techno_sutra*.wasm; do [ -f \"$f\" ] && wasm-opt -Oz -o \"$f\" \"$f\" 2>/dev/null || true; done"]
