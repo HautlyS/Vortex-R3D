@@ -144,7 +144,7 @@ async fn request_xr_session(pose_storage: Arc<Mutex<XrPoseData>>) {
         wasm_bindgen_futures::JsFuture::from(xr.is_session_supported(XrSessionMode::ImmersiveVr))
             .await;
 
-    if !matches!(supported, Ok(js_sys::JsValue::TRUE)) {
+    if !matches!(supported, Ok(ref v) if v.is_truthy()) {
         web_sys::console::warn_1(&"Immersive VR not supported".into());
         return;
     }

@@ -50,10 +50,17 @@ pub fn analyze_panorama_system(
         let data_clone = data.clone();
 
         // Spawn async analysis task
+        #[cfg(not(target_arch = "wasm32"))]
         std::thread::spawn(move || {
             let result = analyze_image(&data_clone, width, height, bpp);
             let _ = tx.send_blocking(result);
         });
+
+        #[cfg(target_arch = "wasm32")]
+        {
+            let result = analyze_image(&data_clone, width, height, bpp);
+            let _ = tx.try_send(result);
+        }
 
         light_probe.env_map = Some(panorama_assets.demo_panorama.clone());
         info!("🔄 IBL analysis started async...");

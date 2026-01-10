@@ -36,7 +36,7 @@ fn apply_webxr_camera(
         return;
     }
 
-    let Ok((mut transform, mut projection)) = camera_q.get_single_mut() else {
+    let Ok((mut transform, mut projection)) = camera_q.single_mut() else {
         return;
     };
 
