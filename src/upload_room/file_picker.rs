@@ -17,7 +17,11 @@ pub enum FileKind {
 }
 
 pub fn pick_file(kind: FileKind) {
-    #[cfg(not(target_arch = "wasm32"))]
+    #[cfg(all(
+        not(target_arch = "wasm32"),
+        not(target_os = "ios"),
+        not(target_os = "android")
+    ))]
     {
         std::thread::spawn(move || {
             let filter = match kind {
@@ -37,6 +41,13 @@ pub fn pick_file(kind: FileKind) {
                 }
             }
         });
+    }
+
+    // iOS/Android: file picker not yet implemented
+    #[cfg(any(target_os = "ios", target_os = "android"))]
+    {
+        let _ = kind;
+        warn!("File picker not available on mobile");
     }
 
     #[cfg(target_arch = "wasm32")]

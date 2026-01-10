@@ -92,8 +92,8 @@ log = { version = "0.4", features = ["max_level_debug", "release_max_level_warn"
 # Async runtime
 async-channel = "2.3"
 
-# File dialogs (desktop only - not WASM compatible)
-[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+# File dialogs (desktop only - not WASM/iOS/Android)
+[target.'cfg(all(not(target_arch = "wasm32"), not(target_os = "ios"), not(target_os = "android")))'.dependencies]
 rfd = "0.17"
 
 # VR/XR support (optional)
