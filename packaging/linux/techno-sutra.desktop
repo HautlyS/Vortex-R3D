@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Techno Sutra
+Comment=Virtual Wisdom - Immersive panorama viewer with VR support
+GenericName=Panorama Viewer
+Exec=techno_sutra
+Icon=techno-sutra
+Terminal=false
+Type=Application
+Categories=Graphics;3DGraphics;Viewer;
+Keywords=panorama;360;vr;viewer;immersive;
+StartupWMClass=techno_sutra

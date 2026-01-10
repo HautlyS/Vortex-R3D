@@ -1,0 +1,172 @@
+name: Build Linux (Reusable)
+
+on:
+  workflow_call:
+    inputs:
+      features:
+        description: 'Cargo features to enable'
+        required: false
+        type: string
+        default: 'desktop'
+      artifact_prefix:
+        description: 'Prefix for artifact names'
+        required: false
+        type: string
+        default: 'techno-sutra'
+      retention_days:
+        description: 'Artifact retention days'
+        required: false
+        type: number
+        default: 30
+    outputs:
+      tarball_name:
+        description: 'Name of the tar.gz artifact'
+        value: ${{ jobs.build.outputs.tarball_name }}
+      deb_name:
+        description: 'Name of the .deb artifact'
+        value: ${{ jobs.build.outputs.deb_name }}
+      appimage_name:
+        description: 'Name of the AppImage artifact'
+        value: ${{ jobs.build.outputs.appimage_name }}
+
+env:
+  CARGO_TERM_COLOR: always
+  BINARY_NAME: techno_sutra
+  APP_NAME: Techno Sutra
+  CARGO_DEB_VERSION: '2.11.0'
+
+jobs:
+  build:
+    name: Build Linux
+    runs-on: ubuntu-22.04
+    outputs:
+      tarball_name: ${{ steps.names.outputs.tarball }}
+      deb_name: ${{ steps.names.outputs.deb }}
+      appimage_name: ${{ steps.names.outputs.appimage }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            g++ pkg-config \
+            libx11-dev libxi-dev libxcursor-dev libxrandr-dev \
+            libwayland-dev libxkbcommon-dev \
+            libasound2-dev libudev-dev \
+            libfuse2 file imagemagick
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: linux-release
+          cache-targets: true
+
+      - name: Cache cargo-deb
+        id: cache-cargo-deb
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/bin/cargo-deb
+          key: cargo-deb-${{ env.CARGO_DEB_VERSION }}-${{ runner.os }}
+
+      - name: Install cargo-deb
+        if: steps.cache-cargo-deb.outputs.cache-hit != 'true'
+        run: cargo install cargo-deb@${{ env.CARGO_DEB_VERSION }}
+
+      - name: Build release binary
+        run: cargo build --release --features ${{ inputs.features }}
+
+      - name: Set artifact names
+        id: names
+        run: |
+          VERSION=$(grep '^version' Cargo.toml | head -1 | sed 's/.*"\(.*\)".*/\1/')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "tarball=${{ inputs.artifact_prefix }}-linux-x64-v${VERSION}.tar.gz" >> $GITHUB_OUTPUT
+          echo "deb=${{ inputs.artifact_prefix }}_${VERSION}_amd64.deb" >> $GITHUB_OUTPUT
+          echo "appimage=${{ inputs.artifact_prefix }}-linux-x64-v${VERSION}.AppImage" >> $GITHUB_OUTPUT
+
+      - name: Create tar.gz package
+        run: |
+          mkdir -p dist/${{ env.BINARY_NAME }}
+          cp target/release/${{ env.BINARY_NAME }} dist/${{ env.BINARY_NAME }}/
+          cp -r assets dist/${{ env.BINARY_NAME }}/
+          cp README.md dist/${{ env.BINARY_NAME }}/ 2>/dev/null || true
+          tar -czvf ${{ steps.names.outputs.tarball }} -C dist ${{ env.BINARY_NAME }}
+
+      - name: Create .deb package
+        run: |
+          # Create minimal Cargo.toml metadata for cargo-deb
+          cat >> Cargo.toml << 'EOF'
+
+          [package.metadata.deb]
+          maintainer = "Techno Sutra <contact@technosutra.dev>"
+          copyright = "2024 Techno Sutra"
+          extended-description = "Immersive panorama viewer with VR support"
+          section = "graphics"
+          priority = "optional"
+          assets = [
+              ["target/release/techno_sutra", "usr/bin/", "755"],
+              ["packaging/linux/techno-sutra.desktop", "usr/share/applications/", "644"],
+          ]
+          EOF
+          cargo deb --no-build --no-strip
+          cp target/debian/*.deb ./${{ steps.names.outputs.deb }} || true
+
+      - name: Create AppImage
+        run: |
+          mkdir -p AppDir/usr/bin AppDir/usr/share/applications AppDir/usr/share/icons/hicolor/256x256/apps
+          cp target/release/${{ env.BINARY_NAME }} AppDir/usr/bin/
+          cp packaging/linux/techno-sutra.desktop AppDir/
+          cp packaging/linux/techno-sutra.desktop AppDir/usr/share/applications/
+          
+          # Create placeholder icon
+          convert -size 256x256 xc:'#4a90d9' -gravity center \
+            -fill white -pointsize 72 -annotate 0 'TS' \
+            AppDir/usr/share/icons/hicolor/256x256/apps/techno-sutra.png || \
+          convert -size 256x256 xc:blue AppDir/usr/share/icons/hicolor/256x256/apps/techno-sutra.png
+          
+          cp AppDir/usr/share/icons/hicolor/256x256/apps/techno-sutra.png AppDir/
+          
+          # Create AppRun script
+          cat > AppDir/AppRun << 'APPRUN'
+          #!/bin/bash
+          SELF=$(readlink -f "$0")
+          HERE=${SELF%/*}
+          export PATH="${HERE}/usr/bin:${PATH}"
+          exec "${HERE}/usr/bin/techno_sutra" "$@"
+          APPRUN
+          chmod +x AppDir/AppRun
+          
+          # Download and run appimagetool
+          wget -q https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
+          chmod +x appimagetool-x86_64.AppImage
+          ARCH=x86_64 ./appimagetool-x86_64.AppImage --no-appstream AppDir ${{ steps.names.outputs.appimage }} || true
+
+      - name: Upload tar.gz artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.artifact_prefix }}-linux-tarball
+          path: ${{ steps.names.outputs.tarball }}
+          retention-days: ${{ inputs.retention_days }}
+          if-no-files-found: error
+
+      - name: Upload .deb artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.artifact_prefix }}-linux-deb
+          path: ${{ steps.names.outputs.deb }}
+          retention-days: ${{ inputs.retention_days }}
+          if-no-files-found: warn
+
+      - name: Upload AppImage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.artifact_prefix }}-linux-appimage
+          path: ${{ steps.names.outputs.appimage }}
+          retention-days: ${{ inputs.retention_days }}
+          if-no-files-found: warn

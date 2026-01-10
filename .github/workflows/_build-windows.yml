@@ -1,0 +1,76 @@
+name: Build Windows (Reusable)
+
+on:
+  workflow_call:
+    inputs:
+      features:
+        description: 'Cargo features to enable'
+        required: false
+        type: string
+        default: 'desktop'
+      artifact_prefix:
+        description: 'Prefix for artifact names'
+        required: false
+        type: string
+        default: 'techno-sutra'
+      retention_days:
+        description: 'Artifact retention days'
+        required: false
+        type: number
+        default: 30
+    outputs:
+      zip_name:
+        description: 'Name of the .zip artifact'
+        value: ${{ jobs.build.outputs.zip_name }}
+
+env:
+  CARGO_TERM_COLOR: always
+  BINARY_NAME: techno_sutra
+
+jobs:
+  build:
+    name: Build Windows
+    runs-on: windows-latest
+    outputs:
+      zip_name: ${{ steps.names.outputs.zip }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: windows-release
+          cache-targets: true
+
+      - name: Build release binary
+        run: cargo build --release --features ${{ inputs.features }}
+
+      - name: Set artifact names
+        id: names
+        shell: pwsh
+        run: |
+          $version = (Select-String -Path Cargo.toml -Pattern '^version\s*=\s*"([^"]+)"' | Select-Object -First 1).Matches.Groups[1].Value
+          echo "version=$version" >> $env:GITHUB_OUTPUT
+          echo "zip=${{ inputs.artifact_prefix }}-windows-x64-v${version}.zip" >> $env:GITHUB_OUTPUT
+
+      - name: Create portable .zip package
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path dist/${{ env.BINARY_NAME }}
+          Copy-Item target/release/${{ env.BINARY_NAME }}.exe dist/${{ env.BINARY_NAME }}/
+          Copy-Item -Recurse assets dist/${{ env.BINARY_NAME }}/
+          if (Test-Path README.md) { Copy-Item README.md dist/${{ env.BINARY_NAME }}/ }
+          Compress-Archive -Path dist/${{ env.BINARY_NAME }}/* -DestinationPath ${{ steps.names.outputs.zip }}
+
+      - name: Upload .zip artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.artifact_prefix }}-windows-zip
+          path: ${{ steps.names.outputs.zip }}
+          retention-days: ${{ inputs.retention_days }}
+          if-no-files-found: error

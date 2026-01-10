@@ -22,37 +22,41 @@ fn run_desktop() {
     let mut app = App::new();
     app.insert_resource(ClearColor(Color::srgb(0.05, 0.05, 0.1)));
 
+    #[allow(unused_mut)]
+    let mut default_plugins = DefaultPlugins
+        .set(WindowPlugin {
+            primary_window: Some(Window {
+                title: "🕉️ Techno Sutra: Virtual Wisdom".into(),
+                resolution: (1280, 720).into(),
+                canvas: Some("#bevy".into()),
+                fit_canvas_to_parent: true,
+                prevent_default_event_handling: true, // Better touch handling
+                ..default()
+            }),
+            ..default()
+        })
+        .set(AssetPlugin {
+            meta_check: AssetMetaCheck::Never,
+            ..default()
+        })
+        .set(ImagePlugin::default_nearest()); // Faster texture sampling
+
     // Mobile/WASM performance settings
     #[cfg(target_arch = "wasm32")]
-    {
-        use bevy::render::settings::WgpuSettings;
-        app.insert_resource(WgpuSettings {
-            power_preference: bevy::render::settings::PowerPreference::LowPower,
+    let default_plugins = {
+        use bevy::render::{settings::{WgpuSettings, PowerPreference}, RenderPlugin};
+        default_plugins.set(RenderPlugin {
+            render_creation: WgpuSettings {
+                power_preference: PowerPreference::LowPower,
+                ..default()
+            }.into(),
             ..default()
-        });
-    }
+        })
+    };
 
-    app.add_plugins(
-        DefaultPlugins
-            .set(WindowPlugin {
-                primary_window: Some(Window {
-                    title: "🕉️ Techno Sutra: Virtual Wisdom".into(),
-                    resolution: (1280, 720).into(),
-                    canvas: Some("#bevy".into()),
-                    fit_canvas_to_parent: true,
-                    prevent_default_event_handling: true, // Better touch handling
-                    ..default()
-                }),
-                ..default()
-            })
-            .set(AssetPlugin {
-                meta_check: AssetMetaCheck::Never,
-                ..default()
-            })
-            .set(ImagePlugin::default_nearest()), // Faster texture sampling
-    )
-    .add_plugins(GamePlugin)
-    .run();
+    app.add_plugins(default_plugins)
+        .add_plugins(GamePlugin)
+        .run();
 }
 
 #[cfg(feature = "vr")]

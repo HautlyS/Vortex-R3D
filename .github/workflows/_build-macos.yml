@@ -1,0 +1,152 @@
+name: Build macOS (Reusable)
+
+on:
+  workflow_call:
+    inputs:
+      features:
+        description: 'Cargo features to enable'
+        required: false
+        type: string
+        default: 'desktop'
+      artifact_prefix:
+        description: 'Prefix for artifact names'
+        required: false
+        type: string
+        default: 'techno-sutra'
+      retention_days:
+        description: 'Artifact retention days'
+        required: false
+        type: number
+        default: 30
+      create_dmg:
+        description: 'Create DMG disk image'
+        required: false
+        type: boolean
+        default: false
+    outputs:
+      zip_name:
+        description: 'Name of the .zip artifact'
+        value: ${{ jobs.build.outputs.zip_name }}
+
+env:
+  CARGO_TERM_COLOR: always
+  BINARY_NAME: techno_sutra
+  APP_NAME: Techno Sutra
+
+jobs:
+  build:
+    name: Build macOS Universal
+    runs-on: macos-latest
+    outputs:
+      zip_name: ${{ steps.names.outputs.zip }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-apple-darwin,aarch64-apple-darwin
+
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: macos-release
+          cache-targets: true
+
+      - name: Build x86_64 binary
+        run: cargo build --release --features desktop --target x86_64-apple-darwin
+
+      - name: Build aarch64 binary
+        run: cargo build --release --features desktop --target aarch64-apple-darwin
+
+      - name: Create universal binary
+        run: |
+          mkdir -p target/universal-apple-darwin/release
+          lipo -create \
+            target/x86_64-apple-darwin/release/${{ env.BINARY_NAME }} \
+            target/aarch64-apple-darwin/release/${{ env.BINARY_NAME }} \
+            -output target/universal-apple-darwin/release/${{ env.BINARY_NAME }}
+
+      - name: Set artifact names
+        id: names
+        run: |
+          VERSION=$(grep '^version' Cargo.toml | head -1 | sed 's/.*"\(.*\)".*/\1/')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "zip=${{ inputs.artifact_prefix }}-macos-universal-v${VERSION}.zip" >> $GITHUB_OUTPUT
+          echo "dmg=${{ inputs.artifact_prefix }}-macos-universal-v${VERSION}.dmg" >> $GITHUB_OUTPUT
+
+      - name: Create .app bundle
+        run: |
+          APP_DIR="${{ env.APP_NAME }}.app"
+          mkdir -p "$APP_DIR/Contents/MacOS"
+          mkdir -p "$APP_DIR/Contents/Resources"
+          
+          # Copy binary
+          cp target/universal-apple-darwin/release/${{ env.BINARY_NAME }} "$APP_DIR/Contents/MacOS/"
+          
+          # Copy Info.plist
+          cp packaging/macos/Info.plist "$APP_DIR/Contents/"
+          
+          # Update version in Info.plist
+          sed -i '' "s/0.1.0/${{ steps.names.outputs.version }}/g" "$APP_DIR/Contents/Info.plist"
+          
+          # Copy assets
+          cp -r assets "$APP_DIR/Contents/Resources/"
+          
+          # Create/copy icon
+          if [ -f assets/icons/icon.icns ]; then
+            cp assets/icons/icon.icns "$APP_DIR/Contents/Resources/icon.icns"
+          else
+            # Create placeholder icon using sips
+            mkdir -p icon.iconset
+            for size in 16 32 128 256 512; do
+              sips -z $size $size assets/panoramas/demo.jpg --out icon.iconset/icon_${size}x${size}.png 2>/dev/null || \
+              printf "P6\n$size $size\n255\n" > icon.iconset/icon_${size}x${size}.ppm
+            done
+            iconutil -c icns icon.iconset -o "$APP_DIR/Contents/Resources/icon.icns" 2>/dev/null || true
+          fi
+          
+          # Create PkgInfo
+          echo -n "APPL????" > "$APP_DIR/Contents/PkgInfo"
+
+      - name: Ad-hoc code sign
+        run: |
+          codesign --force --deep --sign - "${{ env.APP_NAME }}.app"
+
+      - name: Create .zip package
+        run: |
+          ditto -c -k --keepParent "${{ env.APP_NAME }}.app" ${{ steps.names.outputs.zip }}
+
+      - name: Create .dmg (optional)
+        if: ${{ inputs.create_dmg }}
+        run: |
+          brew install create-dmg || true
+          create-dmg \
+            --volname "${{ env.APP_NAME }}" \
+            --window-pos 200 120 \
+            --window-size 600 400 \
+            --icon-size 100 \
+            --icon "${{ env.APP_NAME }}.app" 175 190 \
+            --app-drop-link 425 190 \
+            ${{ steps.names.outputs.dmg }} \
+            "${{ env.APP_NAME }}.app" || \
+          hdiutil create -volname "${{ env.APP_NAME }}" -srcfolder "${{ env.APP_NAME }}.app" -ov -format UDZO ${{ steps.names.outputs.dmg }}
+
+      - name: Upload .zip artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.artifact_prefix }}-macos-zip
+          path: ${{ steps.names.outputs.zip }}
+          retention-days: ${{ inputs.retention_days }}
+          if-no-files-found: error
+
+      - name: Upload .dmg artifact
+        if: ${{ inputs.create_dmg }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.artifact_prefix }}-macos-dmg
+          path: ${{ steps.names.outputs.dmg }}
+          retention-days: ${{ inputs.retention_days }}
+          if-no-files-found: warn

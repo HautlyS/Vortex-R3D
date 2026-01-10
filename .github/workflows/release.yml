@@ -1,0 +1,284 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version tag (e.g., v0.1.0)'
+        required: true
+        type: string
+      prerelease:
+        description: 'Mark as pre-release'
+        type: boolean
+        default: false
+      skip_ios:
+        description: 'Skip iOS build (saves macOS minutes)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+env:
+  ARTIFACT_PREFIX: techno-sutra
+
+jobs:
+  # ============================================
+  # PHASE 1: Parallel Platform Builds
+  # ============================================
+
+  build-linux:
+    name: 🐧 Linux
+    uses: ./.github/workflows/_build-linux.yml
+    with:
+      features: desktop
+      artifact_prefix: techno-sutra
+      retention_days: 7
+
+  build-windows:
+    name: 🪟 Windows
+    uses: ./.github/workflows/_build-windows.yml
+    with:
+      features: desktop
+      artifact_prefix: techno-sutra
+      retention_days: 7
+
+  build-macos:
+    name: 🍎 macOS
+    uses: ./.github/workflows/_build-macos.yml
+    with:
+      features: desktop
+      artifact_prefix: techno-sutra
+      retention_days: 7
+      create_dmg: false
+
+  build-ios:
+    name: 📱 iOS
+    if: ${{ !inputs.skip_ios }}
+    uses: ./.github/workflows/_build-ios.yml
+    with:
+      artifact_prefix: techno-sutra
+      retention_days: 7
+
+  build-android:
+    name: 🤖 Android
+    uses: ./.github/workflows/_build-android.yml
+    with:
+      artifact_prefix: techno-sutra
+      retention_days: 7
+      build_quest: true
+
+  build-web:
+    name: 🌐 Web
+    uses: ./.github/workflows/_build-wasm.yml
+    with:
+      optimize: true
+      artifact_name: techno-sutra-web
+      features: webxr
+      retention_days: 7
+
+  # ============================================
+  # PHASE 2: Create GitHub Release
+  # ============================================
+
+  release:
+    name: 📦 Create Release
+    needs: [build-linux, build-windows, build-macos, build-android, build-web]
+    if: always() && !cancelled()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: List downloaded artifacts
+        run: |
+          echo "=== Downloaded Artifacts ==="
+          find artifacts -type f -name "*" | head -50
+          echo "==========================="
+
+      - name: Get version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ inputs.version }}"
+          else
+            VERSION="${GITHUB_REF#refs/tags/}"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version: $VERSION"
+
+      - name: Flatten artifacts
+        run: |
+          mkdir -p release
+          find artifacts -type f \( -name "*.tar.gz" -o -name "*.zip" -o -name "*.deb" -o -name "*.AppImage" -o -name "*.apk" -o -name "*.ipa" \) -exec cp {} release/ \;
+          
+          # Package web build as tar.gz if it's a directory
+          if [ -d "artifacts/techno-sutra-web" ]; then
+            tar -czvf release/techno-sutra-web-${{ steps.version.outputs.version }}.tar.gz -C artifacts/techno-sutra-web .
+          fi
+          
+          echo "=== Release Files ==="
+          ls -la release/
+          echo "===================="
+
+      - name: Generate release notes
+        run: |
+          cat << 'RELEASE_EOF' > release_notes.md
+          ## Techno Sutra ${{ steps.version.outputs.version }}
+          
+          Immersive panorama viewer with VR support.
+          
+          ### 📥 Downloads
+          
+          | Platform | File | Architecture | Notes |
+          |----------|------|--------------|-------|
+          | 🐧 Linux | `.tar.gz` | x86_64 | Portable - extract and run |
+          | 🐧 Linux | `.deb` | x86_64 | Debian/Ubuntu package |
+          | 🐧 Linux | `.AppImage` | x86_64 | Universal - `chmod +x` and run |
+          | 🪟 Windows | `.zip` | x86_64 | Portable - extract and run |
+          | 🍎 macOS | `.zip` | Universal | Intel + Apple Silicon |
+          | 📱 iOS | `.ipa` | arm64 | Unsigned - use AltStore/Sideloadly |
+          | 🤖 Android | `.apk` | arm64 | Standard mobile |
+          | 🥽 Quest | `.apk` | arm64 | Meta Quest VR |
+          | 🌐 Web | `.tar.gz` | WASM | Host on any web server |
+          
+          ### 💻 System Requirements
+          
+          **Desktop:**
+          - GPU with Vulkan/Metal/DX12 support
+          - 4GB RAM minimum
+          - 500MB disk space
+          
+          **Mobile:**
+          - Android 8.0+ / iOS 14+
+          - OpenGL ES 3.0 / Metal support
+          
+          **VR (Quest):**
+          - Meta Quest 2/3/Pro
+          - Developer mode enabled for sideloading
+          
+          ### 📖 Installation
+          
+          <details>
+          <summary><b>Linux</b></summary>
+          
+          ```bash
+          # AppImage (recommended)
+          chmod +x techno-sutra-*.AppImage
+          ./techno-sutra-*.AppImage
+          
+          # Debian/Ubuntu
+          sudo dpkg -i techno-sutra_*.deb
+          
+          # Portable tar.gz
+          tar -xzf techno-sutra-linux-*.tar.gz
+          cd techno_sutra && ./techno_sutra
+          ```
+          </details>
+          
+          <details>
+          <summary><b>Windows</b></summary>
+          
+          1. Extract the `.zip` file
+          2. Run `techno_sutra.exe`
+          </details>
+          
+          <details>
+          <summary><b>macOS</b></summary>
+          
+          1. Extract the `.zip` file
+          2. Move `Techno Sutra.app` to Applications
+          3. Right-click → Open (first time, to bypass Gatekeeper)
+          </details>
+          
+          <details>
+          <summary><b>iOS (Unsigned)</b></summary>
+          
+          Use [AltStore](https://altstore.io/) or [Sideloadly](https://sideloadly.io/):
+          1. Install AltStore on your device
+          2. Download the `.ipa` file
+          3. Open with AltStore to install
+          </details>
+          
+          <details>
+          <summary><b>Android / Quest</b></summary>
+          
+          ```bash
+          # Standard Android
+          adb install techno-sutra-android-*.apk
+          
+          # Quest (requires developer mode)
+          adb install techno-sutra-quest-*.apk
+          ```
+          
+          Or use [SideQuest](https://sidequestvr.com/) for Quest.
+          </details>
+          
+          <details>
+          <summary><b>Web</b></summary>
+          
+          ```bash
+          tar -xzf techno-sutra-web-*.tar.gz
+          # Serve with any HTTP server
+          python3 -m http.server 8080
+          # Open http://localhost:8080
+          ```
+          </details>
+          
+          ---
+          
+          **Full Changelog**: https://github.com/${{ github.repository }}/commits/${{ steps.version.outputs.version }}
+          RELEASE_EOF
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          name: Techno Sutra ${{ steps.version.outputs.version }}
+          body_path: release_notes.md
+          draft: false
+          prerelease: ${{ inputs.prerelease || false }}
+          files: release/*
+          fail_on_unmatched_files: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ============================================
+  # PHASE 3: iOS Release (separate due to needs)
+  # ============================================
+
+  release-ios:
+    name: 📱 Add iOS to Release
+    needs: [build-ios, release]
+    if: ${{ !inputs.skip_ios && always() && needs.build-ios.result == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download iOS artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: techno-sutra-ios-ipa
+          path: ios-release
+
+      - name: Get version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "version=${{ inputs.version }}" >> $GITHUB_OUTPUT
+          else
+            echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Add iOS to release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          files: ios-release/*.ipa
+          fail_on_unmatched_files: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

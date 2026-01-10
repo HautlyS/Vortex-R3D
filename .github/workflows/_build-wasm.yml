@@ -70,27 +70,21 @@ jobs:
         if: steps.cache-trunk.outputs.cache-hit != 'true'
         run: cargo install --locked trunk@${{ env.TRUNK_VERSION }}
 
-      - name: Install Binaryen (wasm-opt)
-        if: ${{ inputs.optimize }}
+      - name: Configure features in index.html
+        if: ${{ inputs.features != 'webxr' }}
         run: |
-          sudo apt-get update
-          sudo apt-get install -y binaryen
+          sed -i 's/data-cargo-features="[^"]*"/data-cargo-features="${{ inputs.features }}"/' index.html
+
+      - name: Disable wasm-opt if not optimizing
+        if: ${{ !inputs.optimize }}
+        run: |
+          sed -i 's/data-wasm-opt="[^"]*"/data-wasm-opt="0"/' index.html
 
       - name: Build WASM
         run: |
-          trunk build --release \
-            --features ${{ inputs.features }} \
-            --public-url "${{ inputs.public_url }}"
-
-      - name: Optimize WASM
-        if: ${{ inputs.optimize }}
-        run: |
-          for wasm_file in dist/*.wasm; do
-            if [ -f "$wasm_file" ]; then
-              echo "Optimizing: $wasm_file"
-              wasm-opt -Oz -o "$wasm_file" "$wasm_file"
-            fi
-          done
+          # Features controlled via index.html data-cargo-* attributes (per Trunk docs)
+          # wasm-opt controlled via data-wasm-opt attribute
+          trunk build --release --public-url "${{ inputs.public_url }}"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

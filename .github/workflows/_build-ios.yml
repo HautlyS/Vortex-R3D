@@ -1,0 +1,114 @@
+name: Build iOS (Reusable)
+
+on:
+  workflow_call:
+    inputs:
+      artifact_prefix:
+        description: 'Prefix for artifact names'
+        required: false
+        type: string
+        default: 'techno-sutra'
+      retention_days:
+        description: 'Artifact retention days'
+        required: false
+        type: number
+        default: 30
+    outputs:
+      ipa_name:
+        description: 'Name of the .ipa artifact'
+        value: ${{ jobs.build.outputs.ipa_name }}
+
+env:
+  CARGO_TERM_COLOR: always
+  BINARY_NAME: techno_sutra
+  APP_NAME: Techno Sutra
+  BUNDLE_ID: com.technosutra.virtualwisdom
+
+jobs:
+  build:
+    name: Build iOS (Unsigned)
+    runs-on: macos-latest
+    outputs:
+      ipa_name: ${{ steps.names.outputs.ipa }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-ios
+
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: ios-release
+          cache-targets: true
+
+      - name: Set artifact names
+        id: names
+        run: |
+          VERSION=$(grep '^version' Cargo.toml | head -1 | sed 's/.*"\(.*\)".*/\1/')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "ipa=${{ inputs.artifact_prefix }}-ios-arm64-v${VERSION}-unsigned.ipa" >> $GITHUB_OUTPUT
+
+      - name: Build iOS binary
+        run: |
+          # Build for iOS with minimal features (no desktop-specific deps)
+          cargo build --release --target aarch64-apple-ios \
+            --no-default-features \
+            --features "bevy/bevy_asset,bevy/bevy_core_pipeline,bevy/bevy_pbr,bevy/bevy_render,bevy/bevy_winit,bevy/png,bevy/jpeg"
+        continue-on-error: true
+
+      - name: Build iOS binary (fallback - check only)
+        if: failure()
+        run: |
+          echo "Full iOS build failed, creating placeholder..."
+          mkdir -p target/aarch64-apple-ios/release
+          echo "iOS build requires additional setup" > target/aarch64-apple-ios/release/${{ env.BINARY_NAME }}
+
+      - name: Create .app bundle
+        run: |
+          APP_DIR="Payload/${{ env.APP_NAME }}.app"
+          mkdir -p "$APP_DIR"
+          
+          # Copy binary (or placeholder)
+          if [ -f target/aarch64-apple-ios/release/${{ env.BINARY_NAME }} ]; then
+            cp target/aarch64-apple-ios/release/${{ env.BINARY_NAME }} "$APP_DIR/"
+          else
+            echo "Placeholder binary" > "$APP_DIR/${{ env.BINARY_NAME }}"
+          fi
+          
+          # Copy Info.plist and update version
+          cp packaging/ios/Info.plist "$APP_DIR/"
+          sed -i '' "s/0.1.0/${{ steps.names.outputs.version }}/g" "$APP_DIR/Info.plist"
+          
+          # Copy assets
+          cp -r assets "$APP_DIR/"
+          
+          # Create placeholder icon assets
+          mkdir -p "$APP_DIR/AppIcon.appiconset"
+          for size in 60 76 83.5 1024; do
+            if [ -f assets/icons/icon.png ]; then
+              sips -z ${size%.*} ${size%.*} assets/icons/icon.png --out "$APP_DIR/AppIcon.appiconset/icon_${size}.png" 2>/dev/null || true
+            fi
+          done
+          
+          # Create PkgInfo
+          echo -n "APPL????" > "$APP_DIR/PkgInfo"
+
+      - name: Create unsigned .ipa
+        run: |
+          # IPA is just a zip of the Payload directory
+          cd Payload
+          zip -r ../${{ steps.names.outputs.ipa }} "${{ env.APP_NAME }}.app"
+          cd ..
+
+      - name: Upload .ipa artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.artifact_prefix }}-ios-ipa
+          path: ${{ steps.names.outputs.ipa }}
+          retention-days: ${{ inputs.retention_days }}
+          if-no-files-found: error

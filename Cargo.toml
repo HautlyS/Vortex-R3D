@@ -27,11 +27,15 @@ lto = true
 
 [features]
 default = ["desktop"]
-desktop = ["particles", "bevy/multi_threaded", "bevy/x11", "bevy/wayland"]
+desktop = ["particles", "bevy/multi_threaded"]
 particles = ["bevy_hanabi"]
-vr = ["bevy_mod_openxr", "bevy_mod_xr", "particles", "bevy/multi_threaded", "bevy/x11", "bevy/wayland"]
+vr = ["bevy_mod_openxr", "bevy_mod_xr", "particles", "bevy/multi_threaded"]
 webxr = []
 dev = ["bevy/dynamic_linking"]
+
+# Linux-specific windowing (enabled automatically on Linux desktop builds)
+[target.'cfg(target_os = "linux")'.dependencies]
+bevy = { version = "0.17", default-features = false, features = ["x11", "wayland"] }
 
 [dependencies]
 bevy = { version = "0.17", default-features = false, features = [

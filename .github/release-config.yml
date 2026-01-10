@@ -1,0 +1,67 @@
+# Release Configuration
+# This file configures the release workflow behavior
+
+# Application metadata
+app:
+  name: "Techno Sutra"
+  description: "Virtual Wisdom - Immersive panorama viewer with VR support"
+  bundle_id: "com.technosutra.virtualwisdom"
+  author: "Techno Sutra"
+  license: "MIT"
+
+# Artifact naming
+artifacts:
+  prefix: "techno-sutra"
+  retention_days: 30
+
+# Platform-specific settings
+platforms:
+  linux:
+    enabled: true
+    features: "desktop"
+    outputs:
+      - tar.gz
+      - deb
+      - AppImage
+
+  windows:
+    enabled: true
+    features: "desktop"
+    outputs:
+      - zip
+
+  macos:
+    enabled: true
+    features: "desktop"
+    create_dmg: false
+    outputs:
+      - zip
+
+  ios:
+    enabled: true
+    # iOS builds are expensive (macOS runner)
+    # Set to false to skip in workflow_dispatch
+    skip_by_default: false
+    outputs:
+      - ipa
+
+  android:
+    enabled: true
+    features: "desktop"
+    build_quest: true
+    outputs:
+      - apk
+
+  web:
+    enabled: true
+    features: "webxr"
+    optimize: true
+    outputs:
+      - tar.gz
+
+# Release settings
+release:
+  draft: false
+  prerelease: false
+  generate_notes: true
+  template: ".github/RELEASE_TEMPLATE.md"

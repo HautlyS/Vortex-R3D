@@ -1,0 +1,174 @@
+name: Build Android (Reusable)
+
+on:
+  workflow_call:
+    inputs:
+      features:
+        description: 'Cargo features for standard APK'
+        required: false
+        type: string
+        default: 'desktop'
+      artifact_prefix:
+        description: 'Prefix for artifact names'
+        required: false
+        type: string
+        default: 'techno-sutra'
+      retention_days:
+        description: 'Artifact retention days'
+        required: false
+        type: number
+        default: 30
+      build_quest:
+        description: 'Also build Quest VR APK'
+        required: false
+        type: boolean
+        default: false
+    outputs:
+      apk_name:
+        description: 'Name of the standard APK artifact'
+        value: ${{ jobs.build.outputs.apk_name }}
+      quest_apk_name:
+        description: 'Name of the Quest APK artifact'
+        value: ${{ jobs.build.outputs.quest_apk_name }}
+
+env:
+  CARGO_TERM_COLOR: always
+  BINARY_NAME: techno_sutra
+  NDK_VERSION: '25.2.9519653'
+  CARGO_APK_VERSION: '0.9.7'
+
+jobs:
+  build:
+    name: Build Android
+    runs-on: ubuntu-latest
+    outputs:
+      apk_name: ${{ steps.names.outputs.apk }}
+      quest_apk_name: ${{ steps.names.outputs.quest_apk }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android NDK
+        run: |
+          sdkmanager --install "ndk;${{ env.NDK_VERSION }}"
+          echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/${{ env.NDK_VERSION }}" >> $GITHUB_ENV
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-linux-android,armv7-linux-androideabi
+
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: android-release
+          cache-targets: true
+
+      - name: Cache cargo-apk
+        id: cache-cargo-apk
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/bin/cargo-apk
+          key: cargo-apk-${{ env.CARGO_APK_VERSION }}-${{ runner.os }}
+
+      - name: Install cargo-apk
+        if: steps.cache-cargo-apk.outputs.cache-hit != 'true'
+        run: cargo install cargo-apk@${{ env.CARGO_APK_VERSION }}
+
+      - name: Set artifact names
+        id: names
+        run: |
+          VERSION=$(grep '^version' Cargo.toml | head -1 | sed 's/.*"\(.*\)".*/\1/')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "apk=${{ inputs.artifact_prefix }}-android-arm64-v${VERSION}.apk" >> $GITHUB_OUTPUT
+          echo "quest_apk=${{ inputs.artifact_prefix }}-quest-arm64-v${VERSION}.apk" >> $GITHUB_OUTPUT
+
+      - name: Setup Android manifest for standard build
+        run: |
+          mkdir -p .cargo
+          cat > .cargo/config.toml << 'EOF'
+          [target.aarch64-linux-android]
+          linker = "aarch64-linux-android21-clang"
+          
+          [target.armv7-linux-androideabi]
+          linker = "armv7a-linux-androideabi21-clang"
+          EOF
+          
+          # Add Android metadata to Cargo.toml if not present
+          if ! grep -q '\[package.metadata.android\]' Cargo.toml; then
+            cat >> Cargo.toml << 'EOF'
+          
+          [package.metadata.android]
+          package = "com.technosutra.virtualwisdom"
+          label = "Techno Sutra"
+          target_sdk_version = 34
+          min_sdk_version = 26
+          
+          [[package.metadata.android.permission]]
+          name = "android.permission.INTERNET"
+          EOF
+          fi
+
+      - name: Build standard Android APK
+        run: |
+          export PATH="$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin:$PATH"
+          cargo apk build --release --target aarch64-linux-android \
+            --no-default-features \
+            --features "bevy/bevy_asset,bevy/bevy_core_pipeline,bevy/bevy_pbr,bevy/bevy_render,bevy/bevy_winit,bevy/png,bevy/jpeg"
+        continue-on-error: true
+
+      - name: Copy standard APK
+        run: |
+          find target -name "*.apk" -type f | head -1 | xargs -I {} cp {} ${{ steps.names.outputs.apk }} || \
+          echo "Standard APK build skipped or failed"
+
+      - name: Build Quest VR APK
+        if: ${{ inputs.build_quest }}
+        run: |
+          # Update manifest for Quest
+          if ! grep -q 'com.oculus' Cargo.toml; then
+            cat >> Cargo.toml << 'EOF'
+          
+          [package.metadata.android.application.meta_data]
+          "com.oculus.vr.focusaware" = "true"
+          "com.oculus.supportedDevices" = "quest|quest2|quest3|questpro"
+          EOF
+          fi
+          
+          export PATH="$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin:$PATH"
+          cargo apk build --release --target aarch64-linux-android \
+            --features vr --no-default-features
+        continue-on-error: true
+
+      - name: Copy Quest APK
+        if: ${{ inputs.build_quest }}
+        run: |
+          find target -name "*.apk" -type f -newer ${{ steps.names.outputs.apk }} 2>/dev/null | head -1 | xargs -I {} cp {} ${{ steps.names.outputs.quest_apk }} || \
+          echo "Quest APK build skipped or failed"
+
+      - name: Upload standard APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.artifact_prefix }}-android-apk
+          path: ${{ steps.names.outputs.apk }}
+          retention-days: ${{ inputs.retention_days }}
+          if-no-files-found: warn
+
+      - name: Upload Quest APK artifact
+        if: ${{ inputs.build_quest }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.artifact_prefix }}-quest-apk
+          path: ${{ steps.names.outputs.quest_apk }}
+          retention-days: ${{ inputs.retention_days }}
+          if-no-files-found: warn
