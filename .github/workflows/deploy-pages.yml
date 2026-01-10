@@ -6,6 +6,11 @@ on:
     types: [completed]
     branches: [main]
   workflow_dispatch:
+    inputs:
+      run_id:
+        description: 'CI workflow run ID to deploy from (leave empty for latest successful)'
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -21,22 +26,63 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    # Only deploy if CI succeeded (or manual trigger)
+    if: >
+      github.event_name == 'workflow_dispatch' || 
+      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Download WASM artifact from CI
+      - name: Get run ID
+        id: get-run
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ] && [ -n "${{ inputs.run_id }}" ]; then
+            echo "run_id=${{ inputs.run_id }}" >> $GITHUB_OUTPUT
+          elif [ "${{ github.event_name }}" == "workflow_run" ]; then
+            echo "run_id=${{ github.event.workflow_run.id }}" >> $GITHUB_OUTPUT
+          else
+            # Get latest successful CI run on main
+            RUN_ID=$(gh run list --workflow=ci.yml --branch=main --status=success --limit=1 --json databaseId -q '.[0].databaseId')
+            echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+
+      - name: Download WASM artifact
         uses: actions/download-artifact@v4
         with:
           name: techno-sutra-web
           path: dist
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: ${{ github.event.workflow_run.id }}
+          run-id: ${{ steps.get-run.outputs.run_id }}
 
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+      - name: Verify dist contents
+        run: |
+          echo "📦 Artifact contents:"
+          ls -la dist/
+          if [ ! -f dist/index.html ]; then
+            echo "❌ Missing index.html"
+            exit 1
+          fi
+          echo "✅ Artifact verified"
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload to Pages
+        uses: actions/upload-pages-artifact@v3
         with:
           path: dist
-      - id: deployment
+
+      - name: Deploy to Pages
+        id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Summary
+        run: |
+          echo "## 🚀 Deployed to GitHub Pages" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**URL:** ${{ steps.deployment.outputs.page_url }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Source Run:** ${{ steps.get-run.outputs.run_id }}" >> $GITHUB_STEP_SUMMARY
