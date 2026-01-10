@@ -7,205 +7,292 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   CARGO_TERM_COLOR: always
+  CARGO_INCREMENTAL: 1
 
 jobs:
   # ============================================
-  # PHASE 1: Fast checks (parallel)
+  # Fast format check
   # ============================================
-
   fmt:
     name: Format
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: recursive
       - run: cargo fmt --check --package techno_sutra
 
-  check-linux:
-    name: Check Linux
-    runs-on: ubuntu-latest
+  # ============================================
+  # Platform builds
+  # ============================================
+
+  build-linux:
+    name: 🐧 Linux
+    needs: [fmt]
+    runs-on: ubuntu-22.04
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-      - name: Install deps
+
+      - name: Install system deps
         run: |
-          sudo apt-get update && sudo apt-get install -y \
-            g++ pkg-config libx11-dev libwayland-dev libasound2-dev libudev-dev
+          sudo apt-get update
+          sudo apt-get install -y \
+            g++ pkg-config libx11-dev libxi-dev libxcursor-dev libxrandr-dev \
+            libwayland-dev libxkbcommon-dev libasound2-dev libudev-dev
+
       - uses: Swatinem/rust-cache@v2
         with:
-          shared-key: linux-desktop
+          shared-key: linux-release
           cache-all-crates: true
           cache-on-failure: true
           cache-targets: true
-      - run: cargo check --release --features desktop
+          save-if: ${{ github.ref == 'refs/heads/main' }}
 
-  check-windows:
-    name: Check Windows
+      - name: Clippy
+        run: cargo clippy --release --features desktop -- -D warnings
+
+      - name: Build
+        run: cargo build --release --features desktop
+
+      - name: Package
+        run: |
+          VERSION=$(grep '^version' Cargo.toml | head -1 | sed 's/.*"\(.*\)".*/\1/')
+          mkdir -p dist/techno_sutra
+          cp target/release/techno_sutra dist/techno_sutra/
+          cp -r assets dist/techno_sutra/
+          tar -czvf techno-sutra-linux-x64-v${VERSION}.tar.gz -C dist techno_sutra
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: techno-sutra-linux-tarball
+          path: techno-sutra-linux-*.tar.gz
+          retention-days: 7
+          if-no-files-found: error
+
+  build-windows:
+    name: 🪟 Windows
+    needs: [fmt]
     runs-on: windows-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
+
       - uses: Swatinem/rust-cache@v2
         with:
-          shared-key: windows-desktop
+          shared-key: windows-release
           cache-all-crates: true
           cache-on-failure: true
           cache-targets: true
-      - run: cargo check --release --features desktop
+          save-if: ${{ github.ref == 'refs/heads/main' }}
 
-  check-wasm:
-    name: Check WASM
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: recursive
-      - uses: Swatinem/rust-cache@v2
-        with:
-          shared-key: wasm-webxr
-          cache-all-crates: true
-          cache-on-failure: true
-          cache-targets: true
-      - run: rustup target add wasm32-unknown-unknown
-      - run: cargo check --release --target wasm32-unknown-unknown --features webxr --no-default-features
+      - name: Clippy
+        run: cargo clippy --release --features desktop -- -D warnings
 
-  clippy:
-    name: Clippy
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: recursive
-      - name: Install deps
+      - name: Build
+        run: cargo build --release --features desktop
+
+      - name: Package
+        shell: pwsh
         run: |
-          sudo apt-get update && sudo apt-get install -y \
-            g++ pkg-config libx11-dev libwayland-dev libasound2-dev libudev-dev
-      - uses: Swatinem/rust-cache@v2
-        with:
-          shared-key: linux-desktop
-          cache-all-crates: true
-          cache-on-failure: true
-          cache-targets: true
-      - run: cargo clippy --release --features desktop -- -D warnings
+          $version = (Select-String -Path Cargo.toml -Pattern '^version\s*=\s*"([^"]+)"' | Select-Object -First 1).Matches.Groups[1].Value
+          New-Item -ItemType Directory -Force -Path dist/techno_sutra
+          Copy-Item target/release/techno_sutra.exe dist/techno_sutra/
+          Copy-Item -Recurse assets dist/techno_sutra/
+          Compress-Archive -Path dist/techno_sutra/* -DestinationPath "techno-sutra-windows-x64-v$version.zip"
 
-  check-ios:
-    name: Check iOS
+      - uses: actions/upload-artifact@v4
+        with:
+          name: techno-sutra-windows-zip
+          path: techno-sutra-windows-*.zip
+          retention-days: 7
+          if-no-files-found: error
+
+  build-macos:
+    name: 🍎 macOS
+    needs: [fmt]
     runs-on: macos-latest
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-      - run: rustup target add aarch64-apple-ios
+
+      - name: Setup Rust
+        run: rustup target add x86_64-apple-darwin aarch64-apple-darwin
+
       - uses: Swatinem/rust-cache@v2
         with:
-          shared-key: ios-arm64
+          shared-key: macos-release
           cache-all-crates: true
           cache-on-failure: true
           cache-targets: true
-      - name: Check iOS
-        run: |
-          cargo check --release --target aarch64-apple-ios --no-default-features \
-            --features "bevy/bevy_asset,bevy/bevy_core_pipeline,bevy/bevy_pbr,bevy/bevy_render,bevy/bevy_winit,bevy/png,bevy/jpeg"
+          save-if: ${{ github.ref == 'refs/heads/main' }}
 
-  check-android:
-    name: Check Android
+      - name: Clippy
+        run: cargo clippy --release --features desktop -- -D warnings
+
+      - name: Build universal binary
+        run: |
+          cargo build --release --features desktop --target x86_64-apple-darwin
+          cargo build --release --features desktop --target aarch64-apple-darwin
+          mkdir -p target/universal/release
+          lipo -create \
+            target/x86_64-apple-darwin/release/techno_sutra \
+            target/aarch64-apple-darwin/release/techno_sutra \
+            -output target/universal/release/techno_sutra
+
+      - name: Package
+        run: |
+          VERSION=$(grep '^version' Cargo.toml | head -1 | sed 's/.*"\(.*\)".*/\1/')
+          APP_DIR="Techno Sutra.app"
+          mkdir -p "$APP_DIR/Contents/MacOS" "$APP_DIR/Contents/Resources"
+          cp target/universal/release/techno_sutra "$APP_DIR/Contents/MacOS/"
+          cp packaging/macos/Info.plist "$APP_DIR/Contents/"
+          cp -r assets "$APP_DIR/Contents/Resources/"
+          echo -n "APPL????" > "$APP_DIR/Contents/PkgInfo"
+          codesign --force --deep --sign - "$APP_DIR"
+          ditto -c -k --keepParent "$APP_DIR" "techno-sutra-macos-universal-v${VERSION}.zip"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: techno-sutra-macos-zip
+          path: techno-sutra-macos-*.zip
+          retention-days: 7
+          if-no-files-found: error
+
+  build-wasm:
+    name: 🌐 WASM
+    needs: [fmt]
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      TRUNK_VERSION: '0.21.14'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Rust
+        run: rustup target add wasm32-unknown-unknown
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: wasm-release
+          cache-all-crates: true
+          cache-on-failure: true
+          cache-targets: true
+          save-if: ${{ github.ref == 'refs/heads/main' }}
+
+      - name: Cache Trunk
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/bin/trunk
+            ~/.cache/trunk
+          key: trunk-${{ env.TRUNK_VERSION }}
+
+      - name: Install Trunk
+        run: |
+          if ! trunk --version 2>/dev/null | grep -q "$TRUNK_VERSION"; then
+            curl -sL "https://github.com/trunk-rs/trunk/releases/download/v${TRUNK_VERSION}/trunk-x86_64-unknown-linux-gnu.tar.gz" | tar xz -C /tmp
+            mkdir -p ~/.cargo/bin && mv /tmp/trunk ~/.cargo/bin/
+          fi
+          trunk --version
+
+      - name: Build
+        run: trunk build --release --public-url "/Vortex-R3D/"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: techno-sutra-web
+          path: dist/
+          retention-days: 7
+          if-no-files-found: error
+
+  # ============================================
+  # Mobile builds (main only)
+  # ============================================
+
+  build-ios:
+    name: 📱 iOS
+    needs: [fmt]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: macos-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - run: rustup target add aarch64-apple-ios
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: ios-release
+          cache-all-crates: true
+          cache-on-failure: true
+          cache-targets: true
+
+      - name: Build
+        run: |
+          cargo build --release --target aarch64-apple-ios --no-default-features \
+            --features "bevy/bevy_asset,bevy/bevy_core_pipeline,bevy/bevy_pbr,bevy/bevy_render,bevy/bevy_winit,bevy/png,bevy/jpeg"
+          
+          # TODO: Create .ipa when signing is configured
+
+  build-android:
+    name: 🤖 Android
+    needs: [fmt]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
     env:
       NDK_VERSION: '25.2.9519653'
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
+
       - uses: android-actions/setup-android@v3
+
       - name: Install NDK
         run: |
-          sdkmanager --install "ndk;${{ env.NDK_VERSION }}"
-          echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/${{ env.NDK_VERSION }}" >> $GITHUB_ENV
+          sdkmanager --install "ndk;$NDK_VERSION"
+          echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/$NDK_VERSION" >> $GITHUB_ENV
+
       - run: rustup target add aarch64-linux-android
+
       - uses: Swatinem/rust-cache@v2
         with:
-          shared-key: android-arm64
+          shared-key: android-release
           cache-all-crates: true
           cache-on-failure: true
           cache-targets: true
-      - name: Check Android
+
+      - name: Build
         run: |
           export PATH="$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin:$PATH"
-          cargo check --release --target aarch64-linux-android --no-default-features \
+          cargo build --release --target aarch64-linux-android --no-default-features \
             --features "bevy/bevy_asset,bevy/bevy_core_pipeline,bevy/bevy_pbr,bevy/bevy_render,bevy/bevy_winit,bevy/android-game-activity,bevy/png,bevy/jpeg"
+          
+          # TODO: Create .apk when gradle is configured
 
   # ============================================
-  # PHASE 2: Builds (after checks pass)
-  # ============================================
-
-  build-linux:
-    name: 🐧 Linux
-    needs: [fmt, check-linux, clippy]
-    uses: ./.github/workflows/_build-linux.yml
-    with:
-      features: desktop
-      artifact_prefix: techno-sutra
-      retention_days: 7
-
-  build-windows:
-    name: 🪟 Windows
-    needs: [fmt, check-windows]
-    uses: ./.github/workflows/_build-windows.yml
-    with:
-      features: desktop
-      artifact_prefix: techno-sutra
-      retention_days: 7
-
-  build-macos:
-    name: 🍎 macOS
-    needs: [fmt, clippy]
-    uses: ./.github/workflows/_build-macos.yml
-    with:
-      features: desktop
-      artifact_prefix: techno-sutra
-      retention_days: 7
-
-  build-wasm:
-    name: 🌐 WASM
-    needs: [fmt, check-wasm]
-    uses: ./.github/workflows/_build-wasm.yml
-    with:
-      optimize: true
-      artifact_name: techno-sutra-web
-      public_url: /Vortex-R3D/
-      features: webxr
-      retention_days: 7
-
-  build-ios:
-    name: 📱 iOS
-    needs: [fmt, check-ios]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    uses: ./.github/workflows/_build-ios.yml
-    with:
-      artifact_prefix: techno-sutra
-      retention_days: 7
-
-  build-android:
-    name: 🤖 Android
-    needs: [fmt, check-android]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    uses: ./.github/workflows/_build-android.yml
-    with:
-      artifact_prefix: techno-sutra
-      retention_days: 7
-      build_quest: false
-
-  # ============================================
-  # PHASE 3: Deploy (after WASM build on main)
+  # Deploy Pages
   # ============================================
 
   deploy-pages:
@@ -213,6 +300,7 @@ jobs:
     needs: [build-wasm]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       pages: write
       id-token: write
@@ -220,141 +308,110 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Download WASM artifact
-        uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4
         with:
           name: techno-sutra-web
           path: dist
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
+      - uses: actions/configure-pages@v5
 
-      - name: Upload to Pages
-        uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
 
-      - name: Deploy to Pages
-        id: deployment
+      - id: deployment
         uses: actions/deploy-pages@v4
 
   # ============================================
-  # PHASE 4: Create Release (after all builds on main)
+  # Create Release
   # ============================================
 
   create-release:
-    name: 📦 Create Release
+    name: 📦 Release
     needs: [build-linux, build-windows, build-macos, build-wasm]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push' && always() && !failure() && !cancelled()
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Get version
-        id: version
+      - name: Get version & check tag
+        id: v
         run: |
           VERSION=$(grep '^version' Cargo.toml | head -1 | sed 's/.*"\(.*\)".*/\1/')
+          TAG="v$VERSION"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "tag=v$VERSION" >> $GITHUB_OUTPUT
-          echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          
+          # Check if tag exists
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "⚠️ Tag $TAG already exists, skipping release"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "✅ Will create release $TAG"
+          fi
 
-      - name: Download all artifacts
-        uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4
+        if: steps.v.outputs.exists == 'false'
         with:
           path: artifacts
 
-      - name: Organize release files
+      - name: Organize
+        if: steps.v.outputs.exists == 'false'
         run: |
           mkdir -p release
-          
-          # Linux
-          cp artifacts/techno-sutra-linux-tarball/*.tar.gz release/ 2>/dev/null || true
-          cp artifacts/techno-sutra-linux-deb/*.deb release/ 2>/dev/null || true
-          cp artifacts/techno-sutra-linux-appimage/*.AppImage release/ 2>/dev/null || true
-          
-          # Windows
-          cp artifacts/techno-sutra-windows-zip/*.zip release/ 2>/dev/null || true
-          
-          # macOS
-          cp artifacts/techno-sutra-macos-zip/*.zip release/ 2>/dev/null || true
-          
-          # iOS
-          cp artifacts/techno-sutra-ios-ipa/*.ipa release/ 2>/dev/null || true
-          
-          # Android
-          cp artifacts/techno-sutra-android-apk/*.apk release/ 2>/dev/null || true
-          
-          # Web (zip the dist)
-          cd artifacts/techno-sutra-web && zip -r ../../release/techno-sutra-web-${{ steps.version.outputs.version }}.zip . && cd ../..
-          
+          cp artifacts/techno-sutra-linux-tarball/*.tar.gz release/
+          cp artifacts/techno-sutra-windows-zip/*.zip release/
+          cp artifacts/techno-sutra-macos-zip/*.zip release/
+          cd artifacts/techno-sutra-web && zip -r ../../release/techno-sutra-web-${{ steps.v.outputs.version }}.zip .
+          echo "📦 Release contents:"
           ls -la release/
 
-      - name: Generate release notes
-        id: notes
+      - name: Release notes
+        if: steps.v.outputs.exists == 'false'
         run: |
-          cat > release_notes.md << 'EOF'
-          # Techno Sutra ${{ steps.version.outputs.tag }}
+          cat > notes.md << 'EOF'
+          # Techno Sutra ${{ steps.v.outputs.tag }}
           
           🕉️ **Immersive Panorama Viewer** - Cross-platform 360° experience
           
-          ## 🌐 Live Demo
-          
-          **[Launch Web App](https://${{ github.repository_owner }}.github.io/Vortex-R3D/)**
+          ## 🌐 [Launch Web Demo](https://${{ github.repository_owner }}.github.io/Vortex-R3D/)
           
           ## 📥 Downloads
           
-          | Platform | Download | Notes |
-          |----------|----------|-------|
-          | 🌐 **Web** | [techno-sutra-web.zip](../../releases/download/${{ steps.version.outputs.tag }}/techno-sutra-web-${{ steps.version.outputs.version }}.zip) | Host anywhere, runs in browser |
-          | 🐧 **Linux** | [.tar.gz](../../releases/download/${{ steps.version.outputs.tag }}/techno-sutra-linux-x64-v${{ steps.version.outputs.version }}.tar.gz) / [.deb](../../releases/download/${{ steps.version.outputs.tag }}/techno-sutra_${{ steps.version.outputs.version }}_amd64.deb) / [.AppImage](../../releases/download/${{ steps.version.outputs.tag }}/techno-sutra-linux-x64-v${{ steps.version.outputs.version }}.AppImage) | x64 |
-          | 🪟 **Windows** | [.zip](../../releases/download/${{ steps.version.outputs.tag }}/techno-sutra-windows-x64-v${{ steps.version.outputs.version }}.zip) | x64, portable |
-          | 🍎 **macOS** | [.zip](../../releases/download/${{ steps.version.outputs.tag }}/techno-sutra-macos-universal-v${{ steps.version.outputs.version }}.zip) | Universal (Intel + Apple Silicon) |
-          | 📱 **iOS** | [.ipa](../../releases/download/${{ steps.version.outputs.tag }}/techno-sutra-ios-v${{ steps.version.outputs.version }}.ipa) | Requires sideloading |
-          | 🤖 **Android** | [.apk](../../releases/download/${{ steps.version.outputs.tag }}/techno-sutra-android-v${{ steps.version.outputs.version }}.apk) | ARM64 |
+          | Platform | Download |
+          |----------|----------|
+          | 🐧 Linux x64 | [techno-sutra-linux-x64-v${{ steps.v.outputs.version }}.tar.gz](https://github.com/${{ github.repository }}/releases/download/${{ steps.v.outputs.tag }}/techno-sutra-linux-x64-v${{ steps.v.outputs.version }}.tar.gz) |
+          | 🪟 Windows x64 | [techno-sutra-windows-x64-v${{ steps.v.outputs.version }}.zip](https://github.com/${{ github.repository }}/releases/download/${{ steps.v.outputs.tag }}/techno-sutra-windows-x64-v${{ steps.v.outputs.version }}.zip) |
+          | 🍎 macOS Universal | [techno-sutra-macos-universal-v${{ steps.v.outputs.version }}.zip](https://github.com/${{ github.repository }}/releases/download/${{ steps.v.outputs.tag }}/techno-sutra-macos-universal-v${{ steps.v.outputs.version }}.zip) |
+          | 🌐 Web (self-host) | [techno-sutra-web-${{ steps.v.outputs.version }}.zip](https://github.com/${{ github.repository }}/releases/download/${{ steps.v.outputs.tag }}/techno-sutra-web-${{ steps.v.outputs.version }}.zip) |
           
           ## 🎮 Controls
           
           | Input | Action |
           |-------|--------|
-          | **Click/Tap** | Capture input |
-          | **Mouse/Touch** | Look around |
-          | **WASD** | Look around (desktop) |
-          | **+/-** | Adjust FOV |
-          | **Pinch** | Zoom (mobile) |
-          | **Esc** | Release mouse |
+          | Click/Tap | Capture input |
+          | Mouse/Touch drag | Look around |
+          | WASD | Navigate (desktop) |
+          | +/- | Adjust FOV |
+          | Pinch | Zoom (mobile) |
+          | Esc | Release mouse |
           
-          ## ✨ Features
+          ## ✨ What's New
           
-          - 🌐 Equirectangular to cubemap conversion (GPU)
-          - 🎮 First-person panorama navigation
-          - 🔊 Spatial 3D audio
-          - 🥽 WebXR VR support
-          - 📱 Touch controls for mobile
-          - 🖥️ Cross-platform (Desktop, Web, Mobile)
-          
-          ---
-          
-          **Built with [Bevy](https://bevyengine.org/) 🦀**
           EOF
-          
-          # Add recent commits
-          echo "" >> release_notes.md
-          echo "## 📝 Changes" >> release_notes.md
-          echo "" >> release_notes.md
-          git log --oneline -10 --pretty=format:"- %s" >> release_notes.md
+          git log --oneline -15 --pretty=format:"- %s" >> notes.md
 
-      - name: Create GitHub Release
+      - name: Create Release
+        if: steps.v.outputs.exists == 'false'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.version.outputs.tag }}
-          name: Techno Sutra ${{ steps.version.outputs.tag }}
-          body_path: release_notes.md
-          draft: false
-          prerelease: false
+          tag_name: ${{ steps.v.outputs.tag }}
+          name: Techno Sutra ${{ steps.v.outputs.tag }}
+          body_path: notes.md
           files: release/*
-          generate_release_notes: false
           make_latest: true
+          fail_on_unmatched_files: true
