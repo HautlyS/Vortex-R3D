@@ -80,7 +80,7 @@ fn handle_transition_input(
     if shift && keyboard.just_pressed(KeyCode::Space) && !state.transitioning && !state.loading {
         // Capture current texture from skybox
         if state.current_texture.is_none() {
-            if let Ok(mat_handle) = sphere.get_single() {
+            if let Ok(mat_handle) = sphere.single() {
                 if let Some(mat) = materials.get(&mat_handle.0) {
                     state.current_texture = mat.base_color_texture.clone();
                 }

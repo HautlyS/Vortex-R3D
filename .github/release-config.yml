@@ -4,7 +4,7 @@
 # Application metadata
 app:
   name: "Techno Sutra"
-  description: "Virtual Wisdom - Immersive panorama viewer with VR support"
+  description: "Virtual Wisdom - Immersive Techno Sutra DEMO with VR support"
   bundle_id: "com.technosutra.virtualwisdom"
   author: "Techno Sutra"
   license: "MIT"

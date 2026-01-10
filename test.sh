@@ -1,7 +1,7 @@
 #!/bin/bash
-# Final test script for Panorama Viewer
+# Final test script for Techno Sutra DEMO
 
-echo "🎮 Panorama Viewer - Final Test"
+echo "🎮 Techno Sutra DEMO - Final Test"
 echo "================================"
 
 cd /home/hautly/StreetView

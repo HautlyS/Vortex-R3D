@@ -1,6 +1,6 @@
-# Panorama Viewer
+# Techno Sutra DEMO
 
-A cross-platform panorama viewer built with Bevy (Rust) that renders equirectangular 360° images as immersive first-person experiences.
+A cross-platform Techno Sutra DEMO built with Bevy (Rust) that renders equirectangular 360° images as immersive first-person experiences.
 
 ## Features
 
@@ -52,7 +52,7 @@ trunk serve
 ## Project Structure
 
 ```
-panorama-viewer/
+techno-sutra-demo/
 ├── src/
 │   ├── main.rs              # Entry point
 │   ├── lib.rs               # GamePlugin + states

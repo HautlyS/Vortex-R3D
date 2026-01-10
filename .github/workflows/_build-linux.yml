@@ -109,7 +109,7 @@ jobs:
           [package.metadata.deb]
           maintainer = "Techno Sutra <contact@technosutra.dev>"
           copyright = "2024 Techno Sutra"
-          extended-description = "Immersive panorama viewer with VR support"
+          extended-description = "Immersive Techno Sutra DEMO with VR support"
           section = "graphics"
           priority = "optional"
           assets = [

@@ -1,4 +1,4 @@
-# Tasks - Bevy Panorama Viewer Implementation
+# Tasks - Bevy Techno Sutra DEMO Implementation
 
 ## Phase 1: Project Setup & Core Infrastructure
 
@@ -6,14 +6,14 @@
 **Priority**: Critical | **Estimate**: 30 min
 
 ```bash
-cargo new panorama-viewer
-cd panorama-viewer
+cargo new techno-sutra-demo
+cd techno-sutra-demo
 ```
 
 **Cargo.toml Configuration**:
 ```toml
 [package]
-name = "panorama-viewer"
+name = "techno-sutra-demo"
 version = "0.1.0"
 edition = "2021"
 
@@ -676,7 +676,7 @@ fn main() {
     App::new()
         .add_plugins(DefaultPlugins.set(WindowPlugin {
             primary_window: Some(Window {
-                title: "Panorama Viewer".to_string(),
+                title: "Techno Sutra DEMO".to_string(),
                 resolution: (1280.0, 720.0).into(),
                 ..default()
             }),
@@ -808,7 +808,7 @@ Week 3:
 ```bash
 # Clone and setup
 git clone <repo>
-cd panorama-viewer
+cd techno-sutra-demo
 
 # Download demo assets
 mkdir -p assets/panoramas assets/models assets/audio assets/fonts

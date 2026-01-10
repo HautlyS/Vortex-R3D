@@ -52,7 +52,7 @@ fn player_movement(
     mut state: ResMut<PlayerState>,
     mut cam_q: Query<&mut Transform, With<PanoramaCamera>>,
 ) {
-    let Ok(mut cam) = cam_q.get_single_mut() else {
+    let Ok(mut cam) = cam_q.single_mut() else {
         return;
     };
     let dt = time.delta_secs();

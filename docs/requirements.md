@@ -1,8 +1,8 @@
-# Requirements - Bevy Panorama Viewer
+# Requirements - Bevy Techno Sutra DEMO
 
 ## Project Overview
 
-A cross-platform panorama viewer built with Bevy (Rust) that renders equirectangular 360° images as immersive first-person POV experiences with 3D character integration and spatial audio.
+A cross-platform Techno Sutra DEMO built with Bevy (Rust) that renders equirectangular 360° images as immersive first-person POV experiences with 3D character integration and spatial audio.
 
 ---
 
@@ -21,7 +21,7 @@ A cross-platform panorama viewer built with Bevy (Rust) that renders equirectang
 ### Dependencies (Cargo.toml)
 ```toml
 [package]
-name = "panorama-viewer"
+name = "techno-sutra-demo"
 version = "0.1.0"
 edition = "2021"
 

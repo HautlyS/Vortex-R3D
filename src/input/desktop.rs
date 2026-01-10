@@ -38,7 +38,7 @@ fn handle_cursor_grab(
     mut state: ResMut<InputState>,
     ui_wants: Res<UiWantsPointer>,
 ) {
-    let Ok(mut cursor) = cursor_q.get_single_mut() else {
+    let Ok(mut cursor) = cursor_q.single_mut() else {
         return;
     };
 

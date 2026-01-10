@@ -132,7 +132,7 @@ jobs:
           cat << 'RELEASE_EOF' > release_notes.md
           ## Techno Sutra ${{ steps.version.outputs.version }}
           
-          Immersive panorama viewer with VR support.
+          Immersive Techno Sutra DEMO with VR support.
           
           ### 📥 Downloads
           

@@ -236,7 +236,7 @@ fn sync_xr_pose_to_camera(
     state.session_active = true;
 
     // Apply XR pose to camera
-    let Ok(mut transform) = camera_q.get_single_mut() else {
+    let Ok(mut transform) = camera_q.single_mut() else {
         return;
     };
 

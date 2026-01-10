@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "🚀 Panorama Viewer Setup & Test Script"
+echo "🚀 Techno Sutra DEMO Setup & Test Script"
 echo "======================================="
 
 cd /home/hautly/StreetView

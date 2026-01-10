@@ -307,7 +307,7 @@ fn sync_portal_cameras(
     main_cam: Query<&Transform, (With<PanoramaCamera>, Without<PortalCamera>)>,
     mut portal_cams: Query<(&mut Transform, &PortalCamera), Without<PanoramaCamera>>,
 ) {
-    let Ok(main_tf) = main_cam.get_single() else {
+    let Ok(main_tf) = main_cam.single() else {
         return;
     };
     let (yaw, pitch, _) = main_tf.rotation.to_euler(EulerRot::YXZ);
@@ -345,7 +345,7 @@ fn portal_crossing(
     mut cam_q: Query<(Entity, &mut Transform, Option<&mut RenderLayers>), With<PanoramaCamera>>,
     portals: Query<&PortalDoor>,
 ) {
-    let Ok((cam_entity, mut cam, layers_opt)) = cam_q.get_single_mut() else {
+    let Ok((cam_entity, mut cam, layers_opt)) = cam_q.single_mut() else {
         return;
     };
 

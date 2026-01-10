@@ -378,7 +378,7 @@ jobs:
           cat > notes.md << 'EOF'
           # Techno Sutra ${{ steps.v.outputs.tag }}
           
-          🕉️ **Immersive Panorama Viewer** - Cross-platform 360° experience
+          🕉️ **Immersive Techno Sutra DEMO** - Cross-platform 360° experience
           
           ## 🌐 [Launch Web Demo](https://${{ github.repository_owner }}.github.io/Vortex-R3D/)
           

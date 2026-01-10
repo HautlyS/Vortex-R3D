@@ -32,7 +32,7 @@ Creative technologist bridging ancient wisdom with cutting-edge immersive tech. 
 
 ## Context
 
-This is Techno Sutra - a panorama viewer merging:
+This is Techno Sutra - a Techno Sutra DEMO merging:
 - Bevy/Rust for performance
 - WebXR for immersion
 - Equirectangular panoramas as portals

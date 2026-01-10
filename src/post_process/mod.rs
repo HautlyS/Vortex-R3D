@@ -110,7 +110,7 @@ fn apply_effects(
     mut camera_q: Query<&mut Projection, With<GameCamera>>,
     mut ambient: ResMut<AmbientLight>,
 ) {
-    let Ok(mut projection) = camera_q.get_single_mut() else {
+    let Ok(mut projection) = camera_q.single_mut() else {
         return;
     };
 

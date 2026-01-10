@@ -5,7 +5,7 @@ edition = "2021"
 rust-version = "1.82"
 publish = false
 authors = ["Techno Sutra"]
-description = "Techno Sutra: Virtual Wisdom - Immersive panorama viewer with VR support"
+description = "Techno Sutra: Virtual Wisdom - Immersive Techno Sutra DEMO with VR support"
 exclude = ["dist", "build", "assets", "credits"]
 
 [profile.dev.package."*"]

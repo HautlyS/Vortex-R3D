@@ -1,4 +1,4 @@
-# Design Document - Bevy Panorama Viewer
+# Design Document - Bevy Techno Sutra DEMO
 
 ## Architecture Overview
 
@@ -368,7 +368,7 @@ User clicks on character
 ## File Structure
 
 ```
-panorama-viewer/
+techno-sutra-demo/
 ├── Cargo.toml
 ├── src/
 │   ├── main.rs                 # App entry point

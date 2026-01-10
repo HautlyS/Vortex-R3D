@@ -62,7 +62,7 @@ fn setup_room_audio(
         ],
     };
 
-    // Start room 0 soundtrack - check if asset loads before playing
+    // Start room 0 soundtrack
     let handle = audio
         .play(assets.soundtracks[0].clone())
         .looped()
@@ -101,7 +101,7 @@ fn update_room_audio(
         // Fade out old room soundtrack
         if let Some(handle) = &state.soundtracks[old_room] {
             if let Some(instance) = instances.get_mut(handle) {
-                instance.set_volume(
+                instance.set_playback_rate(
                     0.0,
                     AudioTween::new(FADE_DURATION, AudioEasing::InPowi(2)),
                 );
@@ -109,14 +109,7 @@ fn update_room_audio(
         }
 
         // Start or fade in new room soundtrack
-        if let Some(handle) = &state.soundtracks[new_room] {
-            if let Some(instance) = instances.get_mut(handle) {
-                instance.set_volume(
-                    0.5,
-                    AudioTween::new(FADE_DURATION, AudioEasing::OutPowi(2)),
-                );
-            }
-        } else {
+        if state.soundtracks[new_room].is_none() {
             let panning = match new_room {
                 0 => 0.0,
                 1 => -REVERB_PANNING,
@@ -127,16 +120,11 @@ fn update_room_audio(
             let handle = audio
                 .play(assets.soundtracks[new_room].clone())
                 .looped()
-                .with_volume(0.0)
+                .with_volume(0.5)
                 .with_panning(panning)
+                .fade_in(AudioTween::new(FADE_DURATION, AudioEasing::OutPowi(2)))
                 .handle();
 
-            if let Some(instance) = instances.get_mut(&handle) {
-                instance.set_volume(
-                    0.5,
-                    AudioTween::new(FADE_DURATION, AudioEasing::OutPowi(2)),
-                );
-            }
             state.soundtracks[new_room] = Some(handle);
         }
 

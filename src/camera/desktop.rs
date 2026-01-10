@@ -160,7 +160,7 @@ fn apply_camera_transform(
     spin: Res<SpinEffect>,
     mut camera_q: Query<(&mut Transform, &mut Projection), With<GameCamera>>,
 ) {
-    let Ok((mut transform, mut projection)) = camera_q.get_single_mut() else {
+    let Ok((mut transform, mut projection)) = camera_q.single_mut() else {
         return;
     };
 

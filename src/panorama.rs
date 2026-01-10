@@ -26,9 +26,6 @@ impl Plugin for PanoramaPlugin {
 pub use crate::camera::GameCamera as PanoramaCamera;
 
 #[derive(Component)]
-pub struct PanoramaSphere;
-
-#[derive(Component)]
 pub struct CoreGlow {
     pub layer: u32,
 }
@@ -196,7 +193,7 @@ fn animate_core_glow(
 
     // Get camera yaw for subtle orb rotation response
     let cam_yaw = cam_q
-        .get_single()
+        .single()
         .map(|c| {
             let (yaw, _, _) = c.rotation.to_euler(EulerRot::YXZ);
             yaw
@@ -230,7 +227,7 @@ fn animate_light_orbs(
 
     // Get camera forward direction for orb orientation
     let cam_yaw = cam_q
-        .get_single()
+        .single()
         .map(|c| {
             let (yaw, _, _) = c.rotation.to_euler(EulerRot::YXZ);
             yaw
