@@ -28,7 +28,8 @@ pub enum Platform {
 
 impl Platform {
     /// Auto-detect best platform for current OS and features
-    pub fn auto_detect(_os: &Os) -> Self {
+    #[allow(unused_variables)]
+    pub fn auto_detect(os: &Os) -> Self {
         #[cfg(feature = "vr")]
         if os.supports_vr() {
             return Platform::Vr;

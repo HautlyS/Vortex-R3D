@@ -42,9 +42,23 @@ fn go_to_viewing(mut next: ResMut<NextState<GameState>>) {
 static PENDING_IMAGE: Mutex<Option<Vec<u8>>> = Mutex::new(None);
 static PENDING_GLB: Mutex<Option<Vec<u8>>> = Mutex::new(None);
 
-#[derive(Resource, Default)]
+#[derive(Resource)]
 struct UploadState {
     model_handle: Option<Handle<Gltf>>,
+    hud_open: bool,
+    refraction: f32,
+    skybox_brightness: f32,
+}
+
+impl Default for UploadState {
+    fn default() -> Self {
+        Self {
+            model_handle: None,
+            hud_open: true,
+            refraction: 1.0,
+            skybox_brightness: 1.0,
+        }
+    }
 }
 
 #[derive(Component)]
@@ -143,54 +157,102 @@ fn rotate_ambient_light(time: Res<Time>, mut orbs: Query<&mut Transform, With<Am
     }
 }
 
-fn upload_hud(mut ctx: EguiContexts) {
+fn upload_hud(
+    mut ctx: EguiContexts,
+    mut state: ResMut<UploadState>,
+    mut commands: Commands,
+    models: Query<Entity, With<UploadModel>>,
+    sphere_mats: Query<&MeshMaterial3d<StandardMaterial>, With<UploadSphere>>,
+    mut materials: ResMut<Assets<StandardMaterial>>,
+) {
     let Ok(egui_ctx) = ctx.ctx_mut() else { return };
 
-    egui::Window::new("Upload Room")
-        .anchor(egui::Align2::CENTER_BOTTOM, [0.0, -20.0])
+    // Transparent style
+    let frame = egui::Frame::new()
+        .fill(egui::Color32::from_rgba_unmultiplied(15, 15, 25, 200))
+        .corner_radius(8.0)
+        .inner_margin(12.0);
+
+    // Minimized icon
+    if !state.hud_open {
+        egui::Area::new(egui::Id::new("hud_icon"))
+            .anchor(egui::Align2::LEFT_BOTTOM, [12.0, -12.0])
+            .show(egui_ctx, |ui| {
+                let btn = egui::Button::new("⚙")
+                    .fill(egui::Color32::from_rgba_unmultiplied(30, 30, 50, 180))
+                    .corner_radius(20.0);
+                if ui.add_sized([36.0, 36.0], btn).clicked() {
+                    state.hud_open = true;
+                }
+            });
+        return;
+    }
+
+    egui::Window::new("Scene Controls")
+        .anchor(egui::Align2::LEFT_BOTTOM, [12.0, -12.0])
         .resizable(false)
         .collapsible(false)
+        .title_bar(false)
+        .frame(frame)
         .show(egui_ctx, |ui| {
-            ui.vertical_centered(|ui| {
-                ui.heading("🌐 Panorama Viewer");
-                ui.add_space(8.0);
-
-                if ui.button("📷 Upload Panorama (P)").clicked() {
-                    pick_file(FileKind::Image);
-                }
-                if ui.button("🎭 Upload 3D Model (M)").clicked() {
-                    pick_file(FileKind::Model);
-                }
-
-                ui.add_space(12.0);
-                ui.separator();
-                ui.add_space(8.0);
-
-                ui.label(egui::RichText::new("⌨️ Controls").strong());
-                egui::Grid::new("controls").show(ui, |ui| {
-                    ui.label("P");
-                    ui.label("Upload panorama");
-                    ui.end_row();
-                    ui.label("M");
-                    ui.label("Upload 3D model");
-                    ui.end_row();
-                    ui.label("Mouse");
-                    ui.label("Look around");
-                    ui.end_row();
-                    ui.label("WASD");
-                    ui.label("Look around");
-                    ui.end_row();
-                    ui.label("+/-");
-                    ui.label("Adjust FOV");
-                    ui.end_row();
-                    ui.label("Ctrl+R");
-                    ui.label("Spin effect");
-                    ui.end_row();
-                    ui.label("Esc");
-                    ui.label("Release mouse");
-                    ui.end_row();
+            // Header with close button
+            ui.horizontal(|ui| {
+                ui.label(egui::RichText::new("⚙ Scene").strong().color(egui::Color32::from_rgb(180, 180, 220)));
+                ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
+                    if ui.small_button("✕").clicked() {
+                        state.hud_open = false;
+                    }
                 });
             });
+            ui.add_space(6.0);
+
+            // Upload buttons
+            ui.horizontal(|ui| {
+                if ui.button("📷 Panorama").clicked() {
+                    pick_file(FileKind::Image);
+                }
+                if ui.button("🎭 Model").clicked() {
+                    pick_file(FileKind::Model);
+                }
+            });
+
+            ui.add_space(8.0);
+            ui.separator();
+            ui.add_space(4.0);
+
+            // Skybox controls
+            ui.label(egui::RichText::new("Skybox").small().color(egui::Color32::GRAY));
+            
+            ui.horizontal(|ui| {
+                ui.label("Brightness");
+                if ui.add(egui::Slider::new(&mut state.skybox_brightness, 0.1..=2.0).show_value(false)).changed() {
+                    if let Ok(mat_h) = sphere_mats.single() {
+                        if let Some(mat) = materials.get_mut(&mat_h.0) {
+                            let b = state.skybox_brightness;
+                            mat.base_color = Color::srgb(b, b, b);
+                        }
+                    }
+                }
+            });
+
+            ui.horizontal(|ui| {
+                ui.label("Refraction");
+                ui.add(egui::Slider::new(&mut state.refraction, 0.0..=2.0).show_value(false));
+            });
+
+            ui.add_space(8.0);
+            ui.separator();
+            ui.add_space(4.0);
+
+            // Scene actions
+            if ui.button("🗑 Clear 3D Objects").clicked() {
+                for e in models.iter() {
+                    commands.entity(e).despawn();
+                }
+            }
+
+            ui.add_space(6.0);
+            ui.label(egui::RichText::new("P: panorama | M: model").small().weak());
         });
 }
 
