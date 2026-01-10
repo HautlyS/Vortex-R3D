@@ -93,6 +93,8 @@ fn run_vr() {
 
 #[cfg(all(feature = "webxr", target_arch = "wasm32"))]
 fn run_webxr() {
+    use bevy::asset::AssetMetaCheck;
+    use bevy::prelude::*;
     use techno_sutra::WebXrGamePlugin;
 
     App::new()
