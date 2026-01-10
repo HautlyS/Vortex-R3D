@@ -5,14 +5,19 @@
     <title>Redirecting...</title>
     <script>
         // GitHub Pages SPA redirect
-        // Converts /Vortex-R3D/upload to /?p=/upload
-        const path = window.location.pathname;
-        const base = '/Vortex-R3D';
-        const route = path.replace(base, '') || '/';
-        
-        // Store route and redirect to index
-        sessionStorage.setItem('route', route);
-        window.location.replace(base + '/?p=' + encodeURIComponent(route));
+        // Handles routes like /Vortex-R3D/upload -> /Vortex-R3D/?p=/upload
+        (function() {
+            var path = window.location.pathname;
+            var base = '/Vortex-R3D';
+            var route = path.replace(base, '').replace(/\/$/, '') || '/';
+            
+            // Store route for app to read
+            sessionStorage.setItem('route', route);
+            
+            // Redirect to index with route param
+            var target = base + '/?p=' + encodeURIComponent(route);
+            window.location.replace(target);
+        })();
     </script>
 </head>
 <body>

@@ -11,6 +11,12 @@ stage = "post_build"
 command = "sh"
 command_arguments = ["-c", "cp 404.html dist/ 2>/dev/null || true"]
 
+# Create /upload route directory with redirect
+[[hooks]]
+stage = "post_build"
+command = "sh"
+command_arguments = ["-c", "mkdir -p dist/upload && cp 404.html dist/upload/index.html 2>/dev/null || true"]
+
 # Note: wasm-opt is handled by the CI workflow for production builds
 # The hook below is for local development optimization (optional)
 [[hooks]]

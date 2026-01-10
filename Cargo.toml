@@ -110,6 +110,7 @@ features = [
     "Window",
     "Document",
     "Location",
+    "History",
     "Storage",
     "Element",
     "HtmlElement",
