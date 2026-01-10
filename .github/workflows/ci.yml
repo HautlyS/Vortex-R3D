@@ -44,7 +44,8 @@ jobs:
           shared-key: linux-desktop
           cache-all-crates: true
           cache-on-failure: true
-      - run: cargo check --features desktop
+          cache-targets: true
+      - run: cargo check --release --features desktop
 
   check-windows:
     name: Check Windows
@@ -58,7 +59,8 @@ jobs:
           shared-key: windows-desktop
           cache-all-crates: true
           cache-on-failure: true
-      - run: cargo check --features desktop
+          cache-targets: true
+      - run: cargo check --release --features desktop
 
   check-wasm:
     name: Check WASM
@@ -72,8 +74,9 @@ jobs:
           shared-key: wasm-webxr
           cache-all-crates: true
           cache-on-failure: true
+          cache-targets: true
       - run: rustup target add wasm32-unknown-unknown
-      - run: cargo check --target wasm32-unknown-unknown --features webxr --no-default-features
+      - run: cargo check --release --target wasm32-unknown-unknown --features webxr --no-default-features
 
   clippy:
     name: Clippy
@@ -91,7 +94,8 @@ jobs:
           shared-key: linux-desktop
           cache-all-crates: true
           cache-on-failure: true
-      - run: cargo clippy --features desktop -- -D warnings
+          cache-targets: true
+      - run: cargo clippy --release --features desktop -- -D warnings
 
   check-ios:
     name: Check iOS
@@ -106,9 +110,10 @@ jobs:
           shared-key: ios-arm64
           cache-all-crates: true
           cache-on-failure: true
+          cache-targets: true
       - name: Check iOS
         run: |
-          cargo check --target aarch64-apple-ios --no-default-features \
+          cargo check --release --target aarch64-apple-ios --no-default-features \
             --features "bevy/bevy_asset,bevy/bevy_core_pipeline,bevy/bevy_pbr,bevy/bevy_render,bevy/bevy_winit,bevy/png,bevy/jpeg"
 
   check-android:
@@ -131,10 +136,11 @@ jobs:
           shared-key: android-arm64
           cache-all-crates: true
           cache-on-failure: true
+          cache-targets: true
       - name: Check Android
         run: |
           export PATH="$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin:$PATH"
-          cargo check --target aarch64-linux-android --no-default-features \
+          cargo check --release --target aarch64-linux-android --no-default-features \
             --features "bevy/bevy_asset,bevy/bevy_core_pipeline,bevy/bevy_pbr,bevy/bevy_render,bevy/bevy_winit,bevy/android-game-activity,bevy/png,bevy/jpeg"
 
   # ============================================

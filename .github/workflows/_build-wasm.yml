@@ -35,7 +35,7 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
-  TRUNK_VERSION: '0.21.4'
+  TRUNK_VERSION: '0.21.14'
 
 jobs:
   build:
@@ -59,6 +59,14 @@ jobs:
           shared-key: wasm-webxr
           cache-all-crates: true
           cache-on-failure: true
+          cache-targets: true
+          workspaces: ". -> target"
+
+      - name: Cache Trunk tools
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/trunk
+          key: trunk-tools-${{ runner.os }}
 
       - name: Install Trunk (pre-built binary)
         run: |
