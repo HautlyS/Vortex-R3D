@@ -6,6 +6,11 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 env:
   CARGO_TERM_COLOR: always
 
@@ -192,3 +197,37 @@ jobs:
       artifact_prefix: techno-sutra
       retention_days: 7
       build_quest: false
+
+  # ============================================
+  # PHASE 3: Deploy (after WASM build on main)
+  # ============================================
+
+  deploy-pages:
+    name: 🚀 Deploy Pages
+    needs: [build-wasm]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Download WASM artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: techno-sutra-web
+          path: dist
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload to Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - name: Deploy to Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
