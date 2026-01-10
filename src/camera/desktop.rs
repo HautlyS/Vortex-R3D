@@ -4,7 +4,7 @@ use bevy::prelude::*;
 use std::f32::consts::PI;
 
 use super::{CameraState, GameCamera};
-use crate::input::{InputEvent, InputState};
+use crate::input::InputEvent;
 use crate::platform::on_desktop;
 
 pub struct DesktopCameraPlugin;

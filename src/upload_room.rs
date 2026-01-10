@@ -5,6 +5,8 @@ use bevy::prelude::*;
 use bevy::gltf::Gltf;
 use bevy::asset::RenderAssetUsages;
 use bevy::mesh::{Indices, PrimitiveTopology};
+use bevy_egui::{egui, EguiContexts, EguiPlugin};
+use bevy_egui_kbgp::prelude::*;
 use std::f32::consts::PI;
 use std::sync::Mutex;
 use crate::GameState;
@@ -13,13 +15,16 @@ pub struct UploadRoomPlugin;
 
 impl Plugin for UploadRoomPlugin {
     fn build(&self, app: &mut App) {
-        app.init_resource::<UploadState>()
+        app.add_plugins((EguiPlugin::default(), KbgpPlugin))
+            .init_resource::<UploadState>()
             .add_systems(Startup, go_to_viewing)
             .add_systems(OnEnter(GameState::Viewing), setup_upload_room)
             .add_systems(Update, (
-                handle_buttons,
+                handle_keyboard_shortcuts,
                 poll_file_data,
                 load_pending_model,
+                rotate_ambient_light,
+                upload_hud,
             ).run_if(in_state(GameState::Viewing)));
     }
 }
@@ -28,7 +33,6 @@ fn go_to_viewing(mut next: ResMut<NextState<GameState>>) {
     next.set(GameState::Viewing);
 }
 
-// Thread-safe pending file storage
 static PENDING_IMAGE: Mutex<Option<Vec<u8>>> = Mutex::new(None);
 static PENDING_GLB: Mutex<Option<Vec<u8>>> = Mutex::new(None);
 
@@ -44,103 +48,99 @@ pub struct UploadSphere;
 pub struct UploadModel;
 
 #[derive(Component)]
-struct BtnPanorama;
-
-#[derive(Component)]
-struct BtnModel;
+struct AmbientOrb;
 
 fn setup_upload_room(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
-    // Sky sphere
-    commands.spawn((
-        Mesh3d(meshes.add(create_sphere(50.0, 64, 32))),
-        MeshMaterial3d(materials.add(StandardMaterial {
-            base_color: Color::srgb(0.05, 0.05, 0.1),
-            unlit: true,
-            cull_mode: None,
-            ..default()
-        })),
-        UploadSphere,
-    ));
+    // Sky sphere with gradient
+    let sphere = meshes.add(create_sphere(50.0, 64, 32));
+    let mat = materials.add(StandardMaterial {
+        base_color: Color::srgb(0.05, 0.08, 0.15),
+        unlit: true,
+        cull_mode: None,
+        ..default()
+    });
+    commands.spawn((Mesh3d(sphere), MeshMaterial3d(mat), UploadSphere));
 
-    // Light
-    commands.spawn((
-        PointLight { intensity: 200000.0, shadows_enabled: false, ..default() },
-        Transform::from_xyz(0.0, 3.0, 0.0),
-    ));
+    // Floor grid
+    let floor = meshes.add(Plane3d::new(Vec3::Y, Vec2::splat(20.0)));
+    let floor_mat = materials.add(StandardMaterial {
+        base_color: Color::srgba(0.1, 0.15, 0.25, 0.5),
+        alpha_mode: AlphaMode::Blend,
+        ..default()
+    });
+    commands.spawn((Mesh3d(floor), MeshMaterial3d(floor_mat), Transform::from_xyz(0.0, -2.0, 0.0)));
+
+    // Ambient orb (glowing center)
+    let orb = meshes.add(Sphere::new(0.3));
+    let orb_mat = materials.add(StandardMaterial {
+        base_color: Color::srgb(0.3, 0.6, 1.0),
+        emissive: LinearRgba::new(0.5, 0.8, 1.5, 1.0),
+        ..default()
+    });
+    commands.spawn((Mesh3d(orb), MeshMaterial3d(orb_mat), Transform::from_xyz(0.0, 0.5, -3.0), AmbientOrb));
+
+    // Lights
+    commands.spawn((PointLight { intensity: 300000.0, color: Color::srgb(0.6, 0.8, 1.0), shadows_enabled: true, ..default() }, Transform::from_xyz(0.0, 4.0, 0.0)));
+    commands.spawn((PointLight { intensity: 100000.0, color: Color::srgb(0.8, 0.5, 1.0), ..default() }, Transform::from_xyz(-3.0, 2.0, -2.0)));
+    commands.spawn((PointLight { intensity: 100000.0, color: Color::srgb(0.5, 1.0, 0.8), ..default() }, Transform::from_xyz(3.0, 2.0, -2.0)));
 
     // Camera
-    commands.spawn((
-        Camera3d::default(),
-        Transform::from_xyz(0.0, 0.0, 0.0),
-        bevy::core_pipeline::tonemapping::Tonemapping::AcesFitted,
-        crate::camera::GameCamera,
-    ));
-
-    // UI
-    commands.spawn(Node {
-        position_type: PositionType::Absolute,
-        bottom: Val::Px(20.0),
-        left: Val::Percent(50.0),
-        margin: UiRect::left(Val::Px(-140.0)),
-        width: Val::Px(280.0),
-        flex_direction: FlexDirection::Column,
-        row_gap: Val::Px(10.0),
-        padding: UiRect::all(Val::Px(15.0)),
-        ..default()
-    }).insert(BackgroundColor(Color::srgba(0.0, 0.0, 0.0, 0.8)))
-      .insert(BorderRadius::all(Val::Px(12.0)))
-      .with_children(|p| {
-        // Title
-        p.spawn((
-            Text::new("Upload Room"),
-            TextFont { font_size: 22.0, ..default() },
-            TextColor(Color::WHITE),
-        ));
-
-        // Panorama button
-        p.spawn((
-            Button,
-            Node { padding: UiRect::axes(Val::Px(20.0), Val::Px(14.0)), justify_content: JustifyContent::Center, ..default() },
-            BackgroundColor(Color::srgb(0.2, 0.5, 0.8)),
-            BorderRadius::all(Val::Px(8.0)),
-            BtnPanorama,
-        )).with_child((Text::new("🖼 Upload Panorama"), TextFont { font_size: 16.0, ..default() }, TextColor(Color::WHITE)));
-        
-        // Model button  
-        p.spawn((
-            Button,
-            Node { padding: UiRect::axes(Val::Px(20.0), Val::Px(14.0)), justify_content: JustifyContent::Center, ..default() },
-            BackgroundColor(Color::srgb(0.5, 0.3, 0.7)),
-            BorderRadius::all(Val::Px(8.0)),
-            BtnModel,
-        )).with_child((Text::new("🎭 Upload 3D Model"), TextFont { font_size: 16.0, ..default() }, TextColor(Color::WHITE)));
-
-        // Help
-        p.spawn((
-            Text::new("Tap buttons or press P / M"),
-            TextFont { font_size: 12.0, ..default() },
-            TextColor(Color::srgba(0.6, 0.6, 0.6, 1.0)),
-        ));
-    });
+    commands.spawn((Camera3d::default(), Transform::from_xyz(0.0, 0.0, 0.0), bevy::core_pipeline::tonemapping::Tonemapping::AcesFitted, crate::camera::GameCamera));
 
     info!("📤 Upload Room ready");
 }
 
-fn handle_buttons(
-    keys: Res<ButtonInput<KeyCode>>,
-    btn_pan: Query<&Interaction, (Changed<Interaction>, With<BtnPanorama>)>,
-    btn_mdl: Query<&Interaction, (Changed<Interaction>, With<BtnModel>)>,
-) {
-    if keys.just_pressed(KeyCode::KeyP) || btn_pan.iter().any(|i| *i == Interaction::Pressed) {
-        pick_file(FileKind::Image);
+fn rotate_ambient_light(time: Res<Time>, mut orbs: Query<&mut Transform, With<AmbientOrb>>) {
+    for mut t in &mut orbs {
+        t.translation.y = 0.5 + (time.elapsed_secs() * 0.5).sin() * 0.2;
+        t.rotate_y(time.delta_secs() * 0.3);
     }
-    if keys.just_pressed(KeyCode::KeyM) || btn_mdl.iter().any(|i| *i == Interaction::Pressed) {
-        pick_file(FileKind::Model);
-    }
+}
+
+fn upload_hud(mut ctx: EguiContexts) {
+    let Ok(egui_ctx) = ctx.ctx_mut() else { return };
+    
+    egui::Window::new("Upload Room")
+        .anchor(egui::Align2::CENTER_BOTTOM, [0.0, -20.0])
+        .resizable(false)
+        .collapsible(false)
+        .show(egui_ctx, |ui| {
+            ui.vertical_centered(|ui| {
+                ui.heading("🌐 Panorama Viewer");
+                ui.add_space(8.0);
+                
+                if ui.button("📷 Upload Panorama (P)").kbgp_navigation().clicked() {
+                    pick_file(FileKind::Image);
+                }
+                if ui.button("🎭 Upload 3D Model (M)").kbgp_navigation().clicked() {
+                    pick_file(FileKind::Model);
+                }
+                
+                ui.add_space(12.0);
+                ui.separator();
+                ui.add_space(8.0);
+                
+                ui.label(egui::RichText::new("⌨️ Controls").strong());
+                egui::Grid::new("controls").show(ui, |ui| {
+                    ui.label("P"); ui.label("Upload panorama"); ui.end_row();
+                    ui.label("M"); ui.label("Upload 3D model"); ui.end_row();
+                    ui.label("Mouse"); ui.label("Look around"); ui.end_row();
+                    ui.label("WASD"); ui.label("Look around"); ui.end_row();
+                    ui.label("+/-"); ui.label("Adjust FOV"); ui.end_row();
+                    ui.label("Ctrl+R"); ui.label("Spin effect"); ui.end_row();
+                    ui.label("Esc"); ui.label("Release mouse"); ui.end_row();
+                });
+            });
+        });
+}
+
+fn handle_keyboard_shortcuts(keys: Res<ButtonInput<KeyCode>>) {
+    if keys.just_pressed(KeyCode::KeyP) { pick_file(FileKind::Image); }
+    if keys.just_pressed(KeyCode::KeyM) { pick_file(FileKind::Model); }
 }
 
 #[derive(Clone, Copy)]
@@ -180,10 +180,7 @@ fn pick_file(kind: FileKind) {
         };
         
         input.set_type("file");
-        input.set_accept(match kind {
-            FileKind::Image => "image/jpeg,image/png",
-            FileKind::Model => ".glb",
-        });
+        input.set_accept(match kind { FileKind::Image => "image/jpeg,image/png", FileKind::Model => ".glb" });
 
         let closure = Closure::wrap(Box::new(move |e: web_sys::Event| {
             let input: web_sys::HtmlInputElement = match e.target() {
@@ -226,7 +223,6 @@ fn poll_file_data(
     asset_server: Res<AssetServer>,
     mut state: ResMut<UploadState>,
 ) {
-    // Process image
     if let Some(data) = PENDING_IMAGE.lock().unwrap().take() {
         if let Ok(img) = image::load_from_memory(&data) {
             let rgba = img.to_rgba8();
@@ -250,7 +246,6 @@ fn poll_file_data(
         }
     }
 
-    // Process GLB
     if let Some(data) = PENDING_GLB.lock().unwrap().take() {
         #[cfg(not(target_arch = "wasm32"))]
         {
@@ -261,16 +256,13 @@ fn poll_file_data(
         }
         #[cfg(target_arch = "wasm32")]
         {
-            // WASM: Create blob URL
             use wasm_bindgen::JsCast;
-            if let Some(window) = web_sys::window() {
-                let arr = js_sys::Uint8Array::from(&data[..]);
-                let parts = js_sys::Array::new();
-                parts.push(&arr.buffer());
-                if let Ok(blob) = web_sys::Blob::new_with_u8_array_sequence(&parts) {
-                    if let Ok(url) = web_sys::Url::create_object_url_with_blob(&blob) {
-                        state.model_handle = Some(asset_server.load(url));
-                    }
+            let arr = js_sys::Uint8Array::from(&data[..]);
+            let parts = js_sys::Array::new();
+            parts.push(&arr.buffer());
+            if let Ok(blob) = web_sys::Blob::new_with_u8_array_sequence(&parts) {
+                if let Ok(url) = web_sys::Url::create_object_url_with_blob(&blob) {
+                    state.model_handle = Some(asset_server.load(url));
                 }
             }
         }
@@ -286,16 +278,10 @@ fn load_pending_model(
     let handle = match &state.model_handle { Some(h) => h, None => return };
     let gltf = match gltfs.get(handle) { Some(g) => g, None => return };
     
-    // Remove old
     for e in existing.iter() { commands.entity(e).despawn(); }
     
-    // Spawn new
     let scene = gltf.default_scene.clone().unwrap_or_else(|| gltf.scenes[0].clone());
-    commands.spawn((
-        SceneRoot(scene),
-        Transform::from_xyz(0.0, -1.0, -3.0),
-        UploadModel,
-    ));
+    commands.spawn((SceneRoot(scene), Transform::from_xyz(0.0, -1.0, -3.0), UploadModel));
     
     state.model_handle = None;
     info!("✅ Model loaded");
