@@ -45,6 +45,8 @@ jobs:
       artifact_name: ${{ inputs.artifact_name }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - name: Setup Rust toolchain
         uses: dtolnay/rust-toolchain@stable
