@@ -7,6 +7,7 @@ use wasm_bindgen_futures::spawn_local;
 
 use crate::camera::{CameraState, GameCamera};
 use crate::input::InputState;
+use crate::Platform;
 
 /// WebXR session state
 #[derive(Resource, Default)]

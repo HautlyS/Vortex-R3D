@@ -126,7 +126,7 @@ fn animate_transition(
                     state.progress = 0.0;
 
                     // Find current room's skybox and swap to vortex material
-                    for (entity, std_mat_handle) in sphere_std.iter() {
+                    if let Some((entity, std_mat_handle)) = sphere_std.iter().next() {
                         let current = if let Some(mat) = std_materials.get(&std_mat_handle.0) {
                             mat.base_color_texture
                                 .clone()
@@ -147,7 +147,6 @@ fn animate_transition(
                             .entity(entity)
                             .remove::<MeshMaterial3d<StandardMaterial>>()
                             .insert((MeshMaterial3d(vortex), VortexSphere));
-                        break; // Only transition first matching skybox
                     }
 
                     info!("✨ Starting vortex transition in room {}", current_room);
