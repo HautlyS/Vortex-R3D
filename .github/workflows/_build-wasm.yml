@@ -58,22 +58,21 @@ jobs:
         with:
           shared-key: wasm-webxr
           cache-all-crates: true
+          cache-on-failure: true
 
-      - name: Cache Trunk + tools
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cargo/bin/trunk
-            ~/.cache/trunk
-          key: trunk-${{ env.TRUNK_VERSION }}-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}
-          restore-keys: |
-            trunk-${{ env.TRUNK_VERSION }}-${{ runner.os }}-
-
-      - name: Install Trunk
+      - name: Install Trunk (pre-built binary)
         run: |
-          if ! command -v trunk &> /dev/null || [[ "$(trunk --version)" != *"${{ env.TRUNK_VERSION }}"* ]]; then
-            cargo install --locked trunk@${{ env.TRUNK_VERSION }}
+          TRUNK_BIN="$HOME/.cargo/bin/trunk"
+          if [ -f "$TRUNK_BIN" ] && "$TRUNK_BIN" --version 2>/dev/null | grep -q "${{ env.TRUNK_VERSION }}"; then
+            echo "✅ Trunk ${{ env.TRUNK_VERSION }} already installed"
+          else
+            echo "📦 Downloading Trunk ${{ env.TRUNK_VERSION }}..."
+            curl -sL https://github.com/trunk-rs/trunk/releases/download/v${{ env.TRUNK_VERSION }}/trunk-x86_64-unknown-linux-gnu.tar.gz | tar xz -C /tmp
+            mkdir -p ~/.cargo/bin
+            mv /tmp/trunk ~/.cargo/bin/
+            echo "✅ Trunk installed"
           fi
+          trunk --version
 
       - name: Configure features in index.html
         if: ${{ inputs.features != 'webxr' }}

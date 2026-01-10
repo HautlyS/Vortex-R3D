@@ -38,6 +38,7 @@ jobs:
         with:
           shared-key: linux-desktop
           cache-all-crates: true
+          cache-on-failure: true
       - run: cargo check --features desktop
 
   check-windows:
@@ -51,6 +52,7 @@ jobs:
         with:
           shared-key: windows-desktop
           cache-all-crates: true
+          cache-on-failure: true
       - run: cargo check --features desktop
 
   check-wasm:
@@ -64,6 +66,7 @@ jobs:
         with:
           shared-key: wasm-webxr
           cache-all-crates: true
+          cache-on-failure: true
       - run: rustup target add wasm32-unknown-unknown
       - run: cargo check --target wasm32-unknown-unknown --features webxr --no-default-features
 
@@ -82,6 +85,7 @@ jobs:
         with:
           shared-key: linux-desktop
           cache-all-crates: true
+          cache-on-failure: true
       - run: cargo clippy --features desktop -- -D warnings
 
   check-ios:
@@ -96,6 +100,7 @@ jobs:
         with:
           shared-key: ios-arm64
           cache-all-crates: true
+          cache-on-failure: true
       - name: Check iOS
         run: |
           cargo check --target aarch64-apple-ios --no-default-features \
@@ -120,6 +125,7 @@ jobs:
         with:
           shared-key: android-arm64
           cache-all-crates: true
+          cache-on-failure: true
       - name: Check Android
         run: |
           export PATH="$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin:$PATH"

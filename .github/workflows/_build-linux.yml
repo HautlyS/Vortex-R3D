@@ -66,17 +66,20 @@ jobs:
         with:
           shared-key: linux-desktop
           cache-all-crates: true
+          cache-on-failure: true
 
-      - name: Cache cargo-deb
-        id: cache-cargo-deb
-        uses: actions/cache@v4
-        with:
-          path: ~/.cargo/bin/cargo-deb
-          key: cargo-deb-${{ env.CARGO_DEB_VERSION }}-${{ runner.os }}
-
-      - name: Install cargo-deb
-        if: steps.cache-cargo-deb.outputs.cache-hit != 'true'
-        run: cargo install cargo-deb@${{ env.CARGO_DEB_VERSION }}
+      - name: Install cargo-deb (pre-built)
+        run: |
+          CARGO_DEB_BIN="$HOME/.cargo/bin/cargo-deb"
+          if [ -f "$CARGO_DEB_BIN" ]; then
+            echo "✅ cargo-deb already cached"
+          else
+            echo "📦 Downloading cargo-deb..."
+            curl -sL https://github.com/kornelski/cargo-deb/releases/download/v${{ env.CARGO_DEB_VERSION }}/cargo-deb-v${{ env.CARGO_DEB_VERSION }}-x86_64-unknown-linux-musl.tar.gz | tar xz -C /tmp
+            mkdir -p ~/.cargo/bin
+            mv /tmp/cargo-deb ~/.cargo/bin/
+            echo "✅ cargo-deb installed"
+          fi
 
       - name: Build release binary
         run: cargo build --release --features ${{ inputs.features }}

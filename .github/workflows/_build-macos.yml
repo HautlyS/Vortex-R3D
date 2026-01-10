@@ -54,6 +54,7 @@ jobs:
         with:
           shared-key: macos-desktop
           cache-all-crates: true
+          cache-on-failure: true
 
       - name: Build x86_64 binary
         run: cargo build --release --features desktop --target x86_64-apple-darwin
