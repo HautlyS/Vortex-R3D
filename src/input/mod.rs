@@ -2,7 +2,7 @@
 
 #[cfg(feature = "desktop")]
 mod desktop;
-#[cfg(target_arch = "wasm32")]
+#[cfg(all(feature = "desktop", target_arch = "wasm32"))]
 mod touch;
 #[cfg(feature = "vr")]
 mod vr;
@@ -11,7 +11,7 @@ mod webxr;
 
 #[cfg(feature = "desktop")]
 pub use desktop::DesktopInputPlugin;
-#[cfg(target_arch = "wasm32")]
+#[cfg(all(feature = "desktop", target_arch = "wasm32"))]
 pub use touch::TouchInputPlugin;
 #[cfg(feature = "vr")]
 pub use vr::VrInputPlugin;
