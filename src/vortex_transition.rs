@@ -128,7 +128,9 @@ fn animate_transition(
                     // Find current room's skybox and swap to vortex material
                     for (entity, std_mat_handle) in sphere_std.iter() {
                         let current = if let Some(mat) = std_materials.get(&std_mat_handle.0) {
-                            mat.base_color_texture.clone().unwrap_or_else(|| handle.clone())
+                            mat.base_color_texture
+                                .clone()
+                                .unwrap_or_else(|| handle.clone())
                         } else {
                             handle.clone()
                         };

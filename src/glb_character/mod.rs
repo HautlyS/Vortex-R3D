@@ -121,7 +121,7 @@ fn spawn_gltf_model(
                     .material
                     .clone()
                     .or_else(|| gltf.materials.first().cloned());
-                
+
                 if let Some(mat) = mat {
                     let child = cmd
                         .spawn((

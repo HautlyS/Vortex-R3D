@@ -259,10 +259,7 @@ fn sync_xr_pose_to_camera(
     camera_state.walk_cycle = 0.0;
 }
 
-fn handle_xr_input(
-    state: Res<WebXrState>,
-    mut input_state: ResMut<InputState>,
-) {
+fn handle_xr_input(state: Res<WebXrState>, mut input_state: ResMut<InputState>) {
     if !state.session_active {
         return;
     }

@@ -85,26 +85,28 @@ fn update_room_audio(
 ) {
     let Some(assets) = assets else { return };
     let Some(player) = player_state else { return };
-    if !state.initialized { return; }
+    if !state.initialized {
+        return;
+    }
 
     // Detect room change
     if player.room != state.current_room {
         let old_room = state.current_room;
         let new_room = player.room;
-        
+
         // Bounds check
-        if new_room >= 3 { return; }
-        
+        if new_room >= 3 {
+            return;
+        }
+
         state.prev_room = Some(old_room);
         state.current_room = new_room;
 
         // Fade out old room soundtrack
         if let Some(handle) = &state.soundtracks[old_room] {
             if let Some(instance) = instances.get_mut(handle) {
-                instance.set_playback_rate(
-                    0.0,
-                    AudioTween::new(FADE_DURATION, AudioEasing::InPowi(2)),
-                );
+                instance
+                    .set_playback_rate(0.0, AudioTween::new(FADE_DURATION, AudioEasing::InPowi(2)));
             }
         }
 
@@ -128,7 +130,11 @@ fn update_room_audio(
             state.soundtracks[new_room] = Some(handle);
         }
 
-        info!("🎵 Room {} → {} audio crossfade", old_room + 1, new_room + 1);
+        info!(
+            "🎵 Room {} → {} audio crossfade",
+            old_room + 1,
+            new_room + 1
+        );
     }
 }
 
@@ -141,14 +147,19 @@ fn handle_narration(
 ) {
     let Some(assets) = assets else { return };
     let room = state.current_room;
-    if room >= 3 { return; }
+    if room >= 3 {
+        return;
+    }
 
     // N key = play narration for current room
     if keys.just_pressed(KeyCode::KeyN) && !state.narration_played[room] {
         // Stop any playing narration
         for handle in state.narrations.iter().flatten() {
             if let Some(instance) = instances.get_mut(handle) {
-                instance.stop(AudioTween::new(Duration::from_millis(500), AudioEasing::Linear));
+                instance.stop(AudioTween::new(
+                    Duration::from_millis(500),
+                    AudioEasing::Linear,
+                ));
             }
         }
 
@@ -156,7 +167,10 @@ fn handle_narration(
             .play(assets.narrations[room].clone())
             .with_volume(0.7)
             .with_panning((room as f32 - 1.0) * 0.1)
-            .fade_in(AudioTween::new(Duration::from_millis(300), AudioEasing::Linear))
+            .fade_in(AudioTween::new(
+                Duration::from_millis(300),
+                AudioEasing::Linear,
+            ))
             .handle();
 
         state.narrations[room] = Some(handle);
