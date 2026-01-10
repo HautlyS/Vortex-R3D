@@ -5,9 +5,8 @@ use std::sync::{Arc, Mutex};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_futures::spawn_local;
 
-use super::Platform;
 use crate::camera::{CameraState, GameCamera};
-use crate::input::{InputEvent, InputState};
+use crate::input::InputState;
 
 /// WebXR session state
 #[derive(Resource, Default)]
@@ -237,7 +236,7 @@ fn sync_xr_pose_to_camera(
     state.session_active = true;
 
     // Apply XR pose to camera
-    let Ok(mut transform) = camera_q.single_mut() else {
+    let Ok(mut transform) = camera_q.get_single_mut() else {
         return;
     };
 
@@ -263,7 +262,6 @@ fn sync_xr_pose_to_camera(
 fn handle_xr_input(
     state: Res<WebXrState>,
     mut input_state: ResMut<InputState>,
-    _events: MessageWriter<InputEvent>,
 ) {
     if !state.session_active {
         return;

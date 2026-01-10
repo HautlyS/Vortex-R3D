@@ -27,7 +27,7 @@ fn handle_touch_input(
     mut events: MessageWriter<InputEvent>,
     windows: Query<&Window, With<PrimaryWindow>>,
 ) {
-    let Ok(window) = windows.single() else { return };
+    let Ok(window) = windows.get_single() else { return };
     let scale = window.width().min(window.height()) / 800.0;
 
     let active: Vec<_> = touches.iter().collect();

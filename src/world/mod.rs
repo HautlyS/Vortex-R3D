@@ -126,8 +126,8 @@ fn setup_world(
 fn skybox_rotation_input(keys: Res<ButtonInput<KeyCode>>, mut rotation: ResMut<SkyboxRotation>) {
     let ctrl = keys.pressed(KeyCode::ControlLeft) || keys.pressed(KeyCode::ControlRight);
 
-    // Ctrl+R toggles rotation
-    if ctrl && keys.just_pressed(KeyCode::KeyR) {
+    // Ctrl+T toggles rotation (changed from Ctrl+R to avoid conflict with camera spin)
+    if ctrl && keys.just_pressed(KeyCode::KeyT) {
         rotation.enabled = !rotation.enabled;
         info!(
             "🌀 Skybox rotation: {}",

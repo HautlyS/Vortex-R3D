@@ -1,4 +1,5 @@
-use crate::{panorama::PanoramaSphere, GameState};
+use crate::world::Skybox;
+use crate::GameState;
 use bevy::prelude::*;
 use bevy::render::render_resource::AsBindGroup;
 use bevy::shader::ShaderRef;
@@ -35,8 +36,8 @@ impl Default for TransitionState {
             current_index: 0,
             paths: vec![
                 "panoramas/demo.jpg",
-                "panoramas/demo1.jpg",
                 "panoramas/demo2.jpg",
+                "panoramas/demo3.jpg",
             ],
             transitioning: false,
             progress: 0.0,
@@ -71,15 +72,15 @@ fn handle_transition_input(
     keyboard: Res<ButtonInput<KeyCode>>,
     mut state: ResMut<TransitionState>,
     asset_server: Res<AssetServer>,
-    sphere: Query<&MeshMaterial3d<StandardMaterial>, With<PanoramaSphere>>,
+    sphere: Query<&MeshMaterial3d<StandardMaterial>, With<Skybox>>,
     materials: Res<Assets<StandardMaterial>>,
 ) {
     let shift = keyboard.pressed(KeyCode::ShiftLeft) || keyboard.pressed(KeyCode::ShiftRight);
 
     if shift && keyboard.just_pressed(KeyCode::Space) && !state.transitioning && !state.loading {
-        // Capture current texture from sphere
+        // Capture current texture from skybox
         if state.current_texture.is_none() {
-            if let Ok(mat_handle) = sphere.single() {
+            if let Ok(mat_handle) = sphere.get_single() {
                 if let Some(mat) = materials.get(&mat_handle.0) {
                     state.current_texture = mat.base_color_texture.clone();
                 }
@@ -104,13 +105,16 @@ fn animate_transition(
     asset_server: Res<AssetServer>,
     sphere_std: Query<
         (Entity, &MeshMaterial3d<StandardMaterial>),
-        (With<PanoramaSphere>, Without<VortexSphere>),
+        (With<Skybox>, Without<VortexSphere>),
     >,
     sphere_vortex: Query<(Entity, &MeshMaterial3d<VortexMaterial>), With<VortexSphere>>,
     mut commands: Commands,
     mut vortex_materials: ResMut<Assets<VortexMaterial>>,
     mut std_materials: ResMut<Assets<StandardMaterial>>,
+    player: Option<Res<crate::player::PlayerState>>,
 ) {
+    let current_room = player.map(|p| p.room).unwrap_or(0);
+
     // Handle loading state
     if state.loading {
         let next_handle = state.next_texture.clone();
@@ -121,12 +125,10 @@ fn animate_transition(
                     state.transitioning = true;
                     state.progress = 0.0;
 
-                    // Swap to vortex material
-                    if let Ok((entity, std_mat_handle)) = sphere_std.single() {
+                    // Find current room's skybox and swap to vortex material
+                    for (entity, std_mat_handle) in sphere_std.iter() {
                         let current = if let Some(mat) = std_materials.get(&std_mat_handle.0) {
-                            mat.base_color_texture
-                                .clone()
-                                .unwrap_or_else(|| handle.clone())
+                            mat.base_color_texture.clone().unwrap_or_else(|| handle.clone())
                         } else {
                             handle.clone()
                         };
@@ -135,7 +137,7 @@ fn animate_transition(
 
                         let vortex = vortex_materials.add(VortexMaterial {
                             texture_a: current,
-                            texture_b: handle,
+                            texture_b: handle.clone(),
                             progress: 0.0,
                         });
 
@@ -143,9 +145,10 @@ fn animate_transition(
                             .entity(entity)
                             .remove::<MeshMaterial3d<StandardMaterial>>()
                             .insert((MeshMaterial3d(vortex), VortexSphere));
+                        break; // Only transition first matching skybox
                     }
 
-                    info!("✨ Starting vortex transition");
+                    info!("✨ Starting vortex transition in room {}", current_room);
                 }
                 Some(bevy::asset::LoadState::Failed(_)) => {
                     warn!("⚠️ Failed to load panorama, looping to start");
@@ -166,7 +169,7 @@ fn animate_transition(
     state.progress += time.delta_secs() * 0.9;
 
     // Update vortex material progress
-    if let Ok((_, vortex_handle)) = sphere_vortex.single() {
+    for (_, vortex_handle) in sphere_vortex.iter() {
         if let Some(mat) = vortex_materials.get_mut(&vortex_handle.0) {
             mat.progress = state.progress.min(1.0);
         }
@@ -174,7 +177,7 @@ fn animate_transition(
 
     // Complete transition
     if state.progress >= 1.0 {
-        if let Ok((entity, _)) = sphere_vortex.single() {
+        for (entity, _) in sphere_vortex.iter() {
             let new_mat = std_materials.add(StandardMaterial {
                 base_color_texture: state.next_texture.clone(),
                 unlit: true,
@@ -188,10 +191,9 @@ fn animate_transition(
                 .remove::<MeshMaterial3d<VortexMaterial>>()
                 .remove::<VortexSphere>()
                 .insert(MeshMaterial3d(new_mat));
-
-            state.current_texture = state.next_texture.take();
         }
 
+        state.current_texture = state.next_texture.take();
         state.transitioning = false;
         info!("✅ Vortex transition complete");
     }

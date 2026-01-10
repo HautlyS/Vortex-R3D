@@ -85,7 +85,7 @@ jobs:
 
   release:
     name: 📦 Create Release
-    needs: [build-linux, build-windows, build-macos, build-android, build-web]
+    needs: [build-linux, build-windows, build-macos, build-ios, build-android, build-web]
     if: always() && !cancelled()
     runs-on: ubuntu-latest
     steps:
@@ -250,35 +250,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   # ============================================
-  # PHASE 3: iOS Release (separate due to needs)
+  # PHASE 3: Deploy Web (optional)
   # ============================================
-
-  release-ios:
-    name: 📱 Add iOS to Release
-    needs: [build-ios, release]
-    if: ${{ !inputs.skip_ios && always() && needs.build-ios.result == 'success' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download iOS artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: techno-sutra-ios-ipa
-          path: ios-release
-
-      - name: Get version
-        id: version
-        run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "version=${{ inputs.version }}" >> $GITHUB_OUTPUT
-          else
-            echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Add iOS to release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ steps.version.outputs.version }}
-          files: ios-release/*.ipa
-          fail_on_unmatched_files: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

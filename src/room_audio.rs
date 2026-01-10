@@ -24,7 +24,7 @@ impl Plugin for RoomAudioPlugin {
 }
 
 const FADE_DURATION: Duration = Duration::from_millis(1500);
-const REVERB_PANNING: f32 = 0.15; // Slight stereo spread for echo effect
+const REVERB_PANNING: f32 = 0.15;
 
 #[derive(Resource, Default)]
 pub struct RoomAudioState {
@@ -33,6 +33,7 @@ pub struct RoomAudioState {
     soundtracks: [Option<Handle<AudioInstance>>; 3],
     narrations: [Option<Handle<AudioInstance>>; 3],
     narration_played: [bool; 3],
+    initialized: bool,
 }
 
 #[derive(Resource)]
@@ -47,7 +48,7 @@ fn setup_room_audio(
     audio: Res<Audio>,
     mut state: ResMut<RoomAudioState>,
 ) {
-    // Load audio assets
+    // Load audio assets - use .wav files that exist
     let assets = AudioAssets {
         soundtracks: [
             asset_server.load("audio/modelo1.wav"),
@@ -61,14 +62,15 @@ fn setup_room_audio(
         ],
     };
 
-    // Start room 0 soundtrack with reverb effect
+    // Start room 0 soundtrack - check if asset loads before playing
     let handle = audio
         .play(assets.soundtracks[0].clone())
         .looped()
-        .with_volume(0.7)
+        .with_volume(0.5)
         .fade_in(AudioTween::new(FADE_DURATION, AudioEasing::OutPowi(2)))
         .handle();
     state.soundtracks[0] = Some(handle);
+    state.initialized = true;
 
     cmd.insert_resource(assets);
     info!("🎵 Room audio initialized");
@@ -83,64 +85,62 @@ fn update_room_audio(
 ) {
     let Some(assets) = assets else { return };
     let Some(player) = player_state else { return };
+    if !state.initialized { return; }
 
     // Detect room change
     if player.room != state.current_room {
         let old_room = state.current_room;
         let new_room = player.room;
+        
+        // Bounds check
+        if new_room >= 3 { return; }
+        
         state.prev_room = Some(old_room);
         state.current_room = new_room;
 
         // Fade out old room soundtrack
         if let Some(handle) = &state.soundtracks[old_room] {
             if let Some(instance) = instances.get_mut(handle) {
-                instance.set_decibels(
-                    -60.0,
+                instance.set_volume(
+                    0.0,
                     AudioTween::new(FADE_DURATION, AudioEasing::InPowi(2)),
                 );
             }
         }
 
-        // Start or fade in new room soundtrack with spatial effect
+        // Start or fade in new room soundtrack
         if let Some(handle) = &state.soundtracks[new_room] {
             if let Some(instance) = instances.get_mut(handle) {
-                instance.set_decibels(
-                    -3.0,
+                instance.set_volume(
+                    0.5,
                     AudioTween::new(FADE_DURATION, AudioEasing::OutPowi(2)),
                 );
             }
         } else {
-            // First time entering this room - start soundtrack
             let panning = match new_room {
-                0 => 0.0,             // Center
-                1 => -REVERB_PANNING, // Slight left (echo effect)
-                2 => REVERB_PANNING,  // Slight right
+                0 => 0.0,
+                1 => -REVERB_PANNING,
+                2 => REVERB_PANNING,
                 _ => 0.0,
             };
 
             let handle = audio
                 .play(assets.soundtracks[new_room].clone())
                 .looped()
-                .with_volume(-60.0)
+                .with_volume(0.0)
                 .with_panning(panning)
-                .fade_in(AudioTween::new(FADE_DURATION, AudioEasing::OutPowi(2)))
                 .handle();
 
-            // Fade to target volume
             if let Some(instance) = instances.get_mut(&handle) {
-                instance.set_decibels(
-                    -3.0,
+                instance.set_volume(
+                    0.5,
                     AudioTween::new(FADE_DURATION, AudioEasing::OutPowi(2)),
                 );
             }
             state.soundtracks[new_room] = Some(handle);
         }
 
-        info!(
-            "🎵 Room {} → {} audio crossfade",
-            old_room + 1,
-            new_room + 1
-        );
+        info!("🎵 Room {} → {} audio crossfade", old_room + 1, new_room + 1);
     }
 }
 
@@ -153,28 +153,22 @@ fn handle_narration(
 ) {
     let Some(assets) = assets else { return };
     let room = state.current_room;
+    if room >= 3 { return; }
 
-    // N key = play narration for current room (once per room visit)
+    // N key = play narration for current room
     if keys.just_pressed(KeyCode::KeyN) && !state.narration_played[room] {
         // Stop any playing narration
         for handle in state.narrations.iter().flatten() {
             if let Some(instance) = instances.get_mut(handle) {
-                instance.stop(AudioTween::new(
-                    Duration::from_millis(500),
-                    AudioEasing::Linear,
-                ));
+                instance.stop(AudioTween::new(Duration::from_millis(500), AudioEasing::Linear));
             }
         }
 
-        // Play new narration with slight reverb panning
         let handle = audio
             .play(assets.narrations[room].clone())
-            .with_volume(-1.0)
-            .with_panning((room as f32 - 1.0) * 0.1) // Spatial positioning
-            .fade_in(AudioTween::new(
-                Duration::from_millis(300),
-                AudioEasing::Linear,
-            ))
+            .with_volume(0.7)
+            .with_panning((room as f32 - 1.0) * 0.1)
+            .fade_in(AudioTween::new(Duration::from_millis(300), AudioEasing::Linear))
             .handle();
 
         state.narrations[room] = Some(handle);
@@ -187,12 +181,8 @@ fn handle_narration(
         if let Some(handle) = &state.narrations[room] {
             if let Some(instance) = instances.get_mut(handle) {
                 match instance.state() {
-                    PlaybackState::Playing { .. } => {
-                        instance.pause(AudioTween::default());
-                    }
-                    PlaybackState::Paused { .. } => {
-                        instance.resume(AudioTween::default());
-                    }
+                    PlaybackState::Playing { .. } => instance.pause(AudioTween::default()),
+                    PlaybackState::Paused { .. } => instance.resume(AudioTween::default()),
                     _ => {}
                 }
             }

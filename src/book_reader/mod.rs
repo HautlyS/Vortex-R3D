@@ -208,14 +208,14 @@ fn update_page_content(
         ),
     >,
 ) {
-    if let Ok(mut node) = book_content.single_mut() {
+    if let Ok(mut node) = book_content.get_single_mut() {
         node.display = if state.tab == Tab::Book {
             Display::Flex
         } else {
             Display::None
         };
     }
-    if let Ok(mut node) = char_content.single_mut() {
+    if let Ok(mut node) = char_content.get_single_mut() {
         node.display = if state.tab == Tab::Character {
             Display::Flex
         } else {
@@ -225,16 +225,16 @@ fn update_page_content(
 
     if state.tab == Tab::Book {
         let page = &PAGES[state.page.min(PAGES.len() - 1)];
-        if let Ok(mut t) = chapter.single_mut() {
+        if let Ok(mut t) = chapter.get_single_mut() {
             t.0 = page.chapter.into();
         }
-        if let Ok(mut t) = title.single_mut() {
+        if let Ok(mut t) = title.get_single_mut() {
             t.0 = page.title.into();
         }
-        if let Ok(mut t) = content.single_mut() {
+        if let Ok(mut t) = content.get_single_mut() {
             t.0 = page.content.into();
         }
-        if let Ok(mut t) = counter.single_mut() {
+        if let Ok(mut t) = counter.get_single_mut() {
             t.0 = format!("— {} / {} —", state.page + 1, PAGES.len());
         }
     }

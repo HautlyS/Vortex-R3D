@@ -116,19 +116,34 @@ fn spawn_gltf_model(
     for gltf_mesh_handle in &gltf.meshes {
         if let Some(gltf_mesh) = gltf_meshes.get(gltf_mesh_handle) {
             for primitive in &gltf_mesh.primitives {
+                // Safe material fallback - use primitive material, then first gltf material, then skip
                 let mat = primitive
                     .material
                     .clone()
-                    .unwrap_or_else(|| gltf.materials[0].clone());
-                let child = cmd
-                    .spawn((
-                        Mesh3d(primitive.mesh.clone()),
-                        MeshMaterial3d(mat),
-                        Transform::default(),
-                        RenderLayers::layer(room),
-                    ))
-                    .id();
-                cmd.entity(parent).add_child(child);
+                    .or_else(|| gltf.materials.first().cloned());
+                
+                if let Some(mat) = mat {
+                    let child = cmd
+                        .spawn((
+                            Mesh3d(primitive.mesh.clone()),
+                            MeshMaterial3d(mat),
+                            Transform::default(),
+                            RenderLayers::layer(room),
+                        ))
+                        .id();
+                    cmd.entity(parent).add_child(child);
+                } else {
+                    // No material available - spawn mesh without material (will use default)
+                    warn!("⚠️ No material for mesh primitive, using default");
+                    let child = cmd
+                        .spawn((
+                            Mesh3d(primitive.mesh.clone()),
+                            Transform::default(),
+                            RenderLayers::layer(room),
+                        ))
+                        .id();
+                    cmd.entity(parent).add_child(child);
+                }
             }
         }
     }

@@ -196,7 +196,7 @@ fn animate_core_glow(
 
     // Get camera yaw for subtle orb rotation response
     let cam_yaw = cam_q
-        .single()
+        .get_single()
         .map(|c| {
             let (yaw, _, _) = c.rotation.to_euler(EulerRot::YXZ);
             yaw
@@ -230,7 +230,7 @@ fn animate_light_orbs(
 
     // Get camera forward direction for orb orientation
     let cam_yaw = cam_q
-        .single()
+        .get_single()
         .map(|c| {
             let (yaw, _, _) = c.rotation.to_euler(EulerRot::YXZ);
             yaw
