@@ -43,8 +43,8 @@ jobs:
       - name: Cache Rust dependencies
         uses: Swatinem/rust-cache@v2
         with:
-          shared-key: ios-release
-          cache-targets: true
+          shared-key: ios-arm64
+          cache-all-crates: true
 
       - name: Set artifact names
         id: names

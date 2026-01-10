@@ -71,8 +71,8 @@ jobs:
       - name: Cache Rust dependencies
         uses: Swatinem/rust-cache@v2
         with:
-          shared-key: android-release
-          cache-targets: true
+          shared-key: android-arm64
+          cache-all-crates: true
 
       - name: Cache cargo-apk
         id: cache-cargo-apk

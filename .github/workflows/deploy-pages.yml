@@ -1,64 +1,42 @@
 name: Deploy to GitHub Pages
 
 on:
-  push:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
     branches: [main]
-    paths:
-      - 'src/**'
-      - 'assets/**'
-      - 'Cargo.toml'
-      - 'Cargo.lock'
-      - 'index.html'
-      - 'Trunk.toml'
-      - '404.html'
-      - '.github/workflows/deploy-pages.yml'
-      - '.github/workflows/_build-wasm.yml'
   workflow_dispatch:
 
 permissions:
   contents: read
   pages: write
   id-token: write
+  actions: read
 
 concurrency:
-  group: pages-${{ github.ref }}
+  group: pages
   cancel-in-progress: true
 
-env:
-  CARGO_TERM_COLOR: always
-
 jobs:
-  build:
-    name: Build WASM
-    uses: ./.github/workflows/_build-wasm.yml
-    with:
-      public_url: /Vortex-R3D/
-      optimize: true
-      artifact_name: github-pages-build
-      features: webxr
-
   deploy:
-    name: Deploy to Pages
-    needs: build
+    name: Deploy
     runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Download build artifact
+      - name: Download WASM artifact from CI
         uses: actions/download-artifact@v4
         with:
-          name: github-pages-build
+          name: techno-sutra-web
           path: dist
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
-
-      - name: Deploy to GitHub Pages
-        id: deployment
+      - id: deployment
         uses: actions/deploy-pages@v4

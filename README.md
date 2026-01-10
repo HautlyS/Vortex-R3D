@@ -28,10 +28,6 @@ cargo install --locked trunk
 ### Run Desktop
 
 ```bash
-# Development (fast compile)
-cargo run --features dev
-
-# Release (optimized)
 cargo run --release
 ```
 

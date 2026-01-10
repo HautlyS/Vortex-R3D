@@ -11,54 +11,37 @@ env:
 
 jobs:
   # ============================================
-  # CHECKS (fast feedback)
+  # PHASE 1: Fast checks (parallel)
   # ============================================
-  
-  check-desktop:
-    name: Check Desktop (Linux)
+
+  fmt:
+    name: Format
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-      
-      - name: Install dependencies
+      - run: cargo fmt --check --package techno_sutra
+
+  check-linux:
+    name: Check Linux
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Install deps
         run: |
           sudo apt-get update && sudo apt-get install -y \
             g++ pkg-config libx11-dev libwayland-dev libasound2-dev libudev-dev
-      
       - uses: Swatinem/rust-cache@v2
         with:
           shared-key: linux-desktop
           cache-all-crates: true
-      
-      - name: Check desktop
-        run: cargo check --features desktop
-
-  check-vr:
-    name: Check VR (Linux)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: recursive
-      
-      - name: Install dependencies
-        run: |
-          sudo apt-get update && sudo apt-get install -y \
-            g++ pkg-config libx11-dev libwayland-dev libasound2-dev libudev-dev \
-            libopenxr-loader1 libopenxr-dev cmake
-      
-      - uses: Swatinem/rust-cache@v2
-        with:
-          shared-key: linux-vr
-          cache-all-crates: true
-      
-      - name: Check VR
-        run: cargo check --features vr --no-default-features
+      - run: cargo check --features desktop
 
   check-windows:
-    name: Check Desktop (Windows)
+    name: Check Windows
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -68,11 +51,10 @@ jobs:
         with:
           shared-key: windows-desktop
           cache-all-crates: true
-      - name: Check
-        run: cargo check --features desktop
+      - run: cargo check --features desktop
 
   check-wasm:
-    name: Check WebXR (WASM)
+    name: Check WASM
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -82,22 +64,8 @@ jobs:
         with:
           shared-key: wasm-webxr
           cache-all-crates: true
-      
-      - name: Install WASM target
-        run: rustup target add wasm32-unknown-unknown
-      
-      - name: Check WASM
-        run: cargo check --target wasm32-unknown-unknown --features webxr --no-default-features
-
-  fmt:
-    name: Format
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: recursive
-      - name: Check formatting (main crate only)
-        run: cargo fmt --check --package techno_sutra
+      - run: rustup target add wasm32-unknown-unknown
+      - run: cargo check --target wasm32-unknown-unknown --features webxr --no-default-features
 
   clippy:
     name: Clippy
@@ -106,27 +74,57 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-      
-      - name: Install dependencies
+      - name: Install deps
         run: |
           sudo apt-get update && sudo apt-get install -y \
             g++ pkg-config libx11-dev libwayland-dev libasound2-dev libudev-dev
-      
       - uses: Swatinem/rust-cache@v2
         with:
           shared-key: linux-desktop
           cache-all-crates: true
-      
-      - name: Clippy
-        run: cargo clippy --features desktop -- -D warnings
+      - run: cargo clippy --features desktop -- -D warnings
+
+  check-ios:
+    name: Check iOS
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - run: rustup target add aarch64-apple-ios
+      - uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: ios-arm64
+          cache-all-crates: true
+      - name: Check iOS
+        run: |
+          cargo check --target aarch64-apple-ios --no-default-features \
+            --features "bevy/bevy_asset,bevy/bevy_core_pipeline,bevy/bevy_pbr,bevy/bevy_render,bevy/bevy_winit,bevy/png,bevy/jpeg"
+
+  check-android:
+    name: Check Android
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - run: rustup target add aarch64-linux-android
+      - uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: android-arm64
+          cache-all-crates: true
+      - name: Check Android
+        run: |
+          cargo check --target aarch64-linux-android --no-default-features \
+            --features "bevy/bevy_asset,bevy/bevy_core_pipeline,bevy/bevy_pbr,bevy/bevy_render,bevy/bevy_winit,bevy/png,bevy/jpeg"
 
   # ============================================
-  # BUILDS (all platforms)
+  # PHASE 2: Builds (after checks pass)
   # ============================================
 
   build-linux:
-    name: 🐧 Build Linux
-    needs: [check-desktop, fmt, clippy]
+    name: 🐧 Linux
+    needs: [fmt, check-linux, clippy]
     uses: ./.github/workflows/_build-linux.yml
     with:
       features: desktop
@@ -134,8 +132,8 @@ jobs:
       retention_days: 7
 
   build-windows:
-    name: 🪟 Build Windows
-    needs: [check-windows, fmt]
+    name: 🪟 Windows
+    needs: [fmt, check-windows]
     uses: ./.github/workflows/_build-windows.yml
     with:
       features: desktop
@@ -143,7 +141,7 @@ jobs:
       retention_days: 7
 
   build-macos:
-    name: 🍎 Build macOS
+    name: 🍎 macOS
     needs: [fmt, clippy]
     uses: ./.github/workflows/_build-macos.yml
     with:
@@ -152,11 +150,31 @@ jobs:
       retention_days: 7
 
   build-wasm:
-    name: 🌐 Build WASM
-    needs: [check-wasm, fmt]
+    name: 🌐 WASM
+    needs: [fmt, check-wasm]
     uses: ./.github/workflows/_build-wasm.yml
     with:
       optimize: true
       artifact_name: techno-sutra-web
+      public_url: /Vortex-R3D/
       features: webxr
       retention_days: 7
+
+  build-ios:
+    name: 📱 iOS
+    needs: [fmt, check-ios]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    uses: ./.github/workflows/_build-ios.yml
+    with:
+      artifact_prefix: techno-sutra
+      retention_days: 7
+
+  build-android:
+    name: 🤖 Android
+    needs: [fmt, check-android]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    uses: ./.github/workflows/_build-android.yml
+    with:
+      artifact_prefix: techno-sutra
+      retention_days: 7
+      build_quest: false
