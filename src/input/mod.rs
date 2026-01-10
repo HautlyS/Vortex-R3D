@@ -1,5 +1,6 @@
 //! Input abstraction - unified events with platform-specific readers
 
+#[cfg(feature = "desktop")]
 mod desktop;
 #[cfg(target_arch = "wasm32")]
 mod touch;
@@ -8,10 +9,9 @@ mod vr;
 #[cfg(feature = "webxr")]
 mod webxr;
 
-#[allow(unused_imports)]
+#[cfg(feature = "desktop")]
 pub use desktop::DesktopInputPlugin;
 #[cfg(target_arch = "wasm32")]
-#[allow(unused_imports)]
 pub use touch::TouchInputPlugin;
 #[cfg(feature = "vr")]
 pub use vr::VrInputPlugin;

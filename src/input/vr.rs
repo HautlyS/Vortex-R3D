@@ -25,9 +25,9 @@ fn read_vr_input(
     trackers: Query<&Transform, With<XrTracker>>,
     mut vr_state: ResMut<VrInputState>,
     mut input_state: ResMut<InputState>,
-    mut events: EventWriter<InputEvent>,
+    mut events: MessageWriter<InputEvent>,
 ) {
-    let Ok(head) = trackers.get_single() else {
+    let Ok(head) = trackers.single() else {
         return;
     };
 
@@ -36,15 +36,15 @@ fn read_vr_input(
     if pos_delta.length() > 0.001 {
         let movement = Vec2::new(pos_delta.x, pos_delta.z);
         input_state.movement = movement;
-        events.send(InputEvent::Move(movement));
+        events.write(InputEvent::Move(movement));
     }
 
     // Look from head rotation
     let rot_delta = head.rotation * vr_state.last_head_rot.inverse();
-    let (yaw, pitch, _) = rot_delta.to_euler(EulerRot::YXZ);
+    let (yaw, pitch, _): (f32, f32, f32) = rot_delta.to_euler(EulerRot::YXZ);
     if yaw.abs() > 0.001 || pitch.abs() > 0.001 {
         input_state.look_delta = Vec2::new(yaw, pitch);
-        events.send(InputEvent::Look(input_state.look_delta));
+        events.write(InputEvent::Look(input_state.look_delta));
     }
 
     vr_state.last_head_pos = head.translation;

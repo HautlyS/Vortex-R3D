@@ -3,7 +3,7 @@
 use bevy::prelude::*;
 use bevy_mod_xr::camera::XrCamera;
 
-use super::{CameraState, GameCamera};
+use super::CameraState;
 use crate::platform::on_vr;
 
 pub struct VrCameraPlugin;

@@ -1,12 +1,13 @@
 //! Camera abstraction - unified state with platform-specific controllers
 
+#[cfg(feature = "desktop")]
 mod desktop;
 #[cfg(feature = "vr")]
 mod vr;
 #[cfg(feature = "webxr")]
 mod webxr;
 
-#[allow(unused_imports)]
+#[cfg(feature = "desktop")]
 pub use desktop::DesktopCameraPlugin;
 #[cfg(feature = "vr")]
 pub use vr::VrCameraPlugin;

@@ -277,5 +277,6 @@ fn handle_xr_input(
 }
 
 /// Marker for entities that follow WebXR head position
+#[allow(dead_code)]
 #[derive(Component)]
 pub struct FollowWebXrHead;
