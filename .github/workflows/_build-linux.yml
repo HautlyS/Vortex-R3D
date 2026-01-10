@@ -64,8 +64,8 @@ jobs:
       - name: Cache Rust dependencies
         uses: Swatinem/rust-cache@v2
         with:
-          shared-key: linux-release
-          cache-targets: true
+          shared-key: linux-desktop
+          cache-all-crates: true
 
       - name: Cache cargo-deb
         id: cache-cargo-deb

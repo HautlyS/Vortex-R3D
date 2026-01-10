@@ -52,8 +52,8 @@ jobs:
       - name: Cache Rust dependencies
         uses: Swatinem/rust-cache@v2
         with:
-          shared-key: macos-release
-          cache-targets: true
+          shared-key: macos-desktop
+          cache-all-crates: true
 
       - name: Build x86_64 binary
         run: cargo build --release --features desktop --target x86_64-apple-darwin

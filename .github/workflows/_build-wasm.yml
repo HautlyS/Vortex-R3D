@@ -56,19 +56,24 @@ jobs:
       - name: Cache Rust dependencies
         uses: Swatinem/rust-cache@v2
         with:
-          shared-key: wasm-build
-          cache-targets: true
+          shared-key: wasm-webxr
+          cache-all-crates: true
 
-      - name: Cache Trunk
-        id: cache-trunk
+      - name: Cache Trunk + tools
         uses: actions/cache@v4
         with:
-          path: ~/.cargo/bin/trunk
-          key: trunk-${{ env.TRUNK_VERSION }}-${{ runner.os }}
+          path: |
+            ~/.cargo/bin/trunk
+            ~/.cache/trunk
+          key: trunk-${{ env.TRUNK_VERSION }}-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}
+          restore-keys: |
+            trunk-${{ env.TRUNK_VERSION }}-${{ runner.os }}-
 
       - name: Install Trunk
-        if: steps.cache-trunk.outputs.cache-hit != 'true'
-        run: cargo install --locked trunk@${{ env.TRUNK_VERSION }}
+        run: |
+          if ! command -v trunk &> /dev/null || [[ "$(trunk --version)" != *"${{ env.TRUNK_VERSION }}"* ]]; then
+            cargo install --locked trunk@${{ env.TRUNK_VERSION }}
+          fi
 
       - name: Configure features in index.html
         if: ${{ inputs.features != 'webxr' }}
@@ -81,10 +86,7 @@ jobs:
           sed -i 's/data-wasm-opt="[^"]*"/data-wasm-opt="0"/' index.html
 
       - name: Build WASM
-        run: |
-          # Features controlled via index.html data-cargo-* attributes (per Trunk docs)
-          # wasm-opt controlled via data-wasm-opt attribute
-          trunk build --release --public-url "${{ inputs.public_url }}"
+        run: trunk build --release --public-url "${{ inputs.public_url }}"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

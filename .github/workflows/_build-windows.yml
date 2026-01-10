@@ -44,8 +44,8 @@ jobs:
       - name: Cache Rust dependencies
         uses: Swatinem/rust-cache@v2
         with:
-          shared-key: windows-release
-          cache-targets: true
+          shared-key: windows-desktop
+          cache-all-crates: true
 
       - name: Build release binary
         run: cargo build --release --features ${{ inputs.features }}

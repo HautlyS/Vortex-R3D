@@ -3,6 +3,16 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+    paths:
+      - 'src/**'
+      - 'assets/**'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - 'index.html'
+      - 'Trunk.toml'
+      - '404.html'
+      - '.github/workflows/deploy-pages.yml'
+      - '.github/workflows/_build-wasm.yml'
   workflow_dispatch:
 
 permissions:

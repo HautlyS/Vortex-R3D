@@ -28,6 +28,9 @@ jobs:
             g++ pkg-config libx11-dev libwayland-dev libasound2-dev libudev-dev
       
       - uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: linux-desktop
+          cache-all-crates: true
       
       - name: Check desktop
         run: cargo check --features desktop
@@ -47,6 +50,9 @@ jobs:
             libopenxr-loader1 libopenxr-dev cmake
       
       - uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: linux-vr
+          cache-all-crates: true
       
       - name: Check VR
         run: cargo check --features vr --no-default-features
@@ -59,6 +65,9 @@ jobs:
         with:
           submodules: recursive
       - uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: windows-desktop
+          cache-all-crates: true
       - name: Check
         run: cargo check --features desktop
 
@@ -70,6 +79,9 @@ jobs:
         with:
           submodules: recursive
       - uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: wasm-webxr
+          cache-all-crates: true
       
       - name: Install WASM target
         run: rustup target add wasm32-unknown-unknown
@@ -101,6 +113,9 @@ jobs:
             g++ pkg-config libx11-dev libwayland-dev libasound2-dev libudev-dev
       
       - uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: linux-desktop
+          cache-all-crates: true
       
       - name: Clippy
         run: cargo clippy --features desktop -- -D warnings
