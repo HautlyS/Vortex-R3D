@@ -10,7 +10,7 @@
     <meta name="format-detection" content="telephone=no">
     <title>Panorama Viewer</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕉️</text></svg>">
-    <link data-trunk rel="rust" data-cargo-no-default-features data-cargo-features="webxr" data-wasm-opt="z" data-wasm-opt-params="--enable-bulk-memory" />
+    <link data-trunk rel="rust" data-cargo-no-default-features data-cargo-features="webxr" data-wasm-opt="z" data-wasm-opt-params="--enable-bulk-memory --enable-nontrapping-float-to-int --enable-sign-ext" />
     <link data-trunk rel="copy-file" href="assets"/>
     <style>
         * { box-sizing: border-box; }
