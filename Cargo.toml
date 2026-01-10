@@ -27,9 +27,9 @@ lto = true
 
 [features]
 default = ["desktop"]
-desktop = ["particles"]
+desktop = ["particles", "bevy/multi_threaded", "bevy/x11", "bevy/wayland"]
 particles = ["bevy_hanabi"]
-vr = ["bevy_mod_openxr", "bevy_mod_xr", "particles"]
+vr = ["bevy_mod_openxr", "bevy_mod_xr", "particles", "bevy/multi_threaded", "bevy/x11", "bevy/wayland"]
 webxr = []
 dev = ["bevy/dynamic_linking"]
 
@@ -55,9 +55,6 @@ bevy = { version = "0.17", default-features = false, features = [
     "hdr",
     "png",
     "jpeg",
-    "multi_threaded",
-    "x11",
-    "wayland",
     "webgl2",
     "tonemapping_luts",
     "zstd_rust",
@@ -71,7 +68,7 @@ bevy = { version = "0.17", default-features = false, features = [
 bevy_kira_audio = { version = "0.24", features = ["ogg", "wav"] }
 
 # Asset loading
-bevy_asset_loader = "0.24"
+bevy_asset_loader = { version = "0.24", default-features = false }
 
 # Portals (local)
 bevy_basic_portals = { path = "examples/bevy_basic_portals" }

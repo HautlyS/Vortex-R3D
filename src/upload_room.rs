@@ -6,8 +6,7 @@ use bevy::asset::RenderAssetUsages;
 use bevy::gltf::Gltf;
 use bevy::mesh::{Indices, PrimitiveTopology};
 use bevy::prelude::*;
-use bevy_egui::{egui, EguiContexts, EguiPlugin};
-use bevy_egui_kbgp::prelude::*;
+use bevy_egui::{egui, EguiContexts, EguiPlugin, EguiPrimaryContextPass};
 use std::f32::consts::PI;
 use std::sync::Mutex;
 
@@ -15,7 +14,7 @@ pub struct UploadRoomPlugin;
 
 impl Plugin for UploadRoomPlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins((EguiPlugin::default(), KbgpPlugin))
+        app.add_plugins(EguiPlugin::default())
             .init_resource::<UploadState>()
             .add_systems(Startup, go_to_viewing)
             .add_systems(OnEnter(GameState::Viewing), setup_upload_room)
@@ -26,9 +25,12 @@ impl Plugin for UploadRoomPlugin {
                     poll_file_data,
                     load_pending_model,
                     rotate_ambient_light,
-                    upload_hud,
                 )
                     .run_if(in_state(GameState::Viewing)),
+            )
+            .add_systems(
+                EguiPrimaryContextPass,
+                upload_hud.run_if(in_state(GameState::Viewing)),
             );
     }
 }
@@ -153,18 +155,10 @@ fn upload_hud(mut ctx: EguiContexts) {
                 ui.heading("🌐 Panorama Viewer");
                 ui.add_space(8.0);
 
-                if ui
-                    .button("📷 Upload Panorama (P)")
-                    .kbgp_navigation()
-                    .clicked()
-                {
+                if ui.button("📷 Upload Panorama (P)").clicked() {
                     pick_file(FileKind::Image);
                 }
-                if ui
-                    .button("🎭 Upload 3D Model (M)")
-                    .kbgp_navigation()
-                    .clicked()
-                {
+                if ui.button("🎭 Upload 3D Model (M)").clicked() {
                     pick_file(FileKind::Model);
                 }
 
