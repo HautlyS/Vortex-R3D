@@ -23,43 +23,43 @@ mod upload_room;
 mod vortex_transition;
 mod world;
 
-use bevy::prelude::*;
 #[cfg(debug_assertions)]
 use bevy::diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin};
+use bevy::prelude::*;
 
 // Re-exports
 pub use book_reader::BookReaderPlugin;
 pub use camera::{CameraPlugin, CameraState, GameCamera};
 pub use character::CharacterPlugin;
-pub use core::{CorePlugin, Os, PlatformEntity, DesktopOnly, VrOnly};
+pub use core::{CorePlugin, DesktopOnly, Os, PlatformEntity, VrOnly};
 #[cfg(feature = "particles")]
 pub use energy_particles::EnergyParticlesPlugin;
 pub use glb_character::GlbCharacterPlugin;
 pub use holographic::HolographicParticlesPlugin;
 pub use ibl::IblPlugin;
-pub use input::{InputPlugin, InputEvent, InputState};
+pub use input::{InputEvent, InputPlugin, InputState};
 pub use loading::LoadingPlugin;
 pub use panorama::PanoramaPlugin;
-pub use platform::{Platform, PlatformPlugin, SwitchPlatform, on_desktop, on_vr, on_webxr};
+pub use platform::{on_desktop, on_vr, on_webxr, Platform, PlatformPlugin, SwitchPlatform};
 pub use player::PlayerPlugin;
 pub use portals::PortalsPlugin;
 pub use post_process::PostProcessPlugin;
 pub use room_audio::RoomAudioPlugin;
-pub use routes::{AppMode, get_app_mode};
+pub use routes::{get_app_mode, AppMode};
 pub use upload_room::UploadRoomPlugin;
 pub use vortex_transition::VortexTransitionPlugin;
 pub use world::WorldPlugin;
 
+#[cfg(feature = "webxr")]
+pub use camera::WebXrCameraPlugin;
+#[cfg(feature = "webxr")]
+pub use input::WebXrInputPlugin;
 #[cfg(feature = "desktop")]
 pub use platform::DesktopPlatformPlugin;
 #[cfg(feature = "vr")]
 pub use platform::VrPlatformPlugin;
 #[cfg(feature = "webxr")]
 pub use platform::WebXrPlatformPlugin;
-#[cfg(feature = "webxr")]
-pub use camera::WebXrCameraPlugin;
-#[cfg(feature = "webxr")]
-pub use input::WebXrInputPlugin;
 
 #[derive(States, Default, Clone, Eq, PartialEq, Debug, Hash)]
 pub enum GameState {
@@ -78,11 +78,7 @@ impl Plugin for GameCorePlugin {
         let mode = get_app_mode();
 
         // Shared plugins for all modes
-        app.add_plugins((
-            CorePlugin,
-            InputPlugin,
-            CameraPlugin,
-        ));
+        app.add_plugins((CorePlugin, InputPlugin, CameraPlugin));
 
         match mode {
             AppMode::FullExperience => {
@@ -110,7 +106,10 @@ impl Plugin for GameCorePlugin {
         }
 
         #[cfg(debug_assertions)]
-        app.add_plugins((FrameTimeDiagnosticsPlugin::default(), LogDiagnosticsPlugin::default()));
+        app.add_plugins((
+            FrameTimeDiagnosticsPlugin::default(),
+            LogDiagnosticsPlugin::default(),
+        ));
     }
 }
 

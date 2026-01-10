@@ -1,8 +1,8 @@
 //! Desktop input - WASD + mouse look + gamepad
 
-use bevy::prelude::*;
-use bevy::input::mouse::AccumulatedMouseMotion;
 use bevy::input::gamepad::GamepadButton;
+use bevy::input::mouse::AccumulatedMouseMotion;
+use bevy::prelude::*;
 use bevy::window::{CursorGrabMode, CursorOptions, PrimaryWindow};
 
 use super::{InputEvent, InputState};
@@ -14,17 +14,21 @@ impl Plugin for DesktopInputPlugin {
     fn build(&self, app: &mut App) {
         use bevy::ecs::schedule::IntoScheduleConfigs;
         info!("🎮 [DEBUG] DesktopInputPlugin registered");
-        app.add_systems(Startup, debug_platform_state)
-            .add_systems(Update, (
-            handle_cursor_grab,
-            read_desktop_input,
-        ).chain_ignore_deferred().run_if(on_desktop));
+        app.add_systems(Startup, debug_platform_state).add_systems(
+            Update,
+            (handle_cursor_grab, read_desktop_input)
+                .chain_ignore_deferred()
+                .run_if(on_desktop),
+        );
     }
 }
 
 fn debug_platform_state(platform: Res<crate::platform::Platform>) {
     info!("🎮 [DEBUG] Platform state at startup: {:?}", *platform);
-    info!("🎮 [DEBUG] on_desktop would return: {}", *platform == crate::platform::Platform::Desktop);
+    info!(
+        "🎮 [DEBUG] on_desktop would return: {}",
+        *platform == crate::platform::Platform::Desktop
+    );
 }
 
 fn handle_cursor_grab(
@@ -33,8 +37,10 @@ fn handle_cursor_grab(
     keys: Res<ButtonInput<KeyCode>>,
     mut state: ResMut<InputState>,
 ) {
-    let Ok(mut cursor) = cursor_q.single_mut() else { return };
-    
+    let Ok(mut cursor) = cursor_q.single_mut() else {
+        return;
+    };
+
     if mouse.just_pressed(MouseButton::Left) {
         cursor.grab_mode = CursorGrabMode::Locked;
         cursor.visible = false;
@@ -57,16 +63,28 @@ fn read_desktop_input(
 ) {
     // Movement
     let mut movement = Vec2::ZERO;
-    if keys.pressed(KeyCode::KeyW) || keys.pressed(KeyCode::ArrowUp) { movement.y -= 1.0; }
-    if keys.pressed(KeyCode::KeyS) || keys.pressed(KeyCode::ArrowDown) { movement.y += 1.0; }
-    if keys.pressed(KeyCode::KeyA) || keys.pressed(KeyCode::ArrowLeft) { movement.x -= 1.0; }
-    if keys.pressed(KeyCode::KeyD) || keys.pressed(KeyCode::ArrowRight) { movement.x += 1.0; }
-    
-    state.movement = if movement != Vec2::ZERO { movement.normalize() } else { Vec2::ZERO };
+    if keys.pressed(KeyCode::KeyW) || keys.pressed(KeyCode::ArrowUp) {
+        movement.y -= 1.0;
+    }
+    if keys.pressed(KeyCode::KeyS) || keys.pressed(KeyCode::ArrowDown) {
+        movement.y += 1.0;
+    }
+    if keys.pressed(KeyCode::KeyA) || keys.pressed(KeyCode::ArrowLeft) {
+        movement.x -= 1.0;
+    }
+    if keys.pressed(KeyCode::KeyD) || keys.pressed(KeyCode::ArrowRight) {
+        movement.x += 1.0;
+    }
+
+    state.movement = if movement != Vec2::ZERO {
+        movement.normalize()
+    } else {
+        Vec2::ZERO
+    };
     if state.movement != Vec2::ZERO {
         events.write(InputEvent::Move(state.movement));
     }
-    
+
     // Look
     if state.cursor_locked && mouse_motion.delta != Vec2::ZERO {
         state.look_delta = mouse_motion.delta;
@@ -74,7 +92,7 @@ fn read_desktop_input(
     } else {
         state.look_delta = Vec2::ZERO;
     }
-    
+
     // Actions
     if mouse.just_pressed(MouseButton::Left) && state.cursor_locked {
         events.write(InputEvent::Interact);
@@ -91,7 +109,7 @@ fn read_desktop_input(
     if keys.just_pressed(KeyCode::Escape) {
         events.write(InputEvent::ToggleMenu);
     }
-    
+
     // Book Reader: Now handled by bevy_egui_kbgp in book_reader module
     // B key and gamepad West button are bound via KbgpSettings
 }

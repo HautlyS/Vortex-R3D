@@ -2,9 +2,9 @@
 
 use bevy::prelude::*;
 
-use crate::input::VrInputPlugin;
-use crate::camera::VrCameraPlugin;
 use super::Platform;
+use crate::camera::VrCameraPlugin;
+use crate::input::VrInputPlugin;
 
 pub struct VrPlatformPlugin;
 

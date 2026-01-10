@@ -34,7 +34,9 @@ pub fn follow_vr_head(
     xr_cameras: Query<&Transform, With<XrCamera>>,
     mut followers: Query<&mut Transform, (With<FollowVrHead>, Without<XrCamera>)>,
 ) {
-    let Some(head) = xr_cameras.iter().next() else { return };
+    let Some(head) = xr_cameras.iter().next() else {
+        return;
+    };
     for mut t in &mut followers {
         t.translation = head.translation;
     }

@@ -2,11 +2,7 @@
 //! Features: Glassmorphism, spring animations, keyboard/gamepad nav, responsive design
 //! Performance: Retained mode, conditional updates, spring physics, GPU-friendly
 
-use bevy::{
-    ecs::hierarchy::ChildSpawnerCommands,
-    prelude::*,
-    ui::Val::*,
-};
+use bevy::{ecs::hierarchy::ChildSpawnerCommands, prelude::*, ui::Val::*};
 
 pub struct BookReaderPlugin;
 
@@ -112,7 +108,10 @@ struct AnimatedScale {
 
 impl Default for AnimatedScale {
     fn default() -> Self {
-        Self { current: 0.0, velocity: 0.0 }
+        Self {
+            current: 0.0,
+            velocity: 0.0,
+        }
     }
 }
 
@@ -230,7 +229,10 @@ fn spawn_tabs(parent: &mut ChildSpawnerCommands, theme: &BookTheme) {
             ..default()
         })
         .with_children(|row| {
-            for (tab, label) in [(Tab::Book, "📜 Sacred Text"), (Tab::Character, "👤 Character")] {
+            for (tab, label) in [
+                (Tab::Book, "📜 Sacred Text"),
+                (Tab::Character, "👤 Character"),
+            ] {
                 let selected = tab == Tab::Book;
                 row.spawn((
                     Button,
@@ -416,7 +418,12 @@ fn spawn_content(parent: &mut ChildSpawnerCommands, theme: &BookTheme) {
                                 },
                             ));
 
-                            for (stat, val) in [("Wisdom", 42), ("Focus", 78), ("Insight", 65), ("Karma", 91)] {
+                            for (stat, val) in [
+                                ("Wisdom", 42),
+                                ("Focus", 78),
+                                ("Insight", 65),
+                                ("Karma", 91),
+                            ] {
                                 stats.spawn((
                                     Text::new(format!("{stat}: {val}/100")),
                                     TextFont::from_font_size(12.0),
@@ -481,20 +488,14 @@ fn spawn_footer(parent: &mut ChildSpawnerCommands, theme: &BookTheme) {
 
 // === Systems ===
 
-fn toggle_book_input(
-    keyboard: Res<ButtonInput<KeyCode>>,
-    mut state: ResMut<BookState>,
-) {
+fn toggle_book_input(keyboard: Res<ButtonInput<KeyCode>>, mut state: ResMut<BookState>) {
     if keyboard.just_pressed(KeyCode::KeyB) {
         state.open = !state.open;
         state.target_scale = if state.open { 1.0 } else { 0.0 };
     }
 }
 
-fn close_book_input(
-    keyboard: Res<ButtonInput<KeyCode>>,
-    mut state: ResMut<BookState>,
-) {
+fn close_book_input(keyboard: Res<ButtonInput<KeyCode>>, mut state: ResMut<BookState>) {
     if keyboard.just_pressed(KeyCode::Escape) && state.open {
         state.open = false;
         state.target_scale = 0.0;
@@ -516,7 +517,15 @@ fn close_book(mut state: ResMut<BookState>) {
 }
 
 fn animate_panel(
-    mut query: Query<(&mut Visibility, &mut AnimatedScale, &mut Transform, &mut BackgroundColor), With<BookPanel>>,
+    mut query: Query<
+        (
+            &mut Visibility,
+            &mut AnimatedScale,
+            &mut Transform,
+            &mut BackgroundColor,
+        ),
+        With<BookPanel>,
+    >,
     state: Res<BookState>,
     time: Res<Time>,
 ) {
@@ -532,7 +541,7 @@ fn animate_panel(
     let damping = 18.0;
     let displacement = target - anim.current;
     let spring_force = stiffness * displacement - damping * anim.velocity;
-    
+
     anim.velocity += spring_force * dt;
     anim.current += anim.velocity * dt;
 
@@ -558,7 +567,10 @@ fn animate_panel(
 
 fn handle_tab_buttons(
     mut state: ResMut<BookState>,
-    mut tabs: Query<(&Interaction, &TabButton, &mut BackgroundColor, &Children), Changed<Interaction>>,
+    mut tabs: Query<
+        (&Interaction, &TabButton, &mut BackgroundColor, &Children),
+        Changed<Interaction>,
+    >,
     mut texts: Query<&mut TextColor>,
     theme: Res<BookTheme>,
 ) {
@@ -602,17 +614,57 @@ fn update_page_content(
     state: Res<BookState>,
     mut book_content: Query<&mut Node, (With<BookContent>, Without<CharacterContent>)>,
     mut char_content: Query<&mut Node, (With<CharacterContent>, Without<BookContent>)>,
-    mut chapter: Query<&mut Text, (With<PageChapter>, Without<PageTitle>, Without<PageContent>, Without<PageCounter>)>,
-    mut title: Query<&mut Text, (With<PageTitle>, Without<PageChapter>, Without<PageContent>, Without<PageCounter>)>,
-    mut content: Query<&mut Text, (With<PageContent>, Without<PageChapter>, Without<PageTitle>, Without<PageCounter>)>,
-    mut counter: Query<&mut Text, (With<PageCounter>, Without<PageChapter>, Without<PageTitle>, Without<PageContent>)>,
+    mut chapter: Query<
+        &mut Text,
+        (
+            With<PageChapter>,
+            Without<PageTitle>,
+            Without<PageContent>,
+            Without<PageCounter>,
+        ),
+    >,
+    mut title: Query<
+        &mut Text,
+        (
+            With<PageTitle>,
+            Without<PageChapter>,
+            Without<PageContent>,
+            Without<PageCounter>,
+        ),
+    >,
+    mut content: Query<
+        &mut Text,
+        (
+            With<PageContent>,
+            Without<PageChapter>,
+            Without<PageTitle>,
+            Without<PageCounter>,
+        ),
+    >,
+    mut counter: Query<
+        &mut Text,
+        (
+            With<PageCounter>,
+            Without<PageChapter>,
+            Without<PageTitle>,
+            Without<PageContent>,
+        ),
+    >,
 ) {
     // Toggle content visibility
     if let Ok(mut node) = book_content.single_mut() {
-        node.display = if state.tab == Tab::Book { Display::Flex } else { Display::None };
+        node.display = if state.tab == Tab::Book {
+            Display::Flex
+        } else {
+            Display::None
+        };
     }
     if let Ok(mut node) = char_content.single_mut() {
-        node.display = if state.tab == Tab::Character { Display::Flex } else { Display::None };
+        node.display = if state.tab == Tab::Character {
+            Display::Flex
+        } else {
+            Display::None
+        };
     }
 
     // Update page content
@@ -634,7 +686,10 @@ fn update_page_content(
 }
 
 fn animate_buttons(
-    mut buttons: Query<(&Interaction, &mut BackgroundColor, &mut Transform), (With<Button>, Without<TabButton>, Changed<Interaction>)>,
+    mut buttons: Query<
+        (&Interaction, &mut BackgroundColor, &mut Transform),
+        (With<Button>, Without<TabButton>, Changed<Interaction>),
+    >,
     theme: Res<BookTheme>,
 ) {
     for (interaction, mut bg, mut transform) in &mut buttons {
@@ -687,8 +742,20 @@ const PAGES: &[Page] = &[
 const CHARACTER_BIO: &str = "A wanderer between digital realms, the Seeker has traversed countless virtual landscapes in pursuit of the ultimate truth: the source code of consciousness itself.\n\nNow they walk the path of the Techno Sutra, gathering wisdom from ancient shader monks and modern compute prophets alike.";
 
 const ABILITIES: &[(&str, &str, &str)] = &[
-    ("🔮", "Digital Sight", "See through textures to the wireframe beneath"),
-    ("⚡", "Frame Skip", "Move between moments, bypassing time itself"),
+    (
+        "🔮",
+        "Digital Sight",
+        "See through textures to the wireframe beneath",
+    ),
+    (
+        "⚡",
+        "Frame Skip",
+        "Move between moments, bypassing time itself",
+    ),
     ("🌀", "Shader Weave", "Manipulate light and shadow at will"),
-    ("💫", "Buffer Overflow", "Channel excess data into raw power"),
+    (
+        "💫",
+        "Buffer Overflow",
+        "Channel excess data into raw power",
+    ),
 ];

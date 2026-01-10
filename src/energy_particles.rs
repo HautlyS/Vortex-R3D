@@ -1,8 +1,8 @@
+use crate::camera::{CameraState, GameCamera};
+use crate::GameState;
 use bevy::prelude::*;
 use bevy_hanabi::prelude::*;
 use bevy_hanabi::Gradient as HanabiGradient;
-use crate::camera::{CameraState, GameCamera};
-use crate::GameState;
 
 pub struct EnergyParticlesPlugin;
 
@@ -10,7 +10,10 @@ impl Plugin for EnergyParticlesPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(HanabiPlugin)
             .add_systems(OnEnter(GameState::Viewing), spawn_energy_core)
-            .add_systems(Update, (follow_camera, adjust_visibility).run_if(in_state(GameState::Viewing)));
+            .add_systems(
+                Update,
+                (follow_camera, adjust_visibility).run_if(in_state(GameState::Viewing)),
+            );
     }
 }
 
@@ -20,8 +23,8 @@ pub struct EnergyCore;
 fn spawn_energy_core(mut commands: Commands, mut effects: ResMut<Assets<EffectAsset>>) {
     // Subtle inner core - soft glow
     let mut core_gradient = HanabiGradient::new();
-    core_gradient.add_key(0.0, Vec4::new(0.15, 0.4, 0.8, 0.08));  // very faint blue
-    core_gradient.add_key(0.5, Vec4::new(0.1, 0.2, 0.5, 0.04));   // dimmer
+    core_gradient.add_key(0.0, Vec4::new(0.15, 0.4, 0.8, 0.08)); // very faint blue
+    core_gradient.add_key(0.5, Vec4::new(0.1, 0.2, 0.5, 0.04)); // dimmer
     core_gradient.add_key(1.0, Vec4::ZERO);
 
     let mut module = Module::default();
@@ -48,7 +51,10 @@ fn spawn_energy_core(mut commands: Commands, mut effects: ResMut<Assets<EffectAs
         .init(init_vel)
         .init(init_lifetime)
         .init(init_size)
-        .render(ColorOverLifetimeModifier { gradient: core_gradient, ..default() });
+        .render(ColorOverLifetimeModifier {
+            gradient: core_gradient,
+            ..default()
+        });
 
     let handle = effects.add(effect);
 
@@ -64,8 +70,10 @@ fn follow_camera(
     mut energy: Query<&mut Transform, With<EnergyCore>>,
 ) {
     let Ok(cam) = camera.single() else { return };
-    let Ok(mut core) = energy.single_mut() else { return };
-    
+    let Ok(mut core) = energy.single_mut() else {
+        return;
+    };
+
     // Position BELOW camera (at body level)
     core.translation = cam.translation - Vec3::Y * 0.3;
 }
@@ -74,8 +82,10 @@ fn adjust_visibility(
     state: Res<CameraState>,
     mut spawners: Query<&mut EffectSpawner, With<EnergyCore>>,
 ) {
-    let Ok(mut spawner) = spawners.single_mut() else { return };
-    
+    let Ok(mut spawner) = spawners.single_mut() else {
+        return;
+    };
+
     // Only visible when looking down (negative pitch)
     // pitch < -0.3 means looking down
     let visibility = if state.pitch < -0.2 {
@@ -84,7 +94,7 @@ fn adjust_visibility(
     } else {
         0.0
     };
-    
+
     // Control spawn rate based on visibility
     spawner.active = visibility > 0.01;
 }

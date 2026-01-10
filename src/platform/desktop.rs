@@ -2,9 +2,9 @@
 
 use bevy::prelude::*;
 
-use crate::input::DesktopInputPlugin;
-use crate::camera::DesktopCameraPlugin;
 use super::Platform;
+use crate::camera::DesktopCameraPlugin;
+use crate::input::DesktopInputPlugin;
 
 pub struct DesktopPlatformPlugin;
 

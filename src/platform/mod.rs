@@ -12,10 +12,10 @@ pub use desktop::DesktopPlatformPlugin;
 #[cfg(feature = "vr")]
 pub use vr::VrPlatformPlugin;
 #[cfg(feature = "webxr")]
-pub use webxr::{WebXrPlatformPlugin, WebXrState, WebXrPose};
+pub use webxr::{WebXrPlatformPlugin, WebXrPose, WebXrState};
 
-use bevy::prelude::*;
 use crate::core::{Os, PlatformEntity};
+use bevy::prelude::*;
 
 /// Active platform type
 #[derive(Resource, Default, Clone, Copy, PartialEq, Eq, Debug)]
@@ -33,10 +33,10 @@ impl Platform {
         if os.supports_vr() {
             return Platform::Vr;
         }
-        
+
         #[cfg(all(feature = "webxr", target_arch = "wasm32"))]
         return Platform::WebXr;
-        
+
         Platform::Desktop
     }
 }
@@ -69,13 +69,16 @@ fn handle_platform_switch(
 ) {
     for SwitchPlatform(new_platform) in events.read() {
         if *platform != *new_platform {
-            info!("🔄 Switching platform: {:?} -> {:?}", *platform, new_platform);
-            
+            info!(
+                "🔄 Switching platform: {:?} -> {:?}",
+                *platform, new_platform
+            );
+
             // Cleanup old platform entities
             for entity in &platform_entities {
                 commands.entity(entity).despawn();
             }
-            
+
             *platform = *new_platform;
         }
     }
@@ -86,13 +89,17 @@ pub struct PlatformPlugin;
 
 impl Plugin for PlatformPlugin {
     fn build(&self, app: &mut App) {
-        let os = app.world().get_resource::<Os>().copied().unwrap_or_default();
+        let os = app
+            .world()
+            .get_resource::<Os>()
+            .copied()
+            .unwrap_or_default();
         let platform = Platform::auto_detect(&os);
-        
+
         app.insert_resource(platform)
             .add_message::<SwitchPlatform>()
             .add_systems(PreUpdate, handle_platform_switch);
-        
+
         info!("🎮 Platform: {:?} (OS: {:?})", platform, os);
     }
 }

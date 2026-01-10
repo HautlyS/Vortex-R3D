@@ -1,5 +1,5 @@
 //! Image-Based Lighting (IBL) Plugin
-//! 
+//!
 //! Analyzes panoramic images to extract lighting information and applies
 //! it to 3D objects for seamless integration into the scene.
 
@@ -9,8 +9,8 @@ mod light_probe;
 pub use analysis::*;
 pub use light_probe::*;
 
-use bevy::prelude::*;
 use crate::GameState;
+use bevy::prelude::*;
 
 pub struct IblPlugin;
 
@@ -20,12 +20,17 @@ impl Plugin for IblPlugin {
             .add_message::<AnalyzePanoramaEvent>()
             .add_message::<IblReadyEvent>()
             .add_systems(OnEnter(GameState::Viewing), trigger_analysis)
-            .add_systems(Update, (
-                analyze_panorama_system,
-                receive_analysis_results,
-                apply_ibl_lighting_system,
-                apply_ibl_to_models,
-            ).chain().run_if(in_state(GameState::Viewing)));
+            .add_systems(
+                Update,
+                (
+                    analyze_panorama_system,
+                    receive_analysis_results,
+                    apply_ibl_lighting_system,
+                    apply_ibl_to_models,
+                )
+                    .chain()
+                    .run_if(in_state(GameState::Viewing)),
+            );
     }
 }
 
@@ -44,9 +49,18 @@ fn apply_ibl_to_models(
 ) {
     for _ in events.read() {
         for entity in models.iter() {
-            apply_ibl_recursive(entity, &light_probe, &children, &mut materials, &mat_handles);
+            apply_ibl_recursive(
+                entity,
+                &light_probe,
+                &children,
+                &mut materials,
+                &mat_handles,
+            );
         }
-        info!("🎨 IBL materials applied to {} models", models.iter().count());
+        info!(
+            "🎨 IBL materials applied to {} models",
+            models.iter().count()
+        );
     }
 }
 
@@ -63,7 +77,7 @@ fn apply_ibl_recursive(
             // Enhance material with IBL-derived properties
             let sh_sample = light_probe.spherical_harmonics.sample(Vec3::Y);
             let avg_brightness = (sh_sample.x + sh_sample.y + sh_sample.z) / 3.0;
-            
+
             // Subtle emissive tint from environment
             mat.emissive = LinearRgba::new(
                 sh_sample.x * 0.02,
@@ -71,19 +85,19 @@ fn apply_ibl_recursive(
                 sh_sample.z * 0.02,
                 1.0,
             );
-            
+
             // Adjust roughness based on scene contrast
             if light_probe.contrast > 2.0 {
                 mat.perceptual_roughness = (mat.perceptual_roughness * 0.9).max(0.1);
             }
-            
+
             // Boost reflectance for high-brightness environments
             if avg_brightness > 0.5 {
                 mat.reflectance = (mat.reflectance + 0.1).min(1.0);
             }
         }
     }
-    
+
     // Recurse to children
     if let Ok(kids) = children.get(entity) {
         for child in kids.iter() {

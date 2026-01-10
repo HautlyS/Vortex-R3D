@@ -1,8 +1,8 @@
-use bevy::prelude::*;
-use bevy::gltf::{Gltf, GltfExtras, GltfMaterialExtras, GltfMeshExtras, GltfSceneExtras};
-use bevy::animation::AnimationPlayer;
-use bevy_asset_loader::prelude::*;
 use crate::GameState;
+use bevy::animation::AnimationPlayer;
+use bevy::gltf::{Gltf, GltfExtras, GltfMaterialExtras, GltfMeshExtras, GltfSceneExtras};
+use bevy::prelude::*;
+use bevy_asset_loader::prelude::*;
 
 pub struct LoadingPlugin;
 
@@ -28,10 +28,10 @@ impl Plugin for LoadingPlugin {
 pub struct PanoramaAssets {
     #[asset(path = "panoramas/demo.jpg")]
     pub demo_panorama: Handle<Image>,
-    
+
     #[asset(path = "panoramas/demo2.jpg")]
     pub demo2_panorama: Handle<Image>,
-    
+
     #[asset(path = "panoramas/demo3.jpg")]
     pub demo3_panorama: Handle<Image>,
 }
@@ -40,10 +40,10 @@ pub struct PanoramaAssets {
 pub struct ModelAssets {
     #[asset(path = "models/modelo1.glb")]
     pub modelo1: Handle<Gltf>,
-    
+
     #[asset(path = "models/modelo2.glb")]
     pub modelo2: Handle<Gltf>,
-    
+
     #[asset(path = "models/modelo3.glb")]
     pub modelo3: Handle<Gltf>,
 }

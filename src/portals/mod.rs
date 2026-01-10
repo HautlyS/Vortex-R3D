@@ -1,14 +1,14 @@
 //! Portals module - Portal doors, crossing logic, render textures
 
-use bevy::prelude::*;
 use bevy::camera::visibility::RenderLayers;
+use bevy::prelude::*;
 use bevy::render::render_resource::{AsBindGroup, TextureFormat};
 use bevy::shader::ShaderRef;
 
-use crate::GameState;
 use crate::panorama::PanoramaCamera;
 use crate::player::PlayerState;
 use crate::world::{room_center, TOTAL_ROOMS};
+use crate::GameState;
 
 pub struct PortalsPlugin;
 
@@ -17,12 +17,17 @@ impl Plugin for PortalsPlugin {
         app.add_plugins(MaterialPlugin::<PortalMaterial>::default())
             .insert_resource(PortalState::default())
             .add_systems(OnEnter(GameState::Viewing), setup_portal_frames)
-            .add_systems(Update, (
-                spawn_portal_views,
-                sync_portal_cameras,
-                update_portal_time,
-                portal_crossing,
-            ).chain().run_if(in_state(GameState::Viewing)));
+            .add_systems(
+                Update,
+                (
+                    spawn_portal_views,
+                    sync_portal_cameras,
+                    update_portal_time,
+                    portal_crossing,
+                )
+                    .chain()
+                    .run_if(in_state(GameState::Viewing)),
+            );
     }
 }
 
@@ -41,15 +46,25 @@ pub struct DoorConfig {
     pub local_pos: Vec3,
     pub rotation: f32,
     pub target_room: usize,
-    pub door_index: usize,  // 0 = left door, 1 = right door
+    pub door_index: usize, // 0 = left door, 1 = right door
 }
 
 pub fn get_doors(room: usize) -> [DoorConfig; 2] {
     let prev = if room == 0 { TOTAL_ROOMS - 1 } else { room - 1 };
     let next = (room + 1) % TOTAL_ROOMS;
     [
-        DoorConfig { local_pos: Vec3::new(-5.0, 0.0, -5.0), rotation: 0.3, target_room: prev, door_index: 0 },
-        DoorConfig { local_pos: Vec3::new(5.0, 0.0, -5.0), rotation: -0.3, target_room: next, door_index: 1 },
+        DoorConfig {
+            local_pos: Vec3::new(-5.0, 0.0, -5.0),
+            rotation: 0.3,
+            target_room: prev,
+            door_index: 0,
+        },
+        DoorConfig {
+            local_pos: Vec3::new(5.0, 0.0, -5.0),
+            rotation: -0.3,
+            target_room: next,
+            door_index: 1,
+        },
     ]
 }
 
@@ -148,36 +163,61 @@ fn setup_portal_frames(
             // Pillars
             for x in [-half_w, half_w] {
                 cmd.spawn((
-                    Mesh3d(pillar.clone()), MeshMaterial3d(frame_mat.clone()),
-                    Transform::from_translation(world_pos + rot * Vec3::new(x, PORTAL_HEIGHT / 2.0, 0.0)).with_rotation(rot),
-                    RenderLayers::layer(room), PortalFrame,
+                    Mesh3d(pillar.clone()),
+                    MeshMaterial3d(frame_mat.clone()),
+                    Transform::from_translation(
+                        world_pos + rot * Vec3::new(x, PORTAL_HEIGHT / 2.0, 0.0),
+                    )
+                    .with_rotation(rot),
+                    RenderLayers::layer(room),
+                    PortalFrame,
                 ));
             }
             // Lintel
             cmd.spawn((
-                Mesh3d(lintel.clone()), MeshMaterial3d(frame_mat.clone()),
-                Transform::from_translation(world_pos + rot * Vec3::new(0.0, PORTAL_HEIGHT + 0.08, 0.0)).with_rotation(rot),
-                RenderLayers::layer(room), PortalFrame,
+                Mesh3d(lintel.clone()),
+                MeshMaterial3d(frame_mat.clone()),
+                Transform::from_translation(
+                    world_pos + rot * Vec3::new(0.0, PORTAL_HEIGHT + 0.08, 0.0),
+                )
+                .with_rotation(rot),
+                RenderLayers::layer(room),
+                PortalFrame,
             ));
             // Gold trim
             for x in [-half_w - 0.01, half_w + 0.01] {
                 cmd.spawn((
-                    Mesh3d(trim_v.clone()), MeshMaterial3d(gold_mat.clone()),
-                    Transform::from_translation(world_pos + rot * Vec3::new(x, PORTAL_HEIGHT / 2.0, 0.02)).with_rotation(rot),
-                    RenderLayers::layer(room), PortalFrame,
+                    Mesh3d(trim_v.clone()),
+                    MeshMaterial3d(gold_mat.clone()),
+                    Transform::from_translation(
+                        world_pos + rot * Vec3::new(x, PORTAL_HEIGHT / 2.0, 0.02),
+                    )
+                    .with_rotation(rot),
+                    RenderLayers::layer(room),
+                    PortalFrame,
                 ));
             }
             cmd.spawn((
-                Mesh3d(trim_h.clone()), MeshMaterial3d(gold_mat.clone()),
-                Transform::from_translation(world_pos + rot * Vec3::new(0.0, PORTAL_HEIGHT + 0.1, 0.02)).with_rotation(rot),
-                RenderLayers::layer(room), PortalFrame,
+                Mesh3d(trim_h.clone()),
+                MeshMaterial3d(gold_mat.clone()),
+                Transform::from_translation(
+                    world_pos + rot * Vec3::new(0.0, PORTAL_HEIGHT + 0.1, 0.02),
+                )
+                .with_rotation(rot),
+                RenderLayers::layer(room),
+                PortalFrame,
             ));
             // Glow
             for x in [-half_w + 0.08, half_w - 0.08] {
                 cmd.spawn((
-                    Mesh3d(glow_ring.clone()), MeshMaterial3d(glow_mat.clone()),
-                    Transform::from_translation(world_pos + rot * Vec3::new(x, PORTAL_HEIGHT / 2.0, 0.06)).with_rotation(rot),
-                    RenderLayers::layer(room), PortalFrame,
+                    Mesh3d(glow_ring.clone()),
+                    MeshMaterial3d(glow_mat.clone()),
+                    Transform::from_translation(
+                        world_pos + rot * Vec3::new(x, PORTAL_HEIGHT / 2.0, 0.06),
+                    )
+                    .with_rotation(rot),
+                    RenderLayers::layer(room),
+                    PortalFrame,
                 ));
             }
         }
@@ -193,11 +233,17 @@ fn spawn_portal_views(
     mut state: ResMut<PortalState>,
     cam_q: Query<Entity, With<PanoramaCamera>>,
 ) {
-    if state.spawned { return; }
+    if state.spawned {
+        return;
+    }
     state.frames_waited += 1;
-    if state.frames_waited < 5 { return; }
-    if cam_q.single().is_err() { return; }
-    
+    if state.frames_waited < 5 {
+        return;
+    }
+    if cam_q.single().is_err() {
+        return;
+    }
+
     state.spawned = true;
     let portal_mesh = meshes.add(Rectangle::new(PORTAL_WIDTH, PORTAL_HEIGHT));
 
@@ -208,7 +254,11 @@ fn spawn_portal_views(
             let rot = Quat::from_rotation_y(door.rotation);
             let portal_pos = world_pos + rot * Vec3::new(0.0, PORTAL_HEIGHT / 2.0, 0.08);
 
-            let rt = images.add(Image::new_target_texture(512, 1024, TextureFormat::bevy_default()));
+            let rt = images.add(Image::new_target_texture(
+                512,
+                1024,
+                TextureFormat::bevy_default(),
+            ));
 
             // Portal camera - positioned at target room
             let target_center = room_center(door.target_room);
@@ -220,9 +270,14 @@ fn spawn_portal_views(
                     clear_color: Color::srgb(0.01, 0.005, 0.02).into(),
                     ..default()
                 },
-                Transform::from_translation(target_center).looking_at(target_center + Vec3::NEG_Z, Vec3::Y),
+                Transform::from_translation(target_center)
+                    .looking_at(target_center + Vec3::NEG_Z, Vec3::Y),
                 RenderLayers::layer(door.target_room),
-                PortalCamera { source_room: room, target_room: door.target_room, door_rotation: door.rotation },
+                PortalCamera {
+                    source_room: room,
+                    target_room: door.target_room,
+                    door_rotation: door.rotation,
+                },
             ));
 
             // Portal surface
@@ -252,15 +307,19 @@ fn sync_portal_cameras(
     main_cam: Query<&Transform, (With<PanoramaCamera>, Without<PortalCamera>)>,
     mut portal_cams: Query<(&mut Transform, &PortalCamera), Without<PanoramaCamera>>,
 ) {
-    let Ok(main_tf) = main_cam.single() else { return };
+    let Ok(main_tf) = main_cam.single() else {
+        return;
+    };
     let (yaw, pitch, _) = main_tf.rotation.to_euler(EulerRot::YXZ);
-    
+
     for (mut cam_tf, portal) in portal_cams.iter_mut() {
-        if portal.source_room != player.room { continue; }
-        
+        if portal.source_room != player.room {
+            continue;
+        }
+
         let target_center = room_center(portal.target_room);
         cam_tf.translation = target_center + Vec3::Y * 1.7;
-        
+
         // Mirror the view through the portal
         let mirrored_yaw = yaw + std::f32::consts::PI + portal.door_rotation * 2.0;
         cam_tf.rotation = Quat::from_euler(EulerRot::YXZ, mirrored_yaw, pitch, 0.0);
@@ -286,13 +345,19 @@ fn portal_crossing(
     mut cam_q: Query<(Entity, &mut Transform, Option<&mut RenderLayers>), With<PanoramaCamera>>,
     portals: Query<&PortalDoor>,
 ) {
-    let Ok((cam_entity, mut cam, layers_opt)) = cam_q.single_mut() else { return };
+    let Ok((cam_entity, mut cam, layers_opt)) = cam_q.single_mut() else {
+        return;
+    };
 
     for portal in portals.iter() {
-        if portal.room != player.room { continue; }
+        if portal.room != player.room {
+            continue;
+        }
 
         let dist = player.pos.distance(portal.local_pos);
-        if dist > 1.5 { continue; }
+        if dist > 1.5 {
+            continue;
+        }
 
         // Door normal
         let normal = Vec2::new(portal.rotation.sin(), -portal.rotation.cos());
@@ -300,11 +365,15 @@ fn portal_crossing(
         let curr_dot = (player.pos - portal.local_pos).dot(normal);
 
         // Check crossing (sign change)
-        if prev_dot * curr_dot >= 0.0 { continue; }
+        if prev_dot * curr_dot >= 0.0 {
+            continue;
+        }
 
         // Lateral distance check
         let lateral = ((player.pos - portal.local_pos) - normal * curr_dot).length();
-        if lateral > PORTAL_WIDTH * 0.6 { continue; }
+        if lateral > PORTAL_WIDTH * 0.6 {
+            continue;
+        }
 
         // Exit at SAME door index in target room
         let target_doors = get_doors(portal.target_room);
@@ -315,15 +384,21 @@ fn portal_crossing(
         player.room = portal.target_room;
         player.pos = exit_pos;
         player.prev_pos = exit_pos;
-        cam.translation = room_center(portal.target_room) + Vec3::new(exit_pos.x, player.height, exit_pos.y);
+        cam.translation =
+            room_center(portal.target_room) + Vec3::new(exit_pos.x, player.height, exit_pos.y);
 
         if let Some(mut layers) = layers_opt {
             *layers = RenderLayers::layer(portal.target_room);
         } else {
-            cmd.entity(cam_entity).insert(RenderLayers::layer(portal.target_room));
+            cmd.entity(cam_entity)
+                .insert(RenderLayers::layer(portal.target_room));
         }
 
-        info!("🌀 Portal {} → Room {}", portal.door_index + 1, portal.target_room + 1);
+        info!(
+            "🌀 Portal {} → Room {}",
+            portal.door_index + 1,
+            portal.target_room + 1
+        );
         return;
     }
 }

@@ -5,8 +5,8 @@
 #[derive(Clone, Copy, Eq, PartialEq, Debug, Hash, Default)]
 pub enum AppMode {
     #[default]
-    FullExperience,  // / or default - Full experience
-    UploadRoom,      // /upload or --upload - User upload room
+    FullExperience, // / or default - Full experience
+    UploadRoom, // /upload or --upload - User upload room
 }
 
 /// Get the current app mode
@@ -20,7 +20,7 @@ pub fn get_app_mode() -> AppMode {
                     return AppMode::UploadRoom;
                 }
             }
-            
+
             // Check sessionStorage
             if let Ok(Some(storage)) = window.session_storage() {
                 if let Ok(Some(route)) = storage.get_item("route") {
@@ -29,7 +29,7 @@ pub fn get_app_mode() -> AppMode {
                     }
                 }
             }
-            
+
             // Check pathname
             if let Ok(pathname) = window.location().pathname() {
                 if pathname.trim_end_matches('/').ends_with("/upload") {
@@ -38,13 +38,13 @@ pub fn get_app_mode() -> AppMode {
             }
         }
     }
-    
+
     #[cfg(not(target_arch = "wasm32"))]
     {
         if std::env::args().any(|a| a == "--upload") {
             return AppMode::UploadRoom;
         }
     }
-    
+
     AppMode::FullExperience
 }

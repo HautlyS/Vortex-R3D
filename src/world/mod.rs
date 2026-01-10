@@ -1,12 +1,12 @@
 //! World module - Room setup, skyboxes, lighting, rotation effects
 
-use bevy::prelude::*;
 use bevy::camera::visibility::RenderLayers;
+use bevy::prelude::*;
 use std::f32::consts::PI;
 
-use crate::GameState;
 use crate::loading::PanoramaAssets;
 use crate::player::PlayerState;
+use crate::GameState;
 
 pub struct WorldPlugin;
 
@@ -15,10 +15,12 @@ impl Plugin for WorldPlugin {
         app.insert_resource(WorldConfig::default())
             .insert_resource(SkyboxRotation::default())
             .add_systems(OnEnter(GameState::Viewing), setup_world)
-            .add_systems(Update, (
-                skybox_rotation_input,
-                rotate_skybox,
-            ).chain().run_if(in_state(GameState::Viewing)));
+            .add_systems(
+                Update,
+                (skybox_rotation_input, rotate_skybox)
+                    .chain()
+                    .run_if(in_state(GameState::Viewing)),
+            );
     }
 }
 
@@ -32,7 +34,9 @@ pub struct WorldConfig {
 
 impl Default for WorldConfig {
     fn default() -> Self {
-        Self { sky_sphere_radius: 80.0 }
+        Self {
+            sky_sphere_radius: 80.0,
+        }
     }
 }
 
@@ -72,20 +76,28 @@ fn setup_world(
     pano: Res<PanoramaAssets>,
     config: Res<WorldConfig>,
 ) {
-    let panos = [&pano.demo_panorama, &pano.demo2_panorama, &pano.demo3_panorama];
+    let panos = [
+        &pano.demo_panorama,
+        &pano.demo2_panorama,
+        &pano.demo3_panorama,
+    ];
     let sky_mesh = meshes.add(create_sky_sphere(config.sky_sphere_radius));
 
     // Enhanced lighting for modern look
     cmd.spawn((
-        AmbientLight { color: Color::WHITE, brightness: 600.0, ..default() },
+        AmbientLight {
+            color: Color::WHITE,
+            brightness: 600.0,
+            ..default()
+        },
         RenderLayers::from_layers(&[0, 1, 2]),
     ));
     cmd.spawn((
-        DirectionalLight { 
-            color: Color::srgb(1.0, 0.98, 0.95), 
-            illuminance: 8000.0, 
-            shadows_enabled: false, 
-            ..default() 
+        DirectionalLight {
+            color: Color::srgb(1.0, 0.98, 0.95),
+            illuminance: 8000.0,
+            shadows_enabled: false,
+            ..default()
         },
         Transform::from_xyz(5.0, 10.0, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
         RenderLayers::from_layers(&[0, 1, 2]),
@@ -111,18 +123,18 @@ fn setup_world(
     info!("🌍 World: {} rooms created", TOTAL_ROOMS);
 }
 
-fn skybox_rotation_input(
-    keys: Res<ButtonInput<KeyCode>>,
-    mut rotation: ResMut<SkyboxRotation>,
-) {
+fn skybox_rotation_input(keys: Res<ButtonInput<KeyCode>>, mut rotation: ResMut<SkyboxRotation>) {
     let ctrl = keys.pressed(KeyCode::ControlLeft) || keys.pressed(KeyCode::ControlRight);
-    
+
     // Ctrl+R toggles rotation
     if ctrl && keys.just_pressed(KeyCode::KeyR) {
         rotation.enabled = !rotation.enabled;
-        info!("🌀 Skybox rotation: {}", if rotation.enabled { "ON" } else { "OFF" });
+        info!(
+            "🌀 Skybox rotation: {}",
+            if rotation.enabled { "ON" } else { "OFF" }
+        );
     }
-    
+
     // Ctrl+1/2/3/4 sets speed
     if ctrl {
         if keys.just_pressed(KeyCode::Digit1) {
@@ -154,13 +166,15 @@ fn rotate_skybox(
     player: Res<PlayerState>,
     mut skyboxes: Query<(&mut Transform, &Skybox)>,
 ) {
-    if !rotation.enabled { return; }
-    
+    if !rotation.enabled {
+        return;
+    }
+
     rotation.angle += rotation.speed * time.delta_secs();
     if rotation.angle > PI * 2.0 {
         rotation.angle -= PI * 2.0;
     }
-    
+
     for (mut transform, skybox) in skyboxes.iter_mut() {
         if skybox.room == player.room {
             let center = room_center(skybox.room);
@@ -184,7 +198,11 @@ pub fn create_sky_sphere(r: f32) -> Mesh {
         for j in 0..=sec {
             let u = j as f32 / sec as f32;
             let th = 2.0 * PI * u;
-            let (x, y, z) = (r * phi.sin() * th.cos(), r * phi.cos(), r * phi.sin() * th.sin());
+            let (x, y, z) = (
+                r * phi.sin() * th.cos(),
+                r * phi.cos(),
+                r * phi.sin() * th.sin(),
+            );
             pos.push([x, y, z]);
             nrm.push([-x / r, -y / r, -z / r]);
             uv.push([1.0 - u, v]);

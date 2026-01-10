@@ -24,23 +24,34 @@ fn apply_webxr_camera(
     mut camera_state: ResMut<CameraState>,
     mut camera_q: Query<(&mut Transform, &mut Projection), With<GameCamera>>,
 ) {
-    if !state.session_active { return; }
-    
+    if !state.session_active {
+        return;
+    }
+
     let data = match pose.0.lock() {
         Ok(d) => d.clone(),
         Err(_) => return,
     };
-    if !data.valid { return; }
-    
-    let Ok((mut transform, mut projection)) = camera_q.get_single_mut() else { return };
-    
-    let quat = Quat::from_xyzw(data.orientation[0], data.orientation[1], data.orientation[2], data.orientation[3]);
+    if !data.valid {
+        return;
+    }
+
+    let Ok((mut transform, mut projection)) = camera_q.get_single_mut() else {
+        return;
+    };
+
+    let quat = Quat::from_xyzw(
+        data.orientation[0],
+        data.orientation[1],
+        data.orientation[2],
+        data.orientation[3],
+    );
     transform.rotation = quat;
-    
+
     if let Projection::Perspective(ref mut p) = *projection {
         p.fov = 90.0_f32.to_radians();
     }
-    
+
     let (yaw, pitch, _) = quat.to_euler(EulerRot::YXZ);
     camera_state.yaw = yaw;
     camera_state.pitch = pitch;

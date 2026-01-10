@@ -18,10 +18,9 @@ impl Plugin for WebXrInputPlugin {
 }
 
 #[cfg(feature = "webxr")]
-fn handle_webxr_input(
-    state: Res<WebXrState>,
-    mut input_state: ResMut<InputState>,
-) {
-    if !state.session_active { return; }
+fn handle_webxr_input(state: Res<WebXrState>, mut input_state: ResMut<InputState>) {
+    if !state.session_active {
+        return;
+    }
     input_state.cursor_locked = true;
 }

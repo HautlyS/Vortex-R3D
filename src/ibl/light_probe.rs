@@ -13,20 +13,20 @@ impl SphericalHarmonics {
     pub fn sample(&self, dir: Vec3) -> Vec3 {
         let d = dir.normalize();
         let (x, y, z) = (d.x, d.y, d.z);
-        
+
         // SH basis functions (L0, L1, L2)
         let basis = [
-            0.282095,                          // Y00
-            0.488603 * y,                      // Y1-1
-            0.488603 * z,                      // Y10
-            0.488603 * x,                      // Y11
-            1.092548 * x * y,                  // Y2-2
-            1.092548 * y * z,                  // Y2-1
-            0.315392 * (3.0 * z * z - 1.0),   // Y20
-            1.092548 * x * z,                  // Y21
-            0.546274 * (x * x - y * y),       // Y22
+            0.282095,                       // Y00
+            0.488603 * y,                   // Y1-1
+            0.488603 * z,                   // Y10
+            0.488603 * x,                   // Y11
+            1.092548 * x * y,               // Y2-2
+            1.092548 * y * z,               // Y2-1
+            0.315392 * (3.0 * z * z - 1.0), // Y20
+            1.092548 * x * z,               // Y21
+            0.546274 * (x * x - y * y),     // Y22
         ];
-        
+
         let mut result = Vec3::ZERO;
         for (i, b) in basis.iter().enumerate() {
             result += Vec3::new(self.coeffs[i][0], self.coeffs[i][1], self.coeffs[i][2]) * *b;

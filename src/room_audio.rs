@@ -16,10 +16,10 @@ impl Plugin for RoomAudioPlugin {
         app.add_plugins(AudioPlugin)
             .init_resource::<RoomAudioState>()
             .add_systems(OnEnter(GameState::Viewing), setup_room_audio)
-            .add_systems(Update, (
-                update_room_audio,
-                handle_narration,
-            ).run_if(in_state(GameState::Viewing)));
+            .add_systems(
+                Update,
+                (update_room_audio, handle_narration).run_if(in_state(GameState::Viewing)),
+            );
     }
 }
 
@@ -112,9 +112,9 @@ fn update_room_audio(
         } else {
             // First time entering this room - start soundtrack
             let panning = match new_room {
-                0 => 0.0,                    // Center
-                1 => -REVERB_PANNING,        // Slight left (echo effect)
-                2 => REVERB_PANNING,         // Slight right
+                0 => 0.0,             // Center
+                1 => -REVERB_PANNING, // Slight left (echo effect)
+                2 => REVERB_PANNING,  // Slight right
                 _ => 0.0,
             };
 
@@ -136,7 +136,11 @@ fn update_room_audio(
             state.soundtracks[new_room] = Some(handle);
         }
 
-        info!("🎵 Room {} → {} audio crossfade", old_room + 1, new_room + 1);
+        info!(
+            "🎵 Room {} → {} audio crossfade",
+            old_room + 1,
+            new_room + 1
+        );
     }
 }
 
@@ -183,8 +187,12 @@ fn handle_narration(
         if let Some(handle) = &state.narrations[room] {
             if let Some(instance) = instances.get_mut(handle) {
                 match instance.state() {
-                    PlaybackState::Playing { .. } => { let _ = instance.pause(AudioTween::default()); }
-                    PlaybackState::Paused { .. } => { let _ = instance.resume(AudioTween::default()); }
+                    PlaybackState::Playing { .. } => {
+                        let _ = instance.pause(AudioTween::default());
+                    }
+                    PlaybackState::Paused { .. } => {
+                        let _ = instance.resume(AudioTween::default());
+                    }
                     _ => {}
                 }
             }
