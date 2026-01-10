@@ -44,12 +44,16 @@ fn run_desktop() {
     // Mobile/WASM performance settings
     #[cfg(target_arch = "wasm32")]
     let default_plugins = {
-        use bevy::render::{settings::{WgpuSettings, PowerPreference}, RenderPlugin};
+        use bevy::render::{
+            settings::{PowerPreference, WgpuSettings},
+            RenderPlugin,
+        };
         default_plugins.set(RenderPlugin {
             render_creation: WgpuSettings {
                 power_preference: PowerPreference::LowPower,
                 ..default()
-            }.into(),
+            }
+            .into(),
             ..default()
         })
     };
