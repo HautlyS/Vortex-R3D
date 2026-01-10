@@ -145,6 +145,7 @@ features = [
     "XrTargetRayMode",
     "XrHandedness",
     "XrSpace",
+    "DomPointReadOnly",
     "WebGlRenderingContext",
     "WebGl2RenderingContext",
     "console",

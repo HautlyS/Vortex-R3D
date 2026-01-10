@@ -2,7 +2,7 @@
 
 use bevy::prelude::*;
 
-use super::{InputEvent, InputState};
+use super::InputState;
 use crate::platform::on_webxr;
 
 #[cfg(feature = "webxr")]

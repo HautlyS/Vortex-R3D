@@ -131,13 +131,7 @@ async fn request_xr_session(pose_storage: Arc<Mutex<XrPoseData>>) {
     };
 
     let navigator = window.navigator();
-    let xr = match navigator.xr() {
-        Ok(Some(xr)) => xr,
-        _ => {
-            web_sys::console::error_1(&"Failed to get XR system".into());
-            return;
-        }
-    };
+    let xr = navigator.xr();
 
     // Check session support
     let supported =
@@ -269,7 +263,7 @@ fn sync_xr_pose_to_camera(
 fn handle_xr_input(
     state: Res<WebXrState>,
     mut input_state: ResMut<InputState>,
-    mut events: MessageWriter<InputEvent>,
+    _events: MessageWriter<InputEvent>,
 ) {
     if !state.session_active {
         return;

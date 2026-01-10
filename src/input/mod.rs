@@ -8,8 +8,10 @@ mod vr;
 #[cfg(feature = "webxr")]
 mod webxr;
 
+#[allow(unused_imports)]
 pub use desktop::DesktopInputPlugin;
 #[cfg(target_arch = "wasm32")]
+#[allow(unused_imports)]
 pub use touch::TouchInputPlugin;
 #[cfg(feature = "vr")]
 pub use vr::VrInputPlugin;
@@ -47,12 +49,17 @@ impl InputState {
     }
 }
 
+/// Tracks if UI wants pointer input (prevents cursor grab)
+#[derive(Resource, Default)]
+pub struct UiWantsPointer(pub bool);
+
 /// Base input plugin - event infrastructure only
 pub struct InputPlugin;
 
 impl Plugin for InputPlugin {
     fn build(&self, app: &mut App) {
         app.add_message::<InputEvent>()
-            .init_resource::<InputState>();
+            .init_resource::<InputState>()
+            .init_resource::<UiWantsPointer>();
     }
 }

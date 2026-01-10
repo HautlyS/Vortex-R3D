@@ -6,6 +6,7 @@ mod vr;
 #[cfg(feature = "webxr")]
 mod webxr;
 
+#[allow(unused_imports)]
 pub use desktop::DesktopCameraPlugin;
 #[cfg(feature = "vr")]
 pub use vr::VrCameraPlugin;

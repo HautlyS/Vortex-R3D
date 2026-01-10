@@ -157,7 +157,6 @@ pub fn poll_file_data(
         }
         #[cfg(target_arch = "wasm32")]
         {
-            use wasm_bindgen::JsCast;
             let arr = js_sys::Uint8Array::from(&data[..]);
             let parts = js_sys::Array::new();
             parts.push(&arr.buffer());

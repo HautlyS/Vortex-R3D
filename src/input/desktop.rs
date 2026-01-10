@@ -5,7 +5,7 @@ use bevy::input::mouse::AccumulatedMouseMotion;
 use bevy::prelude::*;
 use bevy::window::{CursorGrabMode, CursorOptions, PrimaryWindow};
 
-use super::{InputEvent, InputState};
+use super::{InputEvent, InputState, UiWantsPointer};
 use crate::platform::on_desktop;
 
 pub struct DesktopInputPlugin;
@@ -36,12 +36,14 @@ fn handle_cursor_grab(
     mouse: Res<ButtonInput<MouseButton>>,
     keys: Res<ButtonInput<KeyCode>>,
     mut state: ResMut<InputState>,
+    ui_wants: Res<UiWantsPointer>,
 ) {
     let Ok(mut cursor) = cursor_q.single_mut() else {
         return;
     };
 
-    if mouse.just_pressed(MouseButton::Left) {
+    // Don't grab cursor if UI wants pointer input
+    if mouse.just_pressed(MouseButton::Left) && !ui_wants.0 {
         cursor.grab_mode = CursorGrabMode::Locked;
         cursor.visible = false;
         state.cursor_locked = true;

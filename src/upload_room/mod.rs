@@ -6,8 +6,9 @@ mod ui;
 
 use bevy::gltf::Gltf;
 use bevy::prelude::*;
-use bevy_egui::{EguiPlugin, EguiPrimaryContextPass};
+use bevy_egui::{EguiContexts, EguiPlugin, EguiPrimaryContextPass};
 
+use crate::input::UiWantsPointer;
 use crate::GameState;
 use file_picker::{load_pending_model, poll_file_data};
 use scene::{rotate_ambient_light, setup_upload_room};
@@ -22,6 +23,10 @@ impl Plugin for UploadRoomPlugin {
             .add_systems(Startup, go_to_viewing)
             .add_systems(OnEnter(GameState::Viewing), setup_upload_room)
             .add_systems(
+                PreUpdate,
+                update_ui_wants_pointer.run_if(in_state(GameState::Viewing)),
+            )
+            .add_systems(
                 Update,
                 (
                     handle_keyboard_shortcuts,
@@ -35,6 +40,15 @@ impl Plugin for UploadRoomPlugin {
                 EguiPrimaryContextPass,
                 upload_hud.run_if(in_state(GameState::Viewing)),
             );
+    }
+}
+
+/// Update UiWantsPointer in PreUpdate so it's available before input handling
+fn update_ui_wants_pointer(mut ctx: EguiContexts, mut ui_wants: ResMut<UiWantsPointer>) {
+    if let Ok(egui_ctx) = ctx.ctx_mut() {
+        ui_wants.0 = egui_ctx.wants_pointer_input() || egui_ctx.is_pointer_over_area();
+    } else {
+        ui_wants.0 = false;
     }
 }
 

@@ -36,7 +36,9 @@ impl Platform {
         }
 
         #[cfg(all(feature = "webxr", target_arch = "wasm32"))]
-        return Platform::WebXr;
+        {
+            return Platform::WebXr;
+        }
 
         Platform::Desktop
     }

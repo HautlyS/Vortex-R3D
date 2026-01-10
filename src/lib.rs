@@ -37,7 +37,7 @@ pub use energy_particles::EnergyParticlesPlugin;
 pub use glb_character::GlbCharacterPlugin;
 pub use holographic::HolographicParticlesPlugin;
 pub use ibl::IblPlugin;
-pub use input::{InputEvent, InputPlugin, InputState};
+pub use input::{InputEvent, InputPlugin, InputState, UiWantsPointer};
 pub use loading::LoadingPlugin;
 pub use panorama::PanoramaPlugin;
 pub use platform::{on_desktop, on_vr, on_webxr, Platform, PlatformPlugin, SwitchPlatform};
