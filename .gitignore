@@ -6,6 +6,8 @@ technosutra/
 .idea/
 *.iml
 .vscode/
+projeto/
+projeto/*
 
 # OS
 .DS_Store
