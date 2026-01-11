@@ -34,14 +34,15 @@ impl Plugin for HolographicParticlesPlugin {
     }
 }
 
-/// Marker for holographic effects
+/// Marker for holographic effects (particles feature only)
+#[cfg(feature = "particles")]
 #[derive(Component)]
 pub struct HolographicEffect {
     pub room: usize,
-    #[allow(dead_code)] // Metadata for effect type identification
     pub effect_type: HoloType,
 }
 
+#[cfg(feature = "particles")]
 #[derive(Clone, Copy)]
 pub enum HoloType {
     LightBeings,

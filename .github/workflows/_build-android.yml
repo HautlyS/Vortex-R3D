@@ -112,7 +112,20 @@ jobs:
 
       - name: Build standard Android APK
         run: |
-          export PATH="$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin:$PATH"
+          # Set up NDK toolchain paths
+          export TOOLCHAIN="$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64"
+          export PATH="$TOOLCHAIN/bin:$PATH"
+          export SYSROOT="$TOOLCHAIN/sysroot"
+          
+          # Configure linker for aarch64
+          export CC_aarch64_linux_android="$TOOLCHAIN/bin/aarch64-linux-android21-clang"
+          export CXX_aarch64_linux_android="$TOOLCHAIN/bin/aarch64-linux-android21-clang++"
+          export AR_aarch64_linux_android="$TOOLCHAIN/bin/llvm-ar"
+          export CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER="$TOOLCHAIN/bin/aarch64-linux-android21-clang"
+          
+          # Add library search paths for NDK sysroot (fixes -llog, -lunwind errors)
+          export RUSTFLAGS="-L $SYSROOT/usr/lib/aarch64-linux-android/21 -L $SYSROOT/usr/lib/aarch64-linux-android"
+          
           cargo apk build --release --target aarch64-linux-android \
             --no-default-features \
             --features "bevy/bevy_asset,bevy/bevy_core_pipeline,bevy/bevy_pbr,bevy/bevy_render,bevy/bevy_winit,bevy/android-game-activity,bevy/png,bevy/jpeg"
@@ -136,7 +149,20 @@ jobs:
           EOF
           fi
           
-          export PATH="$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin:$PATH"
+          # Set up NDK toolchain paths
+          export TOOLCHAIN="$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64"
+          export PATH="$TOOLCHAIN/bin:$PATH"
+          export SYSROOT="$TOOLCHAIN/sysroot"
+          
+          # Configure linker for aarch64
+          export CC_aarch64_linux_android="$TOOLCHAIN/bin/aarch64-linux-android21-clang"
+          export CXX_aarch64_linux_android="$TOOLCHAIN/bin/aarch64-linux-android21-clang++"
+          export AR_aarch64_linux_android="$TOOLCHAIN/bin/llvm-ar"
+          export CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER="$TOOLCHAIN/bin/aarch64-linux-android21-clang"
+          
+          # Add library search paths for NDK sysroot (fixes -llog, -lunwind errors)
+          export RUSTFLAGS="-L $SYSROOT/usr/lib/aarch64-linux-android/21 -L $SYSROOT/usr/lib/aarch64-linux-android"
+          
           cargo apk build --release --target aarch64-linux-android \
             --features vr --no-default-features
         continue-on-error: true

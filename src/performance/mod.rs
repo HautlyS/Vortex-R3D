@@ -64,6 +64,7 @@ impl QualityLevel {
 pub struct QualityChanged {
     #[allow(dead_code)] // Available for handlers that need previous quality
     pub old: QualityLevel,
+    #[allow(dead_code)] // Read via method call (ev.new.spawner_rate_mult()) - Rust analyzer doesn't track this
     pub new: QualityLevel,
 }
 
