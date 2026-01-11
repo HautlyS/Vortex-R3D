@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+:root{--bg:#0d0d0d;--bg2:#161616;--bg3:#1a1a1a;--accent:#e63946;--accent2:#ff4d5a;--gold:#fafafa;--text:#fafafa;--text2:#888888;--radius:12px;--shadow:0 4px 24px rgba(0,0,0,0.3)}
+*{margin:0;padding:0;box-sizing:border-box}
+html{font-size:16px}
+body{font-family:"Inter",-apple-system,BlinkMacSystemFont,sans-serif;font-size:11pt;line-height:1.5;color:var(--text);background:var(--bg);padding:1.5cm;display:flex;flex-direction:column;align-items:center;min-height:100vh}
+body>*{width:100%;max-width:100%}
+
+/* Typography - Modern 2026 */
+h1{font-family:"Inter",sans-serif;font-size:20pt;font-weight:700;text-align:center;letter-spacing:2px;background:linear-gradient(135deg,#e63946,#ff4d5a,#fafafa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:1.5cm auto 1cm;padding:0.6cm 1cm;position:relative}
+h1::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:60%;height:3px;background:linear-gradient(90deg,transparent,#e63946,#ff4d5a,#e63946,transparent);border-radius:2px}
+h2{font-family:"Inter",sans-serif;font-size:14pt;font-weight:600;color:#e63946;text-align:center;margin:1.2cm auto 0.6cm;padding:0.4cm 0.8cm;position:relative;display:inline-block;width:100%}
+h2::before{content:'';position:absolute;left:0;top:50%;width:20%;height:1px;background:linear-gradient(90deg,transparent,#e63946)}
+h2::after{content:'';position:absolute;right:0;top:50%;width:20%;height:1px;background:linear-gradient(270deg,transparent,#e63946)}
+h3{font-size:12pt;font-weight:600;color:#ff4d5a;text-align:center;margin:0.8cm auto 0.4cm;padding:0.3cm 0.6cm;background:linear-gradient(135deg,rgba(255,77,90,0.08),transparent);border-radius:var(--radius);border-left:4px solid #ff4d5a}
+h4{font-size:11pt;font-weight:600;color:#fafafa;text-align:center;margin:0.6cm auto 0.3cm;text-transform:uppercase;letter-spacing:1px}
+
+/* Content */
+p{text-indent:1.0cm;margin:0 auto 0.5cm;text-align:justify;max-width:100%}
+p+p{margin-top:0.3cm}
+ul,ol{margin:0.5cm auto 0.5cm 1.5cm;padding-left:0.5cm}
+li{margin-bottom:0.25cm;color:#fafafa;position:relative}
+li::marker{color:#e63946}
+
+/* Tables - Modern Glass Design */
+table{width:100%;border-collapse:separate;border-spacing:0;margin:1cm auto;background:#161616;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);border:2px solid rgba(230,57,70,0.3)}
+thead{background:linear-gradient(135deg,#1a1a1a,#161616)}
+th{font-family:"Inter",sans-serif;font-size:9pt;font-weight:600;color:#ffffff;padding:0.5cm 0.4cm;text-align:center;text-transform:uppercase;letter-spacing:1px;border-bottom:2px solid #e63946;position:relative}
+th::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#e63946,transparent)}
+td{padding:0.4cm;text-align:center;color:#ffffff;border-bottom:1px solid rgba(255,255,255,0.06);transition:background 0.2s}
+tr:last-child td{border-bottom:none}
+tr:nth-child(even){background:rgba(230,57,70,0.03)}
+tr:hover td{background:rgba(230,57,70,0.08)}
+tbody tr:first-child td{padding-top:0.5cm}
+
+/* Code - Terminal Style */
+code{font-family:"JetBrains Mono",monospace;font-size:9pt;background:#1a1a1a;color:#fafafa;padding:0.15cm 0.3cm;border-radius:6px;border:1px solid rgba(255,255,255,0.1)}
+pre{font-family:"JetBrains Mono",monospace;font-size:8pt;background:linear-gradient(180deg,#161616,#1a1a1a);color:#ffffff;padding:0.6cm;margin:0.6cm auto;border-radius:var(--radius);border:1px solid rgba(230,57,70,0.2);overflow-x:auto;white-space:pre-wrap;box-shadow:inset 0 2px 8px rgba(0,0,0,0.3)}
+pre code{background:none;padding:0;color:inherit;border:none}
+
+/* Blockquote - Elegant */
+blockquote{margin:0.8cm auto;padding:0.6cm 1cm;background:linear-gradient(135deg,#161616,transparent);border-left:4px solid #c1121f;border-radius:0 var(--radius) var(--radius) 0;font-style:italic;color:#888888;position:relative}
+blockquote::before{content:'"';position:absolute;top:-0.2cm;left:0.3cm;font-size:2em;color:#c1121f;opacity:0.3}
+
+/* Dividers */
+hr{border:none;height:2px;background:linear-gradient(90deg,transparent,#e63946,#ff4d5a,#fafafa,#ff4d5a,#e63946,transparent);margin:1.2cm auto;width:80%;border-radius:1px}
+
+/* Links & Emphasis */
+strong{color:#fafafa;font-weight:600}
+em{color:#888888}
+a{color:#e63946;text-decoration:none;border-bottom:1px solid transparent;transition:border-color 0.2s}
+a:hover{border-bottom-color:#e63946}
+
+/* Images */
+img{max-width:100%;display:block;margin:0.8cm auto;border-radius:var(--radius);border:2px solid rgba(230,57,70,0.2);box-shadow:var(--shadow)}
+
+/* Section Spacing */
+section,.section{margin:1cm 0;padding:0.5cm 0}
+
+/* Print */
+@media print{
+  body{background:#0d0d0d!important;padding:0}
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  table{box-shadow:none;border:2px solid #e63946}
+  th,td{border:1px solid rgba(0,0,0,0.1)}
+}
+
+/* Print optimizations - Page breaks */
+@page { 
+  size: A4 portrait; 
+  margin: 15mm 20mm;
+}
+@media print {
+  body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  h1 { page-break-before: always; page-break-after: avoid; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3, h4 { page-break-after: avoid; }
+  table { page-break-inside: avoid; }
+  tr { page-break-inside: avoid; }
+  pre, blockquote, figure { page-break-inside: avoid; }
+  p { orphans: 3; widows: 3; }
+  .section { page-break-before: always; }
+  .no-break { page-break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+<h1 id="apresentação-do-projeto---techno-sutra-vr">APRESENTAÇÃO DO
+PROJETO - TECHNO SUTRA VR</h1>
+<h2 id="edital-fomento-cultsp---pnab-nº-122025">Edital FOMENTO CULTSP -
+PNAB Nº 12/2025</h2>
+<h3 id="módulo-iii---realidade-virtual-e-mista-r-200.00000">Módulo III -
+Realidade Virtual e Mista | R$ 200.000,00</h3>
+<hr />
+<h1 id="techno-sutra-vr">🕉️ TECHNO SUTRA VR</h1>
+<h2 id="jornada-imersiva-do-avatamsaka-sutra">Jornada Imersiva do
+Avatamsaka Sutra</h2>
+<hr />
+<h2 id="slide-1-capa">SLIDE 1: CAPA</h2>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│                    [technosutra-logo1.png]                      │
+│                                                                 │
+│                      TECHNO SUTRA VR                            │
+│                                                                 │
+│            Jornada Imersiva do Avatamsaka Sutra                 │
+│                                                                 │
+│         ─────────────────────────────────────────               │
+│                                                                 │
+│              Edital FOMENTO CULTSP - PNAB Nº 12/2025            │
+│              Módulo III - VR e MR | R$ 200.000,00               │
+│                                                                 │
+│                     Águas da Prata, SP                          │
+│                        Janeiro 2026                             │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+<p><strong>Imagem de fundo</strong>: <code>imagens/demo.jpg</code>
+(panorama 360°)</p>
+<hr />
+<h2 id="slide-2-o-que-é-o-techno-sutra">SLIDE 2: O QUE É O TECHNO
+SUTRA?</h2>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│  &quot;ANSEIE PELO INEXPRIMÍVEL!&quot;                                    │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │                                                         │    │
+│  │  Uma experiência imersiva em Realidade Virtual          │    │
+│  │  que transporta o usuário para a jornada espiritual     │    │
+│  │  de SUDDHANA, protagonista do Avatamsaka Sutra.         │    │
+│  │                                                         │    │
+│  │  • 56 Capítulos interativos                             │    │
+│  │  • 56 Kalyanamitras (mestres espirituais) em 3D         │    │
+│  │  • Ambientes 360° imersivos                             │    │
+│  │  • Áudio espacial e narração                            │    │
+│  │  • Meditações guiadas em VR                             │    │
+│  │                                                         │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                 │
+│  [samantabhadra-process.png]        [budha-bubble.png]          │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+<hr />
+<h2 id="slide-3-o-avatamsaka-sutra">SLIDE 3: O AVATAMSAKA SUTRA</h2>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│  O AVATAMSAKA SUTRA (Sutra da Guirlanda de Flores)              │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │                                                         │    │
+│  │  &quot;No Avatamsaka Sutra, a plateia inclui deuses,         │    │
+│  │   fantasmas, asuras... Muitos com duas cabeças          │    │
+│  │   ou bocas no estômago!&quot;                                │    │
+│  │                                                         │    │
+│  │                    — Khyentse Norbu Rinpoche            │    │
+│  │                                                         │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                 │
+│  • Um dos textos mais extensos do budismo Mahayana              │
+│  • Narra a jornada de Suddhana em busca da iluminação           │
+│  • 56 encontros com mestres espirituais únicos                  │
+│  • Tradução oficial: 84000.co                                   │
+│                                                                 │
+│  [khyentse_foundation_logo.jpeg]                                │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+<hr />
+<h2 id="slide-4-a-jornada-de-suddhana">SLIDE 4: A JORNADA DE
+SUDDHANA</h2>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│                    A JORNADA DE SUDDHANA                        │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │                                                         │    │
+│  │   MANJUSHRI ──► &quot;Vá para o Sul!&quot;                        │    │
+│  │        │                                                │    │
+│  │        ▼                                                │    │
+│  │   56 KALYANAMITRAS (Amigos Espirituais)                 │    │
+│  │        │                                                │    │
+│  │        ├── Mestres humanos                              │    │
+│  │        ├── Deuses e Devas                               │    │
+│  │        ├── Bodhisattvas                                 │    │
+│  │        ├── Seres celestiais                             │    │
+│  │        └── Manifestações cósmicas                       │    │
+│  │        │                                                │    │
+│  │        ▼                                                │    │
+│  │   SAMANTABHADRA ──► Iluminação                          │    │
+│  │                                                         │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                 │
+│  [route.png]                                                    │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+<hr />
+<h2 id="slide-5-prova-de-conceito---app-ar-funcional">SLIDE 5: PROVA DE
+CONCEITO - APP AR FUNCIONAL</h2>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│           ✅ PROVA DE CONCEITO FUNCIONAL                        │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │                                                         │    │
+│  │  APP AR EM PRODUÇÃO:                                    │    │
+│  │  https://technosutra.bhumisparshaschool.org/            │    │
+│  │                                                         │    │
+│  │  ✓ PWA instalável (iOS, Android, Desktop)               │    │
+│  │  ✓ Scanner QR para modelos 3D                           │    │
+│  │  ✓ Galeria 3D com 56+ personagens                       │    │
+│  │  ✓ Mapa interativo da jornada                           │    │
+│  │  ✓ Modo offline funcional                               │    │
+│  │                                                         │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                 │
+│  SITE DO PROJETO:                                               │
+│  https://technosutra84.wixstudio.com/stem-array                 │
+│                                                                 │
+│  [dragon-mouse.png]                                             │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+<hr />
+<h2 id="slide-6-assets-existentes">SLIDE 6: ASSETS EXISTENTES</h2>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│              ASSETS JÁ DESENVOLVIDOS                            │
+│                                                                 │
+│  ┌──────────────────┐  ┌──────────────────┐                     │
+│  │                  │  │                  │                     │
+│  │  59 MODELOS 3D   │  │  56 CAPÍTULOS    │                     │
+│  │  (GLB/GLTF)      │  │  (Textos)        │                     │
+│  │                  │  │                  │                     │
+│  └──────────────────┘  └──────────────────┘                     │
+│                                                                 │
+│  ┌──────────────────┐  ┌──────────────────┐                     │
+│  │                  │  │                  │                     │
+│  │  41+ IMAGENS     │  │  MAPA INTERATIVO │                     │
+│  │  (Arte/Ref)      │  │  (56 pontos)     │                     │
+│  │                  │  │                  │                     │
+│  └──────────────────┘  └──────────────────┘                     │
+│                                                                 │
+│  [modelo1.glb]  [modelo2.glb]  [fat-buddha.glb]                 │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+<hr />
+<h2 id="slide-7-tecnologia-vr">SLIDE 7: TECNOLOGIA VR</h2>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│                    STACK TECNOLÓGICO                            │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │                                                         │    │
+│  │  ENGINE: Bevy 0.15+ (Rust)                              │    │
+│  │  GRÁFICOS: wgpu (WebGPU/Vulkan/Metal/DX12)              │    │
+│  │  VR: OpenXR (bevy_oxr)                                  │    │
+│  │  ÁUDIO: Spatial Audio 3D (HRTF)                         │    │
+│  │                                                         │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                 │
+│  PLATAFORMAS:                                                   │
+│  ┌────────────┐ ┌────────────┐ ┌────────────┐ ┌────────────┐    │
+│  │ Meta Quest │ │  SteamVR   │ │   WebXR    │ │  Desktop   │    │
+│  │   2/3/Pro  │ │  (PC VR)   │ │ (Browser)  │ │ (não-VR)   │    │
+│  └────────────┘ └────────────┘ └────────────┘ └────────────┘    │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+<hr />
+<h2 id="slide-8-experiência-vr">SLIDE 8: EXPERIÊNCIA VR</h2>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│                  A EXPERIÊNCIA IMERSIVA                         │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │                                                         │    │
+│  │  1. AMBIENTES 360°                                      │    │
+│  │     Panoramas equirretangulares de alta resolução       │    │
+│  │     convertidos em cubemap para imersão total           │    │
+│  │                                                         │    │
+│  │  2. PERSONAGENS 3D                                      │    │
+│  │     56 Kalyanamitras animados com diálogos              │    │
+│  │     interativos e áudio espacial                        │    │
+│  │                                                         │    │
+│  │  3. PORTAIS ENTRE MUNDOS                                │    │
+│  │     Transições visuais entre capítulos                  │    │
+│  │     com efeitos de vórtice e dissolução                 │    │
+│  │                                                         │    │
+│  │  4. MEDITAÇÕES GUIADAS                                  │    │
+│  │     Experiências contemplativas em VR                   │    │
+│  │                                                         │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                 │
+│  [demo.jpg] [demo2.jpg] [demo3.jpg]                             │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+<hr />
+<h2 id="slide-9-mapa-da-jornada---águas-da-prata">SLIDE 9: MAPA DA
+JORNADA - ÁGUAS DA PRATA</h2>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│           CONEXÃO COM O MUNDO REAL                              │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │                                                         │    │
+│  │                [TECHNOSUTRA-MAP.jpg]                    │    │
+│  │                                                         │    │
+│  │         56 PONTOS DA JORNADA EM ÁGUAS DA PRATA, SP      │    │
+│  │                                                         │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                 │
+│  • Localização: Interior de São Paulo                           │
+│  • Elegível para cotas do interior (60% das vagas)              │
+│  • Experiência que conecta virtual e físico                     │
+│  • Turismo cultural e espiritual                                │
+│                                                                 │
+│  Google Maps: bit.ly/technosutra-map                            │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+<hr />
+<h2 id="slide-10-orçamento">SLIDE 10: ORÇAMENTO</h2>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│                 ORÇAMENTO - R$ 200.000,00                       │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │                                                         │    │
+│  │  ████████████████████████████████████████  70%          │    │
+│  │  Recursos Humanos                    R$ 140.000         │    │
+│  │                                                         │    │
+│  │  ██████████  10%                                        │    │
+│  │  Equipamentos                        R$ 20.000          │    │
+│  │                                                         │    │
+│  │  █████  5%                                              │    │
+│  │  Software/Licenças                   R$ 10.000          │    │
+│  │                                                         │    │
+│  │  ███████  7.5%                                          │    │
+│  │  Produção de Áudio                   R$ 15.000          │    │
+│  │                                                         │    │
+│  │  █████  5%                                              │    │
+│  │  Marketing                           R$ 10.000          │    │
+│  │                                                         │    │
+│  │  ██  2.5%                                               │    │
+│  │  Contingência                        R$ 5.000           │    │
+│  │                                                         │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+<hr />
+<h2 id="slide-11-cronograma">SLIDE 11: CRONOGRAMA</h2>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│                  CRONOGRAMA - 12 MESES                          │
+│                                                                 │
+│  MÊS  1  2  3  4  5  6  7  8  9  10 11 12                       │
+│       ├──┼──┼──┼──┼──┼──┼──┼──┼──┼──┼──┤                        │
+│       │▓▓│▓▓│  │  │  │  │  │  │  │  │  │  PRÉ-PRODUÇÃO         │
+│       │  │  │▓▓│▓▓│▓▓│▓▓│▓▓│▓▓│  │  │  │  PRODUÇÃO             │
+│       │  │  │  │  │  │  │  │  │▓▓│▓▓│  │  TESTES               │
+│       │  │  │  │  │  │  │  │  │  │  │▓▓│  LANÇAMENTO           │
+│       └──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┘                        │
+│                                                                 │
+│  MARCOS:                                                        │
+│  • Mês 2: Protótipo funcional                                   │
+│  • Mês 6: 45 capítulos jogáveis                                 │
+│  • Mês 10: Build final                                          │
+│  • Mês 12: Lançamento nas lojas                                 │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+<hr />
+<h2 id="slide-12-democratização">SLIDE 12: DEMOCRATIZAÇÃO</h2>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│                    DEMOCRATIZAÇÃO                               │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │                                                         │    │
+│  │  📹 MAKING-OF (5 episódios)                             │    │
+│  │     Documentação do processo criativo                   │    │
+│  │                                                         │    │
+│  │  📚 TUTORIAIS TÉCNICOS (6 tutoriais)                    │    │
+│  │     Desenvolvimento VR com Bevy/Rust                    │    │
+│  │                                                         │    │
+│  │  🏫 WORKSHOPS EM ESCOLAS PÚBLICAS (2 eventos)           │    │
+│  │     60 alunos do ensino médio                           │    │
+│  │                                                         │    │
+│  │  🎓 PALESTRAS EM UNIVERSIDADES (2 eventos)              │    │
+│  │     100 universitários de tecnologia                    │    │
+│  │                                                         │    │
+│  │  📺 LIVE STREAMS (5 transmissões)                       │    │
+│  │     Desenvolvimento ao vivo                             │    │
+│  │                                                         │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+<hr />
+<h2 id="slide-13-acessibilidade">SLIDE 13: ACESSIBILIDADE</h2>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│                    ACESSIBILIDADE VR                            │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │                                                         │    │
+│  │  👁️ VISUAL                                              │    │
+│  │     Audiodescrição, alto contraste, daltonismo          │    │
+│  │                                                         │    │
+│  │  👂 AUDITIVA                                            │    │
+│  │     Legendas completas, indicadores visuais             │    │
+│  │                                                         │    │
+│  │  🖐️ MOTORA                                              │    │
+│  │     Controle por olhar, modo sentado, um botão          │    │
+│  │                                                         │    │
+│  │  🧠 COGNITIVA                                           │    │
+│  │     Tutorial, dicas, linguagem simples                  │    │
+│  │                                                         │    │
+│  │  🖥️ VERSÃO DESKTOP                                      │    │
+│  │     Experiência completa sem headset VR                 │    │
+│  │                                                         │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+<hr />
+<h2 id="slide-14-parceiros">SLIDE 14: PARCEIROS</h2>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│                 PARCEIROS E APOIADORES                          │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │                                                         │    │
+│  │  [khyentse_foundation_logo.jpeg]                        │    │
+│  │  KHYENTSE FOUNDATION                                    │    │
+│  │  Apoio institucional                                    │    │
+│  │                                                         │    │
+│  │  ─────────────────────────────────────────              │    │
+│  │                                                         │    │
+│  │  BHUMISPARSHA SCHOOL                                    │    │
+│  │  Parceria educacional                                   │    │
+│  │                                                         │    │
+│  │  ─────────────────────────────────────────              │    │
+│  │                                                         │    │
+│  │  84000.CO                                               │    │
+│  │  Traduções oficiais do Sutra                            │    │
+│  │                                                         │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+<hr />
+<h2 id="slide-15-diferenciais">SLIDE 15: DIFERENCIAIS</h2>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│                 POR QUE ESTE PROJETO?                           │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │                                                         │    │
+│  │  ✅ PROVA DE CONCEITO FUNCIONAL                         │    │
+│  │     App AR já em produção demonstra capacidade          │    │
+│  │                                                         │    │
+│  │  ✅ TECNOLOGIA DE PONTA                                 │    │
+│  │     Bevy/Rust + OpenXR = performance e qualidade        │    │
+│  │                                                         │    │
+│  │  ✅ CONTEÚDO ÚNICO                                      │    │
+│  │     Primeiro VR do Avatamsaka Sutra no mundo            │    │
+│  │                                                         │    │
+│  │  ✅ LOCALIZAÇÃO INTERIOR                                │    │
+│  │     Águas da Prata, SP - elegível para cotas            │    │
+│  │                                                         │    │
+│  │  ✅ IMPACTO CULTURAL                                    │    │
+│  │     Preservação digital de tradição milenar             │    │
+│  │                                                         │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+<hr />
+<h2 id="slide-16-contato">SLIDE 16: CONTATO</h2>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│                    [technosutra-logo1.png]                      │
+│                                                                 │
+│                      TECHNO SUTRA VR                            │
+│                                                                 │
+│         ─────────────────────────────────────────               │
+│                                                                 │
+│  🌐 App AR: technosutra.bhumisparshaschool.org                  │
+│  🌐 Site: technosutra84.wixstudio.com/stem-array                │
+│  📷 Instagram: @technosutra84                                   │
+│  📍 Localização: Águas da Prata, SP                             │
+│                                                                 │
+│         ─────────────────────────────────────────               │
+│                                                                 │
+│                  OBRIGADO PELA ATENÇÃO!                         │
+│                                                                 │
+│              &quot;Anseie pelo inexprimível!&quot;                        │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+<hr />
+<h2 id="referências-de-imagens-para-slides">REFERÊNCIAS DE IMAGENS PARA
+SLIDES</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Slide</th>
+<th>Imagem Principal</th>
+<th>Imagens Secundárias</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td><code>technosutra-logo1.png</code></td>
+<td><code>demo.jpg</code> (fundo)</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td><code>samantabhadra-process.png</code></td>
+<td><code>budha-bubble.png</code></td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td><code>khyentse_foundation_logo.jpeg</code></td>
+<td>-</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td><code>route.png</code></td>
+<td>-</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td><code>dragon-mouse.png</code></td>
+<td>Screenshots do app</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td><code>modelo1.glb</code>, <code>modelo2.glb</code></td>
+<td>-</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>-</td>
+<td>Logos das plataformas</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td><code>demo.jpg</code>, <code>demo2.jpg</code>,
+<code>demo3.jpg</code></td>
+<td>-</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td><code>TECHNOSUTRA-MAP.jpg</code></td>
+<td>-</td>
+</tr>
+<tr class="even">
+<td>10-13</td>
+<td>Gráficos/diagramas</td>
+<td>-</td>
+</tr>
+<tr class="odd">
+<td>14</td>
+<td><code>khyentse_foundation_logo.jpeg</code></td>
+<td>-</td>
+</tr>
+<tr class="even">
+<td>15</td>
+<td>-</td>
+<td>Ícones de check</td>
+</tr>
+<tr class="odd">
+<td>16</td>
+<td><code>technosutra-logo1.png</code></td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><em>Apresentação do Projeto - TECHNO SUTRA VR</em> <em>Edital FOMENTO
+CULTSP - PNAB Nº 12/2025</em> <em>Versão 1.0 - Janeiro 2026</em></p>
+</body>
+</html>

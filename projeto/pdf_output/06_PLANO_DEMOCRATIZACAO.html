@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<base href="file:///home/hautly/techno-sutra-demo/projeto/documentos/">
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Orbitron:wght@500;600;700;800;900&family=Rajdhani:wght@400;500;600;700&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+@page { size: A4; margin: 0; }
+
+html, body {
+  width: 210mm;
+  min-height: 297mm;
+  margin: 0 auto;
+  padding: 0;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.page {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 18mm 20mm 20mm 20mm;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+  background-size: 200px 200px;
+}
+
+/* Paper texture overlay */
+.page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: 
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  z-index: 1;
+}
+
+/* Content above texture */
+.page > * { position: relative; z-index: 2; }
+
+/* Typography */
+h1 {
+  font-size: 20pt;
+  font-weight: 800;
+  margin: 0 0 20px 0;
+  text-align: center;
+  line-height: 1.2;
+}
+
+h2 {
+  font-size: 13pt;
+  font-weight: 700;
+  margin: 24px 0 10px 0;
+  line-height: 1.3;
+}
+
+h3 {
+  font-size: 11pt;
+  font-weight: 600;
+  margin: 18px 0 8px 0;
+}
+
+h4 {
+  font-size: 9.5pt;
+  font-weight: 600;
+  margin: 14px 0 6px 0;
+}
+
+p {
+  font-size: 9.5pt;
+  margin: 8px 0;
+  text-align: justify;
+  hyphens: auto;
+}
+
+strong { font-weight: 700; }
+em { font-style: italic; }
+
+ul, ol { margin: 10px 0 10px 20px; }
+
+li {
+  margin: 5px 0;
+  font-size: 9.5pt;
+  line-height: 1.5;
+}
+
+li::marker { font-weight: 600; }
+
+/* Tables - Clean Professional */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 8.5pt;
+}
+
+th, td {
+  padding: 8px 10px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+th {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 7.5pt;
+}
+
+td { font-size: 8.5pt; line-height: 1.4; }
+
+/* Code */
+code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8pt;
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+pre {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 7.5pt;
+  padding: 12px 14px;
+  margin: 12px 0;
+  border-radius: 6px;
+  overflow-x: auto;
+  line-height: 1.5;
+}
+
+pre code { padding: 0; background: transparent; border: none; }
+
+blockquote {
+  margin: 14px 0;
+  padding: 12px 16px;
+  border-radius: 0 6px 6px 0;
+  font-style: italic;
+}
+
+blockquote p { margin: 0; font-size: 9.5pt; }
+
+hr { border: none; height: 1px; margin: 20px 0; }
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 14px auto;
+  border-radius: 6px;
+}
+
+a { text-decoration: none; font-weight: 500; }
+
+@media print {
+  html, body {
+    width: 210mm !important;
+    margin: 0 !important;
+  }
+  .page {
+    margin: 0 !important;
+    box-shadow: none !important;
+    page-break-after: always;
+  }
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+body {
+  font-family: 'Poppins', system-ui, sans-serif;
+  background: #e8f0eb;
+  color: #2d3b2d;
+}
+
+.page {
+  background: linear-gradient(180deg, #f5f9f6 0%, #f0f7f4 100%);
+}
+
+.page::before { opacity: 0.02; }
+
+.page::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #228b22, #32cd32, #228b22);
+  z-index: 10;
+}
+
+h1 { color: #1a5f1a; }
+
+h2 {
+  color: #228b22;
+  padding-left: 12px;
+  border-left: 3px solid #32cd32;
+}
+
+h3 { color: #2d5a2d; }
+
+h4 {
+  color: #4a7c4a;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+p { color: #3d4d3d; }
+strong { color: #1a5f1a; }
+em { color: #228b22; }
+a { color: #228b22; }
+li::marker { color: #32cd32; }
+
+table {
+  background: #fff;
+  border: 1px solid rgba(34,139,34,0.2);
+  border-radius: 6px;
+}
+
+thead { background: rgba(34,139,34,0.08); }
+
+th {
+  color: #1a5f1a;
+  border-bottom: 2px solid rgba(34,139,34,0.25);
+}
+
+td {
+  color: #3d4d3d;
+  border-bottom: 1px solid rgba(34,139,34,0.08);
+}
+
+tbody tr:nth-child(even) { background: rgba(34,139,34,0.03); }
+
+code {
+  background: rgba(34,139,34,0.1);
+  color: #1a5f1a;
+  border: 1px solid rgba(34,139,34,0.15);
+}
+
+pre {
+  background: #f5f9f6;
+  color: #2d5a2d;
+  border: 1px solid rgba(34,139,34,0.15);
+}
+
+blockquote {
+  background: rgba(34,139,34,0.05);
+  border-left: 3px solid #32cd32;
+  color: #4a7c4a;
+}
+
+hr { background: rgba(34,139,34,0.3); }
+
+img { border: 1px solid rgba(34,139,34,0.15); }
+
+@media print {
+  body { background: #f0f7f4 !important; }
+}
+
+</style>
+</head>
+<body>
+<div class="page">
+<h1 id="plano-de-democratização">PLANO DE DEMOCRATIZAÇÃO</h1>
+<h2 id="techno-sutra-vr---jornada-imersiva-do-avatamsaka-sutra">TECHNO SUTRA VR - Jornada Imersiva do Avatamsaka Sutra</h2>
+<h3 id="edital-fomento-cultsp---pnab-nº-122025---módulo-iii-vrmr">Edital FOMENTO CULTSP - PNAB Nº 12/2025 - Módulo III (VR/MR)</h3>
+<hr />
+<h2 id="objetivo">1. OBJETIVO</h2>
+<p>Democratizar o acesso ao conhecimento sobre desenvolvimento de realidade virtual, formando novos profissionais e documentando o processo criativo para a comunidade brasileira de gamedev.</p>
+<p><strong>Público-alvo:</strong> Estudantes de escolas públicas, universitários de tecnologia/artes, desenvolvedores independentes.</p>
+<hr />
+<h2 id="ações-formativas">2. AÇÕES FORMATIVAS</h2>
+<h3 id="making-of-série-documental">2.1 Making-Of (Série Documental)</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Episódio</th>
+<th>Tema</th>
+<th>Duração</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>EP01</td>
+<td>Conceito e Pesquisa</td>
+<td>10 min</td>
+</tr>
+<tr class="even">
+<td>EP02</td>
+<td>Modelagem 3D para VR</td>
+<td>15 min</td>
+</tr>
+<tr class="odd">
+<td>EP03</td>
+<td>Programação VR com Bevy/Rust</td>
+<td>15 min</td>
+</tr>
+<tr class="even">
+<td>EP04</td>
+<td>Design de Áudio Espacial</td>
+<td>10 min</td>
+</tr>
+<tr class="odd">
+<td>EP05</td>
+<td>Testes e Otimização</td>
+<td>10 min</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Formato:</strong> MP4 1080p, legendas PT/EN, licença CC BY-NC-SA<br />
+<strong>Plataformas:</strong> YouTube, Vimeo, site do projeto</p>
+<h3 id="tutoriais-técnicos">2.2 Tutoriais Técnicos</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Tutorial</th>
+<th>Nível</th>
+<th>Duração</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Introdução ao Bevy Engine</td>
+<td>Iniciante</td>
+<td>30 min</td>
+</tr>
+<tr class="even">
+<td>Primeiro projeto VR</td>
+<td>Iniciante</td>
+<td>45 min</td>
+</tr>
+<tr class="odd">
+<td>Panoramas 360° e Skybox</td>
+<td>Intermediário</td>
+<td>60 min</td>
+</tr>
+<tr class="even">
+<td>Carregando modelos GLB</td>
+<td>Intermediário</td>
+<td>45 min</td>
+</tr>
+<tr class="odd">
+<td>Áudio espacial 3D</td>
+<td>Avançado</td>
+<td>60 min</td>
+</tr>
+<tr class="even">
+<td>Otimização para Quest</td>
+<td>Avançado</td>
+<td>45 min</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Formato:</strong> Vídeo + código fonte no GitHub, documentação em Markdown, licença MIT</p>
+<h3 id="workshops-em-escolas-públicas">2.3 Workshops em Escolas Públicas</h3>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 17%" />
+<col style="width: 22%" />
+<col style="width: 22%" />
+<col style="width: 12%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Workshop</th>
+<th>Local</th>
+<th>Público</th>
+<th>Duração</th>
+<th>Mês</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Workshop 1</td>
+<td>Escola Estadual - Águas da Prata, SP</td>
+<td>30 alunos (ensino médio)</td>
+<td>4h</td>
+<td>11</td>
+</tr>
+<tr class="even">
+<td>Workshop 2</td>
+<td>Escola Estadual - São Paulo, SP</td>
+<td>30 alunos (ensino médio)</td>
+<td>4h</td>
+<td>11</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Conteúdo:</strong> Introdução a VR, demonstração do projeto, atividade prática hands-on</p>
+<h3 id="palestras-em-universidades">2.4 Palestras em Universidades</h3>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 17%" />
+<col style="width: 22%" />
+<col style="width: 22%" />
+<col style="width: 12%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Palestra</th>
+<th>Local</th>
+<th>Público</th>
+<th>Duração</th>
+<th>Mês</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Palestra 1</td>
+<td>USP/UNICAMP/UNESP</td>
+<td>50 universitários (CC/Design)</td>
+<td>2h</td>
+<td>10</td>
+</tr>
+<tr class="even">
+<td>Palestra 2</td>
+<td>FATEC/IFSP</td>
+<td>50 universitários (Jogos Digitais)</td>
+<td>2h</td>
+<td>11</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Conteúdo:</strong> Arquitetura técnica, pipeline de produção, mercado de VR</p>
+<h3 id="live-streams-de-desenvolvimento">2.5 Live Streams de Desenvolvimento</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Mês</th>
+<th>Tema</th>
+<th>Duração</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>3</td>
+<td>Kickoff do projeto</td>
+<td>2h</td>
+</tr>
+<tr class="even">
+<td>5</td>
+<td>Progresso de produção</td>
+<td>2h</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>Demonstração de gameplay</td>
+<td>2h</td>
+</tr>
+<tr class="even">
+<td>9</td>
+<td>Testes e otimização</td>
+<td>2h</td>
+</tr>
+<tr class="odd">
+<td>11</td>
+<td>Pré-lançamento</td>
+<td>2h</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Plataformas:</strong> YouTube/Twitch com chat interativo, gravações disponibilizadas posteriormente</p>
+<hr />
+<h2 id="material-open-source">3. MATERIAL OPEN SOURCE</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Recurso</th>
+<th>Licença</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Código de exemplo (Bevy/Rust)</td>
+<td>MIT</td>
+</tr>
+<tr class="even">
+<td>Shaders WGSL para VR</td>
+<td>MIT</td>
+</tr>
+<tr class="odd">
+<td>Assets de demonstração</td>
+<td>CC BY-NC</td>
+</tr>
+<tr class="even">
+<td>Documentação técnica</td>
+<td>CC BY-SA</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Repositório:</strong> github.com/technosutra/vr-tutorials</p>
+<hr />
+<h2 id="cronograma">4. CRONOGRAMA</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Ação</th>
+<th>Meses</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Making-Of (produção)</td>
+<td>6-9</td>
+</tr>
+<tr class="even">
+<td>Tutoriais</td>
+<td>4-9</td>
+</tr>
+<tr class="odd">
+<td>Live Streams</td>
+<td>3, 5, 7, 9, 11</td>
+</tr>
+<tr class="even">
+<td>Workshops Escolas</td>
+<td>11</td>
+</tr>
+<tr class="odd">
+<td>Palestras Universidades</td>
+<td>10-11</td>
+</tr>
+<tr class="even">
+<td>Documentação Open Source</td>
+<td>3-12</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="metas">5. METAS</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Métrica</th>
+<th>Meta</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Visualizações making-of</td>
+<td>5.000</td>
+</tr>
+<tr class="even">
+<td>Visualizações tutoriais</td>
+<td>10.000</td>
+</tr>
+<tr class="odd">
+<td>Participantes workshops</td>
+<td>60</td>
+</tr>
+<tr class="even">
+<td>Participantes palestras</td>
+<td>100</td>
+</tr>
+<tr class="odd">
+<td>Espectadores lives</td>
+<td>500</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="comprovação">6. COMPROVAÇÃO</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Item</th>
+<th>Formato</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Vídeos making-of/tutoriais</td>
+<td>Links YouTube/Vimeo</td>
+</tr>
+<tr class="even">
+<td>Fotos dos eventos</td>
+<td>Álbum digital (mín. 20 por evento)</td>
+</tr>
+<tr class="odd">
+<td>Listas de presença</td>
+<td>PDF assinado</td>
+</tr>
+<tr class="even">
+<td>Certificados</td>
+<td>PDF</td>
+</tr>
+<tr class="odd">
+<td>Repositório GitHub</td>
+<td>Link público</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="agenda-vivasp">7. AGENDA VIVASP</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Evento</th>
+<th>Data</th>
+<th>Local</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Workshop Escola 1</td>
+<td>Mês 11</td>
+<td>Águas da Prata, SP</td>
+</tr>
+<tr class="even">
+<td>Workshop Escola 2</td>
+<td>Mês 11</td>
+<td>São Paulo, SP</td>
+</tr>
+<tr class="odd">
+<td>Palestra Universidade 1</td>
+<td>Mês 10</td>
+<td>A definir</td>
+</tr>
+<tr class="even">
+<td>Palestra Universidade 2</td>
+<td>Mês 11</td>
+<td>A definir</td>
+</tr>
+<tr class="odd">
+<td>Evento de Lançamento</td>
+<td>Mês 12</td>
+<td>A definir</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="declaração-de-compromisso">DECLARAÇÃO DE COMPROMISSO</h2>
+<p>Declaro que me comprometo a executar todas as ações de democratização descritas neste plano, incluindo produção de conteúdo educacional, realização de workshops e palestras, e disponibilização de material open source.</p>
+<p><strong>Local e Data:</strong> _________________, <strong><em>/</em></strong>/2026</p>
+<p><strong>Assinatura:</strong> _________________________________</p>
+<p><strong>Nome:</strong> _________________________________</p>
+<p><strong>CPF:</strong> _________________________________</p>
+<hr />
+<p><em>Plano de Democratização - TECHNO SUTRA VR</em> <em>Edital FOMENTO CULTSP - PNAB Nº 12/2025</em></p>
+
+</div>
+</body>
+</html>

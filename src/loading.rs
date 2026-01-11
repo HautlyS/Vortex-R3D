@@ -1,3 +1,4 @@
+use crate::js_bridge::{hide_loading_overlay, update_loading_progress, JsBridgeState};
 use crate::GameState;
 use bevy::animation::AnimationPlayer;
 use bevy::gltf::{Gltf, GltfExtras, GltfMaterialExtras, GltfMeshExtras, GltfSceneExtras};
@@ -20,7 +21,21 @@ impl Plugin for LoadingPlugin {
                     .continue_to_state(GameState::Viewing)
                     .load_collection::<PanoramaAssets>()
                     .load_collection::<ModelAssets>(),
-            );
+            )
+            .add_systems(OnEnter(GameState::Loading), on_enter_loading)
+            .add_systems(OnEnter(GameState::Viewing), on_enter_viewing);
+    }
+}
+
+fn on_enter_loading() {
+    update_loading_progress("Loading assets...");
+}
+
+fn on_enter_viewing(mut bridge: ResMut<JsBridgeState>) {
+    if !bridge.loading_hidden {
+        hide_loading_overlay();
+        bridge.loading_hidden = true;
+        info!("🎬 Bevy ready - HTML loading hidden");
     }
 }
 

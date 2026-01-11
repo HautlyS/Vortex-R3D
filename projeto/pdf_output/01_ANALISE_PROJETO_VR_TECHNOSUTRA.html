@@ -1,0 +1,431 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Space+Mono&display=swap');
+:root{--bg:#0a0a0f;--bg2:#12121a;--cyan:#00f5ff;--magenta:#ff00ff;--gold:#ffd700;--text:#e0e0e0;--glow:rgba(0,245,255,0.3);--grad:linear-gradient(135deg,#00f5ff,#ff00ff,#ffd700)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Rajdhani',Arial,sans-serif;font-size:11pt;line-height:1.5;color:var(--text);background:var(--bg);padding:1.5cm;text-align:justify}
+h1{font-family:'Orbitron',sans-serif;font-size:20pt;text-align:center;text-transform:uppercase;letter-spacing:3px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:1cm 0;padding:0.5cm}
+h2{font-family:'Orbitron',sans-serif;font-size:14pt;color:var(--cyan);text-align:center;text-transform:uppercase;margin:1cm 0 0.5cm;border-bottom:1px solid var(--glow);padding-bottom:0.3cm}
+h3{font-size:12pt;color:var(--magenta);margin:0.8cm 0 0.3cm;padding-left:0.4cm;border-left:3px solid var(--magenta)}
+h4{font-size:11pt;color:var(--gold);margin:0.5cm 0 0.2cm}
+p{text-indent:1cm;margin-bottom:0.4cm}
+ul,ol{margin:0.4cm 0 0.4cm 1.2cm}
+li{margin-bottom:0.2cm}
+table{width:100%;border-collapse:collapse;margin:0.8cm 0;background:var(--bg2);border:1px solid var(--glow);font-size:10pt}
+th{font-family:'Orbitron',sans-serif;font-size:9pt;color:var(--cyan);padding:0.3cm;text-align:center;border-bottom:2px solid var(--cyan);background:#1a1a2e}
+td{padding:0.25cm;text-align:center;border-bottom:1px solid rgba(255,255,255,0.1)}
+tr:nth-child(even){background:rgba(0,245,255,0.03)}
+code{font-family:'Space Mono',monospace;font-size:9pt;background:#1a1a2e;color:var(--gold);padding:0.1cm 0.2cm;border-radius:2px}
+pre{font-family:'Space Mono',monospace;font-size:8pt;background:var(--bg2);color:var(--cyan);padding:0.4cm;margin:0.4cm 0;border:1px solid var(--glow);overflow-x:auto;white-space:pre-wrap}
+pre code{background:none;padding:0;color:inherit}
+blockquote{margin:0.5cm 1cm;padding:0.4cm;background:var(--bg2);border-left:3px solid #8b5cf6;font-style:italic;color:#a0a0a0}
+hr{border:none;height:2px;background:var(--grad);margin:1cm 0;opacity:0.5}
+strong{color:var(--gold)}
+a{color:var(--cyan)}
+@media print{body{background:var(--bg)!important}*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}}
+</style></head><body>
+<h1 id="análise-completa-do-projeto-vr-techno-sutra">ANÁLISE COMPLETA DO
+PROJETO VR TECHNO SUTRA</h1>
+<h2 id="proposta-para-edital-fomento-cultsp---pnab-nº-122025">Proposta
+para Edital FOMENTO CULTSP - PNAB Nº 12/2025</h2>
+<h3 id="módulo-iii---realidade-virtual-e-mista-r-200.00000">Módulo III -
+Realidade Virtual e Mista (R$ 200.000,00)</h3>
+<hr />
+<h2 id="identificação-do-projeto">1. IDENTIFICAÇÃO DO PROJETO</h2>
+<h3 id="dados-gerais">1.1 Dados Gerais</h3>
+<table>
+<colgroup>
+<col style="width: 36%" />
+<col style="width: 63%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Campo</th>
+<th>Informação</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Nome do Projeto</strong></td>
+<td>TECHNO SUTRA VR - Jornada Imersiva do Avatamsaka Sutra</td>
+</tr>
+<tr class="even">
+<td><strong>Proponente</strong></td>
+<td>[NOME DO PROPONENTE]</td>
+</tr>
+<tr class="odd">
+<td><strong>Módulo</strong></td>
+<td>III - VR e MR (Realidade Virtual/Mista)</td>
+</tr>
+<tr class="even">
+<td><strong>Valor Solicitado</strong></td>
+<td>R$ 200.000,00</td>
+</tr>
+<tr class="odd">
+<td><strong>Prazo de Execução</strong></td>
+<td>12 meses</td>
+</tr>
+<tr class="even">
+<td><strong>Localização</strong></td>
+<td>Águas da Prata, SP (Interior)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="resumo-executivo">1.2 Resumo Executivo</h3>
+<p>O projeto TECHNO SUTRA VR propõe a criação de uma experiência
+imersiva em Realidade Virtual baseada no Avatamsaka Sutra, um dos textos
+mais importantes do budismo Mahayana. A proposta utiliza como
+<strong>prova de conceito funcional</strong> o aplicativo AR já
+desenvolvido e em operação (technosutra.bhumisparshaschool.org),
+demonstrando a capacidade técnica e artística da equipe.</p>
+<hr />
+<h2 id="prova-de-conceito---app-ar-existente">2. PROVA DE CONCEITO - APP
+AR EXISTENTE</h2>
+<h3 id="aplicativo-ar-funcional">2.1 Aplicativo AR Funcional</h3>
+<p><strong>URL</strong>: https://technosutra.bhumisparshaschool.org/</p>
+<h4 id="funcionalidades-implementadas">Funcionalidades
+Implementadas:</h4>
+<ul>
+<li>✅ <strong>PWA (Progressive Web App)</strong> - Instalável em iOS,
+Android e Desktop</li>
+<li>✅ <strong>Scanner QR</strong> - Leitura de códigos para ativação de
+modelos 3D</li>
+<li>✅ <strong>Galeria 3D</strong> - Visualização de modelos
+GLB/GLTF</li>
+<li>✅ <strong>Mapa Interativo</strong> - 56 pontos da jornada de
+Suddhana</li>
+<li>✅ <strong>Modo Offline</strong> - Service Worker para funcionamento
+sem internet</li>
+<li>✅ <strong>Realidade Aumentada</strong> - Integração com
+model-viewer para AR</li>
+</ul>
+<h4 id="stack-técnica-do-app-ar">Stack Técnica do App AR:</h4>
+<pre><code>Frontend:
+├── HTML5/CSS3/JavaScript
+├── Model-Viewer (Google) - Renderização 3D/AR
+├── PWA com Service Worker
+├── QR Scanner nativo
+└── Responsive Design
+
+Assets:
+├── 56+ modelos GLB (personagens do Sutra)
+├── Imagens e ícones otimizados
+├── Áudio para narração
+└── Dados JSON estruturados</code></pre>
+<h3 id="site-principal">2.2 Site Principal</h3>
+<p><strong>URL</strong>:
+https://technosutra84.wixstudio.com/stem-array</p>
+<h4 id="conteúdo-disponível">Conteúdo Disponível:</h4>
+<ul>
+<li>Biblioteca de capítulos do Avatamsaka Sutra</li>
+<li>Galeria de vídeos e imagens</li>
+<li>Perfis dos 56 Kalyanamitras (amigos espirituais)</li>
+<li>Integração com Khyentse Foundation</li>
+<li>Mapa da jornada em Águas da Prata, SP</li>
+</ul>
+<h3 id="repositório-de-desenvolvimento-vr">2.3 Repositório de
+Desenvolvimento VR</h3>
+<p><strong>Localização</strong>: /home/hautly/techno-sutra-demo/</p>
+<h4 id="tecnologias-do-projeto-vr">Tecnologias do Projeto VR:</h4>
+<pre><code>Engine:
+├── Bevy 0.15+ (Rust Game Engine)
+├── wgpu (WebGPU/Vulkan/Metal/DX12)
+└── bevy_oxr (OpenXR para VR)
+
+Plataformas:
+├── Desktop (Windows/macOS/Linux)
+├── Web (WASM + WebGPU)
+├── Meta Quest (Android/OpenXR)
+└── SteamVR (PC VR)
+
+Features Implementadas:
+├── Panoramas 360° equirretangulares
+├── Conversão GPU para cubemap
+├── Câmera first-person
+├── Carregamento de modelos GLB
+├── Áudio espacial 3D
+├── Sistema de portais
+├── Transições vortex
+└── Efeitos holográficos</code></pre>
+<hr />
+<h2 id="conceito-artístico-e-cultural">3. CONCEITO ARTÍSTICO E
+CULTURAL</h2>
+<h3 id="o-avatamsaka-sutra">3.1 O Avatamsaka Sutra</h3>
+<p>O Avatamsaka Sutra (Sutra da Guirlanda de Flores) é um dos textos
+mais extensos e profundos do budismo Mahayana. Narra a jornada de
+<strong>Suddhana</strong>, um jovem mercador que busca a iluminação
+através de encontros com <strong>56 Kalyanamitras</strong> (amigos
+espirituais), cada um representando um aspecto diferente do caminho do
+Bodhisattva.</p>
+<h3 id="proposta-artística-vr">3.2 Proposta Artística VR</h3>
+<p>A experiência VR transportará o usuário para:</p>
+<ol type="1">
+<li><strong>Ambientes Imersivos 360°</strong>
+<ul>
+<li>Cenários inspirados na cosmologia budista</li>
+<li>Paisagens de Águas da Prata, SP (localização real do projeto)</li>
+<li>Reinos celestiais descritos no Sutra</li>
+</ul></li>
+<li><strong>Encontros com Kalyanamitras</strong>
+<ul>
+<li>56 personagens 3D animados</li>
+<li>Diálogos com áudio espacial</li>
+<li>Ensinamentos interativos</li>
+</ul></li>
+<li><strong>Jornada Narrativa</strong>
+<ul>
+<li>Progressão pelos 56 capítulos</li>
+<li>Sistema de portais entre mundos</li>
+<li>Meditações guiadas em VR</li>
+</ul></li>
+</ol>
+<h3 id="relevância-cultural">3.3 Relevância Cultural</h3>
+<ul>
+<li><strong>Preservação</strong>: Digitalização de tradição milenar
+budista</li>
+<li><strong>Acessibilidade</strong>: Democratização de ensinamentos
+esotéricos</li>
+<li><strong>Inovação</strong>: Primeira experiência VR completa do
+Avatamsaka Sutra</li>
+<li><strong>Educação</strong>: Ferramenta para escolas e
+universidades</li>
+<li><strong>Intercultural</strong>: Ponte entre tradição oriental e
+tecnologia ocidental</li>
+</ul>
+<hr />
+<h2 id="análise-técnica">4. ANÁLISE TÉCNICA</h2>
+<h3 id="arquitetura-do-sistema-vr">4.1 Arquitetura do Sistema VR</h3>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│                    TECHNO SUTRA VR ENGINE                       │
+├─────────────────────────────────────────────────────────────────┤
+│  Plugins Bevy                                                   │
+│  ├── PanoramaPlugin        (carregamento de panoramas 360°)     │
+│  ├── SkyboxPlugin          (renderização de cubemap)            │
+│  ├── CharacterPlugin       (56 Kalyanamitras em GLB)            │
+│  ├── PortalPlugin          (transições entre mundos)            │
+│  ├── AudioPlugin           (áudio espacial 3D)                  │
+│  ├── VRPlugin              (OpenXR/WebXR)                       │
+│  └── BookReaderPlugin      (leitura dos capítulos)              │
+├─────────────────────────────────────────────────────────────────┤
+│  Plataformas Suportadas                                         │
+│  ├── Meta Quest 2/3/Pro    (standalone Android)                 │
+│  ├── SteamVR               (PC VR - Valve Index, etc)           │
+│  ├── WebXR                 (navegadores compatíveis)            │
+│  └── Desktop               (modo não-VR para acessibilidade)    │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+<h3 id="requisitos-de-hardware">4.2 Requisitos de Hardware</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Plataforma</th>
+<th>Requisitos Mínimos</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Meta Quest</strong></td>
+<td>Quest 2 ou superior</td>
+</tr>
+<tr class="even">
+<td><strong>PC VR</strong></td>
+<td>GTX 1060 / RX 580, 8GB RAM</td>
+</tr>
+<tr class="odd">
+<td><strong>Desktop</strong></td>
+<td>Qualquer GPU com Vulkan/DX12</td>
+</tr>
+<tr class="even">
+<td><strong>Web</strong></td>
+<td>Chrome 113+ com WebGPU</td>
+</tr>
+</tbody>
+</table>
+<h3 id="assets-existentes-reaproveitáveis">4.3 Assets Existentes
+(Reaproveitáveis)</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Asset</th>
+<th>Quantidade</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Modelos GLB (personagens)</td>
+<td>56+</td>
+<td>✅ Prontos</td>
+</tr>
+<tr class="even">
+<td>Panoramas 360°</td>
+<td>3 demos</td>
+<td>✅ Prontos</td>
+</tr>
+<tr class="odd">
+<td>Áudios de diálogo</td>
+<td>3 demos</td>
+<td>✅ Prontos</td>
+</tr>
+<tr class="even">
+<td>Textos dos capítulos</td>
+<td>56</td>
+<td>✅ Prontos</td>
+</tr>
+<tr class="odd">
+<td>Perfis de personagens</td>
+<td>56</td>
+<td>✅ Prontos</td>
+</tr>
+<tr class="even">
+<td>Mapa interativo</td>
+<td>1</td>
+<td>✅ Pronto</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="diferenciais-competitivos">5. DIFERENCIAIS COMPETITIVOS</h2>
+<h3 id="prova-de-conceito-funcional">5.1 Prova de Conceito
+Funcional</h3>
+<ul>
+<li>App AR já em produção e acessível publicamente</li>
+<li>Demonstra capacidade técnica da equipe</li>
+<li>Base de assets reutilizável</li>
+</ul>
+<h3 id="tecnologia-de-ponta">5.2 Tecnologia de Ponta</h3>
+<ul>
+<li>Engine Bevy (Rust) - performance e segurança</li>
+<li>WebGPU - gráficos de última geração</li>
+<li>OpenXR - compatibilidade universal VR</li>
+</ul>
+<h3 id="conteúdo-único">5.3 Conteúdo Único</h3>
+<ul>
+<li>Primeiro VR do Avatamsaka Sutra no mundo</li>
+<li>Parceria com Khyentse Foundation</li>
+<li>Tradução oficial da 84000.co</li>
+</ul>
+<h3 id="localização-interior">5.4 Localização Interior</h3>
+<ul>
+<li>Projeto sediado em Águas da Prata, SP</li>
+<li>Elegível para 60% das vagas do interior</li>
+<li>Conexão com geografia local (mapa da jornada)</li>
+</ul>
+<hr />
+<h2 id="equipe-técnica">6. EQUIPE TÉCNICA</h2>
+<h3 id="funções-necessárias">6.1 Funções Necessárias</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Função</th>
+<th>Responsabilidade</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Diretor Criativo</strong></td>
+<td>Visão artística e narrativa</td>
+</tr>
+<tr class="even">
+<td><strong>Desenvolvedor VR</strong></td>
+<td>Programação Bevy/Rust</td>
+</tr>
+<tr class="odd">
+<td><strong>Artista 3D</strong></td>
+<td>Modelagem e animação</td>
+</tr>
+<tr class="even">
+<td><strong>Sound Designer</strong></td>
+<td>Áudio espacial e trilha</td>
+</tr>
+<tr class="odd">
+<td><strong>UX Designer</strong></td>
+<td>Interface e acessibilidade</td>
+</tr>
+<tr class="even">
+<td><strong>Produtor</strong></td>
+<td>Gestão e cronograma</td>
+</tr>
+</tbody>
+</table>
+<h3 id="portfólio-da-equipe">6.2 Portfólio da Equipe</h3>
+<ul>
+<li>App AR Techno Sutra (em produção)</li>
+<li>Projeto VR Demo (em desenvolvimento)</li>
+<li>Parceria com Bhumisparsha School</li>
+<li>Apoio da Khyentse Foundation</li>
+</ul>
+<hr />
+<h2 id="impacto-e-alcance">7. IMPACTO E ALCANCE</h2>
+<h3 id="público-alvo">7.1 Público-Alvo</h3>
+<ul>
+<li>Praticantes de meditação e budismo</li>
+<li>Estudantes de filosofia e religião</li>
+<li>Entusiastas de tecnologia imersiva</li>
+<li>Escolas e universidades</li>
+<li>Museus e centros culturais</li>
+</ul>
+<h3 id="métricas-de-sucesso">7.2 Métricas de Sucesso</h3>
+<ul>
+<li>Downloads/instalações do app VR</li>
+<li>Tempo médio de sessão</li>
+<li>Completude da jornada (56 capítulos)</li>
+<li>Avaliações em lojas de apps</li>
+<li>Cobertura de mídia</li>
+</ul>
+<h3 id="potencial-de-mercado">7.3 Potencial de Mercado</h3>
+<ul>
+<li>Mercado global de VR: US$ 22 bilhões (2025)</li>
+<li>Nicho de meditação/wellness em VR crescente</li>
+<li>Distribuição via Meta Quest Store, Steam, itch.io</li>
+<li>Possibilidade de versão educacional para escolas</li>
+</ul>
+<hr />
+<h2 id="sustentabilidade">8. SUSTENTABILIDADE</h2>
+<h3 id="modelo-de-negócio-pós-fomento">8.1 Modelo de Negócio
+Pós-Fomento</h3>
+<ul>
+<li>Versão gratuita com capítulos iniciais</li>
+<li>Versão completa paga (R$ 29,90)</li>
+<li>Licenciamento para instituições educacionais</li>
+<li>Workshops e palestras sobre o projeto</li>
+</ul>
+<h3 id="continuidade">8.2 Continuidade</h3>
+<ul>
+<li>Atualizações com novos conteúdos</li>
+<li>Expansão para outros sutras</li>
+<li>Comunidade de usuários</li>
+<li>Parcerias com centros budistas</li>
+</ul>
+<hr />
+<h2 id="conclusão">9. CONCLUSÃO</h2>
+<p>O projeto TECHNO SUTRA VR representa uma oportunidade única de:</p>
+<ol type="1">
+<li><strong>Inovar</strong> na interseção entre tecnologia e
+espiritualidade</li>
+<li><strong>Preservar</strong> tradições culturais milenares em formato
+digital</li>
+<li><strong>Democratizar</strong> acesso a ensinamentos profundos</li>
+<li><strong>Desenvolver</strong> a indústria criativa do interior
+paulista</li>
+<li><strong>Exportar</strong> cultura brasileira para o mundo</li>
+</ol>
+<p>A existência do app AR funcional como prova de conceito demonstra a
+viabilidade técnica e o comprometimento da equipe com a entrega de um
+produto de alta qualidade.</p>
+<hr />
+<h2 id="anexos-referenciados">ANEXOS REFERENCIADOS</h2>
+<ul>
+<li>[ANEXO_01] App AR: https://technosutra.bhumisparshaschool.org/</li>
+<li>[ANEXO_02] Site Principal:
+https://technosutra84.wixstudio.com/stem-array</li>
+<li>[ANEXO_03] Repositório VR: /home/hautly/techno-sutra-demo/</li>
+<li>[ANEXO_04] Modelos 3D:
+/home/hautly/techno-sutra-demo/technosutra/models/</li>
+<li>[ANEXO_05] Capítulos:
+/home/hautly/techno-sutra-demo/technosutra/chapters/</li>
+<li>[ANEXO_06] Personagens:
+/home/hautly/techno-sutra-demo/technosutra/characters/</li>
+</ul>
+<hr />
+<p><em>Documento gerado em: 10/01/2026</em> <em>Versão: 1.0</em></p>
+</body></html>

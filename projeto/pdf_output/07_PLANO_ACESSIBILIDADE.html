@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<base href="file:///home/hautly/techno-sutra-demo/projeto/documentos/">
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Orbitron:wght@500;600;700;800;900&family=Sora:wght@300;400;500;600;700&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+@page { size: A4; margin: 0; }
+
+:root {
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.08);
+}
+
+html, body {
+  width: 210mm;
+  min-height: 297mm;
+  margin: 0 auto;
+  padding: 0;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'kern' 1, 'liga' 1;
+}
+
+.page {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 20mm 22mm 22mm 22mm;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Subtle paper texture */
+.page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.025;
+  background-image: 
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  z-index: 1;
+}
+
+/* Content wrapper - ensures centering */
+.page > * {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 166mm;
+}
+
+/* ============================================
+   SMART PAGE BREAK RULES
+   ============================================ */
+
+table, thead, tbody, tr, pre, blockquote, figure, img, ul, ol {
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  page-break-after: avoid !important;
+  break-after: avoid !important;
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
+}
+
+p { orphans: 3; widows: 3; }
+
+.page-break {
+  page-break-before: always !important;
+  break-before: page !important;
+  height: 0;
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
+}
+
+/* ============================================
+   TYPOGRAPHY - CENTERED & MODERN
+   ============================================ */
+
+h1 {
+  font-size: 22pt;
+  font-weight: 800;
+  margin: 0 0 var(--spacing-lg) 0;
+  text-align: center;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  width: 100%;
+}
+
+h2 {
+  font-size: 14pt;
+  font-weight: 700;
+  margin: var(--spacing-xl) 0 var(--spacing-md) 0;
+  text-align: center;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  width: 100%;
+}
+
+h3 {
+  font-size: 11.5pt;
+  font-weight: 600;
+  margin: var(--spacing-lg) 0 var(--spacing-sm) 0;
+  text-align: center;
+  line-height: 1.4;
+  width: 100%;
+}
+
+h4 {
+  font-size: 10pt;
+  font-weight: 600;
+  margin: var(--spacing-md) 0 var(--spacing-xs) 0;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  width: 100%;
+}
+
+p {
+  font-size: 9.5pt;
+  margin: var(--spacing-sm) 0;
+  text-align: justify;
+  hyphens: auto;
+  line-height: 1.75;
+}
+
+strong { font-weight: 700; }
+em { font-style: italic; }
+
+/* Lists - Centered container */
+ul, ol {
+  margin: var(--spacing-md) auto;
+  padding-left: 24px;
+  max-width: 140mm;
+}
+
+li {
+  margin: var(--spacing-xs) 0;
+  font-size: 9.5pt;
+  line-height: 1.65;
+}
+
+li::marker { font-weight: 600; }
+
+/* ============================================
+   TABLES - MODERN CENTERED DESIGN
+   ============================================ */
+
+table {
+  width: 100%;
+  max-width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: var(--spacing-lg) auto;
+  font-size: 8.5pt;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+thead {
+  text-align: center;
+}
+
+th, td {
+  padding: 12px 14px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+th {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 7.5pt;
+}
+
+td {
+  font-size: 8.5pt;
+  line-height: 1.5;
+}
+
+/* First column left-aligned for readability */
+th:first-child,
+td:first-child {
+  text-align: left;
+  padding-left: 16px;
+}
+
+/* Last column right-aligned for numbers */
+th:last-child,
+td:last-child {
+  text-align: right;
+  padding-right: 16px;
+}
+
+/* Single column tables stay centered */
+table:has(th:only-child) th,
+table:has(td:only-child) td {
+  text-align: center;
+}
+
+/* ============================================
+   CODE BLOCKS
+   ============================================ */
+
+code {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 8pt;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  font-feature-settings: 'liga' 0;
+}
+
+pre {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 7.5pt;
+  padding: var(--spacing-md);
+  margin: var(--spacing-md) auto;
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+  line-height: 1.6;
+  max-width: 100%;
+}
+
+pre code {
+  padding: 0;
+  background: transparent;
+  border: none;
+}
+
+/* ============================================
+   BLOCKQUOTES - CENTERED
+   ============================================ */
+
+blockquote {
+  margin: var(--spacing-lg) auto;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  font-style: italic;
+  max-width: 150mm;
+  text-align: center;
+}
+
+blockquote p {
+  margin: 0;
+  font-size: 10pt;
+  text-align: center;
+}
+
+/* ============================================
+   OTHER ELEMENTS
+   ============================================ */
+
+hr {
+  border: none;
+  height: 2px;
+  margin: var(--spacing-xl) auto;
+  max-width: 80mm;
+  border-radius: 1px;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: var(--spacing-lg) auto;
+  border-radius: var(--radius-md);
+}
+
+a {
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity 0.2s ease;
+}
+
+/* ============================================
+   PRINT STYLES
+   ============================================ */
+
+@media print {
+  html, body {
+    width: 210mm !important;
+    margin: 0 !important;
+  }
+  .page {
+    margin: 0 !important;
+    box-shadow: none !important;
+    page-break-after: always;
+  }
+}
+
+body {
+  font-family: 'Sora', system-ui, sans-serif;
+  background: #08080f;
+  color: #e8e8f0;
+}
+
+.page {
+  background: linear-gradient(180deg, #0e0e18 0%, #08080f 100%);
+  border: 1px solid rgba(139,92,246,0.1);
+  box-shadow: 
+    0 0 60px rgba(139,92,246,0.04),
+    0 0 100px rgba(236,72,153,0.02);
+}
+
+.page::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #ec4899, #8b5cf6, #06b6d4);
+  z-index: 10;
+}
+
+h1 {
+  color: #f472b6;
+  letter-spacing: 0.03em;
+  text-shadow: 
+    0 0 30px rgba(236,72,153,0.4),
+    0 0 60px rgba(236,72,153,0.2);
+}
+
+h2 {
+  color: #a78bfa;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: linear-gradient(90deg, rgba(139,92,246,0.1) 0%, transparent 70%);
+  border-left: 3px solid #8b5cf6;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  text-align: left;
+  text-shadow: 0 0 20px rgba(139,92,246,0.3);
+}
+
+h3 { color: #22d3ee; }
+
+h4 {
+  color: #c4b5fd;
+  font-weight: 500;
+}
+
+p { color: #c4c4d0; }
+strong { color: #f472b6; }
+em { color: #22d3ee; font-style: normal; }
+a { color: #ec4899; }
+li::marker { color: #8b5cf6; }
+
+/* Tables */
+table {
+  background: rgba(14,14,24,0.9);
+  border: 1px solid rgba(139,92,246,0.2);
+  border-radius: var(--radius-md);
+  box-shadow: 
+    0 4px 24px rgba(0,0,0,0.3),
+    0 0 30px rgba(139,92,246,0.05);
+}
+
+thead {
+  background: linear-gradient(180deg, rgba(139,92,246,0.12) 0%, rgba(139,92,246,0.06) 100%);
+}
+
+th {
+  color: #f472b6;
+  border-bottom: 1px solid rgba(236,72,153,0.3);
+  text-shadow: 0 0 10px rgba(236,72,153,0.3);
+}
+
+td {
+  color: #d4d4e0;
+  border-bottom: 1px solid rgba(139,92,246,0.1);
+}
+
+tbody tr:nth-child(even) { background: rgba(139,92,246,0.03); }
+tbody tr:last-child td { border-bottom: none; }
+
+/* Code */
+code {
+  background: rgba(6,182,212,0.12);
+  color: #22d3ee;
+  border: 1px solid rgba(6,182,212,0.2);
+}
+
+pre {
+  background: rgba(8,8,15,0.95);
+  color: #22d3ee;
+  border: 1px solid rgba(6,182,212,0.2);
+}
+
+blockquote {
+  background: rgba(236,72,153,0.06);
+  border-left: 3px solid #ec4899;
+  color: #c4b5fd;
+}
+
+hr {
+  background: linear-gradient(90deg, #ec4899, #8b5cf6, #06b6d4);
+  box-shadow: 0 0 10px rgba(139,92,246,0.4);
+}
+
+img {
+  border: 1px solid rgba(139,92,246,0.2);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+}
+
+@media print {
+  body { background: #08080f !important; }
+}
+
+</style>
+</head>
+<body>
+<div class="page">
+<h1 id="plano-de-acessibilidade">PLANO DE ACESSIBILIDADE</h1>
+<h2 id="techno-sutra-vr">TECHNO SUTRA VR</h2>
+<h3 id="edital-fomento-cultsp---pnab-nº-122025">Edital FOMENTO CULTSP - PNAB Nº 12/2025</h3>
+<hr />
+<h2 id="introdução">1. INTRODUÇÃO</h2>
+<p>O Plano de Acessibilidade do projeto TECHNO SUTRA VR estabelece as medidas comunicacionais, arquitetônicas e atitudinais que serão implementadas para garantir que a experiência seja acessível ao maior número possível de pessoas, incluindo pessoas com deficiência.</p>
+<h3 id="princípios-norteadores">1.1 Princípios Norteadores</h3>
+<ul>
+<li><strong>Universalidade</strong>: Design para todos desde o início</li>
+<li><strong>Flexibilidade</strong>: Múltiplas formas de interação</li>
+<li><strong>Simplicidade</strong>: Interface intuitiva e clara</li>
+<li><strong>Perceptibilidade</strong>: Informação disponível em múltiplos formatos</li>
+<li><strong>Tolerância ao erro</strong>: Prevenção e recuperação de erros</li>
+</ul>
+<h3 id="referências">1.2 Referências</h3>
+<ul>
+<li>WCAG 2.1 (Web Content Accessibility Guidelines)</li>
+<li>XR Accessibility User Requirements (W3C)</li>
+<li>Meta Quest Accessibility Guidelines</li>
+<li>Lei Brasileira de Inclusão (Lei 13.146/2015)</li>
+</ul>
+<hr />
+<h2 id="acessibilidade-visual">2. ACESSIBILIDADE VISUAL</h2>
+<h3 id="deficiência-visual-total">2.1 Deficiência Visual Total</h3>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 41%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Recurso</th>
+<th>Implementação</th>
+<th>Prioridade</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Audiodescrição</strong></td>
+<td>Narração detalhada de ambientes e personagens</td>
+<td>Alta</td>
+</tr>
+<tr class="even">
+<td><strong>Navegação por áudio</strong></td>
+<td>Indicadores sonoros de direção e interação</td>
+<td>Alta</td>
+</tr>
+<tr class="odd">
+<td><strong>Modo somente áudio</strong></td>
+<td>Experiência completa sem dependência visual</td>
+<td>Média</td>
+</tr>
+<tr class="even">
+<td><strong>Feedback háptico</strong></td>
+<td>Vibração dos controles para indicar eventos</td>
+<td>Alta</td>
+</tr>
+</tbody>
+</table>
+<h3 id="baixa-visão">2.2 Baixa Visão</h3>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 41%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Recurso</th>
+<th>Implementação</th>
+<th>Prioridade</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Alto contraste</strong></td>
+<td>Opção de cores de alto contraste na UI</td>
+<td>Alta</td>
+</tr>
+<tr class="even">
+<td><strong>Tamanho de fonte</strong></td>
+<td>Ajuste de 100% a 200%</td>
+<td>Alta</td>
+</tr>
+<tr class="odd">
+<td><strong>Zoom de UI</strong></td>
+<td>Ampliação de elementos de interface</td>
+<td>Média</td>
+</tr>
+<tr class="even">
+<td><strong>Contornos destacados</strong></td>
+<td>Bordas visíveis em elementos interativos</td>
+<td>Alta</td>
+</tr>
+</tbody>
+</table>
+<h3 id="daltonismo">2.3 Daltonismo</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Tipo</th>
+<th>Solução</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Protanopia</strong></td>
+<td>Filtro de cores + símbolos adicionais</td>
+</tr>
+<tr class="even">
+<td><strong>Deuteranopia</strong></td>
+<td>Filtro de cores + símbolos adicionais</td>
+</tr>
+<tr class="odd">
+<td><strong>Tritanopia</strong></td>
+<td>Filtro de cores + símbolos adicionais</td>
+</tr>
+<tr class="even">
+<td><strong>Acromático</strong></td>
+<td>Modo monocromático com texturas distintas</td>
+</tr>
+</tbody>
+</table>
+<h3 id="configurações-visuais">2.4 Configurações Visuais</h3>
+<pre><code>┌─────────────────────────────────────┐
+│     ⚙ ACESSIBILIDADE VISUAL        │
+├─────────────────────────────────────┤
+│  Tamanho da Fonte                   │
+│  [====●====] 150%                   │
+│                                     │
+│  Contraste                          │
+│  ( ) Normal                         │
+│  (●) Alto Contraste                 │
+│  ( ) Invertido                      │
+│                                     │
+│  Filtro de Daltonismo               │
+│  [▼ Deuteranopia          ]         │
+│                                     │
+│  Audiodescrição                     │
+│  [●] Ativada                        │
+│                                     │
+│         [Aplicar]  [Padrão]         │
+└─────────────────────────────────────┘</code></pre>
+<hr />
+<h2 id="acessibilidade-auditiva">3. ACESSIBILIDADE AUDITIVA</h2>
+<h3 id="deficiência-auditiva-total">3.1 Deficiência Auditiva Total</h3>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 41%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Recurso</th>
+<th>Implementação</th>
+<th>Prioridade</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Legendas completas</strong></td>
+<td>Todo áudio transcrito em texto</td>
+<td>Alta</td>
+</tr>
+<tr class="even">
+<td><strong>Identificação de falante</strong></td>
+<td>Nome do personagem nas legendas</td>
+<td>Alta</td>
+</tr>
+<tr class="odd">
+<td><strong>Descrição de sons</strong></td>
+<td>[som de sino], [passos], etc.</td>
+<td>Alta</td>
+</tr>
+<tr class="even">
+<td><strong>Indicadores visuais</strong></td>
+<td>Ícones para eventos sonoros</td>
+<td>Alta</td>
+</tr>
+</tbody>
+</table>
+<h3 id="baixa-audição">3.2 Baixa Audição</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Recurso</th>
+<th>Implementação</th>
+<th>Prioridade</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Controle de volume</strong></td>
+<td>Ajuste independente por categoria</td>
+<td>Alta</td>
+</tr>
+<tr class="even">
+<td><strong>Amplificação de diálogos</strong></td>
+<td>Boost de voz sobre ambiente</td>
+<td>Média</td>
+</tr>
+<tr class="odd">
+<td><strong>Equalização</strong></td>
+<td>Ajuste de frequências</td>
+<td>Baixa</td>
+</tr>
+</tbody>
+</table>
+<h3 id="formato-de-legendas">3.3 Formato de Legendas</h3>
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│                    [Som de sino ao longe]                   │
+│                                                             │
+│  MANJUSHRI:                                                 │
+│  &quot;Suddhana, sua jornada começa agora.                       │
+│   Vá para o sul e encontre Meghasri.&quot;                       │
+│                                                             │
+│                    [Música suave começa]                    │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘</code></pre>
+<h3 id="configurações-de-legendas">3.4 Configurações de Legendas</h3>
+<pre><code>┌─────────────────────────────────────┐
+│     ⚙ LEGENDAS E ÁUDIO             │
+├─────────────────────────────────────┤
+│  Legendas                           │
+│  [●] Ativadas                       │
+│                                     │
+│  Tamanho das Legendas               │
+│  [====●====] Grande                 │
+│                                     │
+│  Fundo das Legendas                 │
+│  [▼ Preto semi-transparente ]       │
+│                                     │
+│  Descrição de Sons                  │
+│  [●] Ativada                        │
+│                                     │
+│  Indicadores Visuais de Áudio       │
+│  [●] Ativados                       │
+│                                     │
+│         [Aplicar]  [Padrão]         │
+└─────────────────────────────────────┘</code></pre>
+<hr />
+<h2 id="acessibilidade-motora">4. ACESSIBILIDADE MOTORA</h2>
+<h3 id="mobilidade-reduzida">4.1 Mobilidade Reduzida</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Recurso</th>
+<th>Implementação</th>
+<th>Prioridade</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Modo sentado</strong></td>
+<td>Experiência completa sentado</td>
+<td>Alta</td>
+</tr>
+<tr class="even">
+<td><strong>Teleporte</strong></td>
+<td>Movimento sem locomoção física</td>
+<td>Alta</td>
+</tr>
+<tr class="odd">
+<td><strong>Ajuste de altura</strong></td>
+<td>Calibração de altura virtual</td>
+<td>Alta</td>
+</tr>
+<tr class="even">
+<td><strong>Área de jogo reduzida</strong></td>
+<td>Funcionamento em espaço mínimo</td>
+<td>Média</td>
+</tr>
+</tbody>
+</table>
+<h3 id="dificuldade-com-controles">4.2 Dificuldade com Controles</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Recurso</th>
+<th>Implementação</th>
+<th>Prioridade</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Controle por olhar (gaze)</strong></td>
+<td>Seleção por direção do olhar</td>
+<td>Alta</td>
+</tr>
+<tr class="even">
+<td><strong>Um único botão</strong></td>
+<td>Todas as ações com um botão</td>
+<td>Alta</td>
+</tr>
+<tr class="odd">
+<td><strong>Tempo de seleção ajustável</strong></td>
+<td>0.5s a 3s para confirmar</td>
+<td>Alta</td>
+</tr>
+<tr class="even">
+<td><strong>Remapeamento de controles</strong></td>
+<td>Personalização completa</td>
+<td>Média</td>
+</tr>
+<tr class="odd">
+<td><strong>Modo automático</strong></td>
+<td>Progressão sem interação</td>
+<td>Média</td>
+</tr>
+</tbody>
+</table>
+<h3 id="tremoresprecisão">4.3 Tremores/Precisão</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Recurso</th>
+<th>Implementação</th>
+<th>Prioridade</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Áreas de toque ampliadas</strong></td>
+<td>Botões maiores</td>
+<td>Alta</td>
+</tr>
+<tr class="even">
+<td><strong>Estabilização de mira</strong></td>
+<td>Suavização de movimento</td>
+<td>Média</td>
+</tr>
+<tr class="odd">
+<td><strong>Confirmação de ação</strong></td>
+<td>Evitar ações acidentais</td>
+<td>Alta</td>
+</tr>
+<tr class="even">
+<td><strong>Desfazer ação</strong></td>
+<td>Reverter última ação</td>
+<td>Média</td>
+</tr>
+</tbody>
+</table>
+<h3 id="configurações-de-controle">4.4 Configurações de Controle</h3>
+<pre><code>┌─────────────────────────────────────┐
+│     ⚙ CONTROLES E MOVIMENTO        │
+├─────────────────────────────────────┤
+│  Modo de Interação                  │
+│  ( ) Controles padrão               │
+│  (●) Controle por olhar             │
+│  ( ) Um único botão                 │
+│                                     │
+│  Tempo de Seleção                   │
+│  [====●====] 1.5 segundos           │
+│                                     │
+│  Modo de Movimento                  │
+│  (●) Teleporte                      │
+│  ( ) Locomoção suave                │
+│                                     │
+│  Posição                            │
+│  (●) Sentado                        │
+│  ( ) Em pé                          │
+│                                     │
+│  Estabilização de Mira              │
+│  [●] Ativada                        │
+│                                     │
+│         [Aplicar]  [Padrão]         │
+└─────────────────────────────────────┘</code></pre>
+<hr />
+<h2 id="acessibilidade-cognitiva">5. ACESSIBILIDADE COGNITIVA</h2>
+<h3 id="dificuldades-de-aprendizagem">5.1 Dificuldades de Aprendizagem</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Recurso</th>
+<th>Implementação</th>
+<th>Prioridade</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Tutorial interativo</strong></td>
+<td>Passo a passo com prática</td>
+<td>Alta</td>
+</tr>
+<tr class="even">
+<td><strong>Dicas contextuais</strong></td>
+<td>Ajuda quando necessário</td>
+<td>Alta</td>
+</tr>
+<tr class="odd">
+<td><strong>Linguagem simples</strong></td>
+<td>Textos claros e diretos</td>
+<td>Alta</td>
+</tr>
+<tr class="even">
+<td><strong>Repetição de instruções</strong></td>
+<td>Opção de reouvir</td>
+<td>Média</td>
+</tr>
+</tbody>
+</table>
+<h3 id="dificuldades-de-memória">5.2 Dificuldades de Memória</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Recurso</th>
+<th>Implementação</th>
+<th>Prioridade</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Resumo de progresso</strong></td>
+<td>O que aconteceu até agora</td>
+<td>Alta</td>
+</tr>
+<tr class="even">
+<td><strong>Objetivos visíveis</strong></td>
+<td>Sempre mostrar próximo passo</td>
+<td>Alta</td>
+</tr>
+<tr class="odd">
+<td><strong>Diário de jornada</strong></td>
+<td>Registro de encontros</td>
+<td>Média</td>
+</tr>
+<tr class="even">
+<td><strong>Mapa de progresso</strong></td>
+<td>Visualização da jornada</td>
+<td>Média</td>
+</tr>
+</tbody>
+</table>
+<h3 id="tdahdificuldade-de-foco">5.3 TDAH/Dificuldade de Foco</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Recurso</th>
+<th>Implementação</th>
+<th>Prioridade</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Modo foco</strong></td>
+<td>Redução de distrações visuais</td>
+<td>Média</td>
+</tr>
+<tr class="even">
+<td><strong>Pausas sugeridas</strong></td>
+<td>Lembretes de descanso</td>
+<td>Baixa</td>
+</tr>
+<tr class="odd">
+<td><strong>Sessões curtas</strong></td>
+<td>Capítulos de 5-10 minutos</td>
+<td>Alta</td>
+</tr>
+<tr class="even">
+<td><strong>Salvamento frequente</strong></td>
+<td>Autosave a cada interação</td>
+<td>Alta</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="conforto-em-vr">6. CONFORTO EM VR</h2>
+<h3 id="prevenção-de-enjoo-motion-sickness">6.1 Prevenção de Enjoo (Motion Sickness)</h3>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 41%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Recurso</th>
+<th>Implementação</th>
+<th>Prioridade</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Vinheta de conforto</strong></td>
+<td>Escurecimento periférico em movimento</td>
+<td>Alta</td>
+</tr>
+<tr class="even">
+<td><strong>Teleporte snap</strong></td>
+<td>Rotação em incrementos (30°, 45°, 90°)</td>
+<td>Alta</td>
+</tr>
+<tr class="odd">
+<td><strong>Ponto de referência fixo</strong></td>
+<td>Elemento estático no campo de visão</td>
+<td>Média</td>
+</tr>
+<tr class="even">
+<td><strong>Velocidade ajustável</strong></td>
+<td>Controle de velocidade de movimento</td>
+<td>Alta</td>
+</tr>
+</tbody>
+</table>
+<h3 id="fadiga-visual">6.2 Fadiga Visual</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Recurso</th>
+<th>Implementação</th>
+<th>Prioridade</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Lembretes de pausa</strong></td>
+<td>A cada 30 minutos</td>
+<td>Média</td>
+</tr>
+<tr class="even">
+<td><strong>Ajuste de brilho</strong></td>
+<td>Controle de intensidade</td>
+<td>Alta</td>
+</tr>
+<tr class="odd">
+<td><strong>Modo noturno</strong></td>
+<td>Redução de luz azul</td>
+<td>Baixa</td>
+</tr>
+<tr class="even">
+<td><strong>Distância de leitura</strong></td>
+<td>Textos a distância confortável</td>
+<td>Alta</td>
+</tr>
+</tbody>
+</table>
+<h3 id="configurações-de-conforto">6.3 Configurações de Conforto</h3>
+<pre><code>┌─────────────────────────────────────┐
+│     ⚙ CONFORTO VR                  │
+├─────────────────────────────────────┤
+│  Vinheta de Conforto                │
+│  [====●====] Média                  │
+│                                     │
+│  Rotação Snap                       │
+│  [▼ 45 graus              ]         │
+│                                     │
+│  Velocidade de Movimento            │
+│  [==●======] Lenta                  │
+│                                     │
+│  Lembretes de Pausa                 │
+│  [●] A cada 30 minutos              │
+│                                     │
+│  Brilho                             │
+│  [======●==] 80%                    │
+│                                     │
+│         [Aplicar]  [Padrão]         │
+└─────────────────────────────────────┘</code></pre>
+<hr />
+<h2 id="versão-desktop-não-vr">7. VERSÃO DESKTOP (NÃO-VR)</h2>
+<p>Para garantir acesso a pessoas que não podem usar VR, o projeto incluirá uma versão desktop completa:</p>
+<h3 id="funcionalidades-desktop">7.1 Funcionalidades Desktop</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Recurso</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Experiência completa</strong></td>
+<td>Todos os 56 capítulos</td>
+</tr>
+<tr class="even">
+<td><strong>Controles tradicionais</strong></td>
+<td>Mouse + teclado ou gamepad</td>
+</tr>
+<tr class="odd">
+<td><strong>Visualização 360°</strong></td>
+<td>Arrastar para olhar ao redor</td>
+</tr>
+<tr class="even">
+<td><strong>Sem requisito de VR</strong></td>
+<td>Funciona em qualquer PC</td>
+</tr>
+</tbody>
+</table>
+<h3 id="controles-desktop">7.2 Controles Desktop</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Entrada</th>
+<th>Ação</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Mouse arrastar</td>
+<td>Olhar ao redor</td>
+</tr>
+<tr class="even">
+<td>WASD / Setas</td>
+<td>Olhar ao redor</td>
+</tr>
+<tr class="odd">
+<td>Clique esquerdo</td>
+<td>Interagir</td>
+</tr>
+<tr class="even">
+<td>Espaço</td>
+<td>Avançar diálogo</td>
+</tr>
+<tr class="odd">
+<td>Escape</td>
+<td>Menu</td>
+</tr>
+<tr class="even">
+<td>Tab</td>
+<td>Mapa de progresso</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="testes-de-acessibilidade">8. TESTES DE ACESSIBILIDADE</h2>
+<h3 id="metodologia">8.1 Metodologia</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Fase</th>
+<th>Atividade</th>
+<th>Participantes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Alpha</strong></td>
+<td>Testes internos com checklist</td>
+<td>Equipe</td>
+</tr>
+<tr class="even">
+<td><strong>Beta</strong></td>
+<td>Testes com usuários diversos</td>
+<td>10 pessoas</td>
+</tr>
+<tr class="odd">
+<td><strong>Release</strong></td>
+<td>Validação final</td>
+<td>5 pessoas com deficiência</td>
+</tr>
+</tbody>
+</table>
+<h3 id="checklist-de-testes">8.2 Checklist de Testes</h3>
+<h4 id="visual">Visual</h4>
+<ul class="task-list">
+<li><label><input type="checkbox" />Navegação completa sem visão (audiodescrição)</label></li>
+<li><label><input type="checkbox" />Leitura de todos os textos em tamanho máximo</label></li>
+<li><label><input type="checkbox" />Funcionamento com filtros de daltonismo</label></li>
+<li><label><input type="checkbox" />Contraste suficiente em todos os elementos</label></li>
+</ul>
+<h4 id="auditivo">Auditivo</h4>
+<ul class="task-list">
+<li><label><input type="checkbox" />Compreensão completa com legendas</label></li>
+<li><label><input type="checkbox" />Identificação de todos os eventos sonoros</label></li>
+<li><label><input type="checkbox" />Funcionamento sem áudio</label></li>
+</ul>
+<h4 id="motor">Motor</h4>
+<ul class="task-list">
+<li><label><input type="checkbox" />Conclusão com controle por olhar</label></li>
+<li><label><input type="checkbox" />Conclusão com um único botão</label></li>
+<li><label><input type="checkbox" />Funcionamento sentado</label></li>
+<li><label><input type="checkbox" />Funcionamento em espaço mínimo</label></li>
+</ul>
+<h4 id="cognitivo">Cognitivo</h4>
+<ul class="task-list">
+<li><label><input type="checkbox" />Tutorial compreensível</label></li>
+<li><label><input type="checkbox" />Objetivos sempre claros</label></li>
+<li><label><input type="checkbox" />Possibilidade de repetir instruções</label></li>
+</ul>
+<h4 id="conforto">Conforto</h4>
+<ul class="task-list">
+<li><label><input type="checkbox" />Sem enjoo com configurações de conforto</label></li>
+<li><label><input type="checkbox" />Lembretes de pausa funcionando</label></li>
+<li><label><input type="checkbox" />Brilho ajustável</label></li>
+</ul>
+<h3 id="relatório-de-acessibilidade">8.3 Relatório de Acessibilidade</h3>
+<p>Será produzido um relatório documentando: - Recursos implementados - Resultados dos testes - Feedback dos usuários - Melhorias futuras planejadas</p>
+<hr />
+<h2 id="orçamento-de-acessibilidade">9. ORÇAMENTO DE ACESSIBILIDADE</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Item</th>
+<th>Valor (R$)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Desenvolvimento de recursos</td>
+<td>Incluído no dev</td>
+</tr>
+<tr class="even">
+<td>Audiodescrição profissional</td>
+<td>2.000,00</td>
+</tr>
+<tr class="odd">
+<td>Testes com usuários</td>
+<td>1.000,00</td>
+</tr>
+<tr class="even">
+<td>Consultoria de acessibilidade</td>
+<td>1.500,00</td>
+</tr>
+<tr class="odd">
+<td><strong>Total</strong></td>
+<td><strong>4.500,00</strong></td>
+</tr>
+</tbody>
+</table>
+<p><em>Nota: Valor incluído no orçamento geral do projeto</em></p>
+<hr />
+<h2 id="compromisso">10. COMPROMISSO</h2>
+<p>Declaro que me comprometo a implementar todas as medidas de acessibilidade descritas neste plano, garantindo que o projeto TECHNO SUTRA VR seja acessível ao maior número possível de pessoas, incluindo pessoas com deficiência visual, auditiva, motora e cognitiva.</p>
+<p><strong>Local e Data</strong>: _________________, <strong><em>/</em></strong>/2026</p>
+<p><strong>Assinatura do Proponente</strong>: _________________________________</p>
+<p><strong>Nome</strong>: _________________________________</p>
+<p><strong>CPF</strong>: _________________________________</p>
+<hr />
+<p><em>Plano de Acessibilidade - TECHNO SUTRA VR</em> <em>Versão 1.0 - Janeiro 2026</em></p>
+
+</div>
+</body>
+</html>

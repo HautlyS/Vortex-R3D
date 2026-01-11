@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TECHNO SUTRA VR - Theme Preview 2026</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+    
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+    
+    .header h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ec4899, #8b5cf6, #06b6d4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 12px;
+    }
+    
+    .header p {
+      color: #94a3b8;
+      font-size: 1.1rem;
+    }
+    
+    .themes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 32px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    .theme-card {
+      border-radius: 16px;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .theme-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+    
+    .theme-preview {
+      padding: 32px 24px;
+      min-height: 420px;
+    }
+    
+    .theme-preview h2 {
+      font-size: 1.25rem;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    
+    .theme-preview h3 {
+      font-size: 0.95rem;
+      margin: 20px 0 12px 0;
+      text-align: center;
+    }
+    
+    .theme-preview p {
+      font-size: 0.85rem;
+      line-height: 1.7;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    
+    .theme-preview table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin: 16px 0;
+      font-size: 0.8rem;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    .theme-preview th,
+    .theme-preview td {
+      padding: 10px 12px;
+      text-align: center;
+    }
+    
+    .theme-preview th:first-child,
+    .theme-preview td:first-child {
+      text-align: left;
+    }
+    
+    .theme-preview th:last-child,
+    .theme-preview td:last-child {
+      text-align: right;
+    }
+    
+    .theme-name {
+      padding: 16px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      background: rgba(0,0,0,0.3);
+      color: #fff;
+    }
+    
+    /* ========== CLASSIC ========== */
+    .classic {
+      background: linear-gradient(180deg, #fdfcfa 0%, #f9f7f3 100%);
+      color: #2a2218;
+    }
+    .classic h2 { color: #6b4423; border-bottom: 2px solid #c9a86c; padding-bottom: 8px; }
+    .classic h3 { color: #7a5230; }
+    .classic p { color: #3d3020; }
+    .classic table { background: #fdfcfa; border: 1px solid rgba(201,168,108,0.3); }
+    .classic thead { background: rgba(201,168,108,0.12); }
+    .classic th { color: #5c3d1e; border-bottom: 2px solid rgba(201,168,108,0.5); }
+    .classic td { color: #3d3020; border-bottom: 1px solid rgba(201,168,108,0.15); }
+    .classic tbody tr:nth-child(even) { background: rgba(201,168,108,0.04); }
+    .classic .theme-name { background: #5c3d1e; }
+    
+    /* ========== TECH ========== */
+    .tech {
+      background: linear-gradient(180deg, #0d1320 0%, #080c16 100%);
+      color: #e4eaf2;
+      border-top: 2px solid #0ea5e9;
+    }
+    .tech h2 { color: #7dd3fc; background: linear-gradient(90deg, rgba(14,165,233,0.1) 0%, transparent 70%); border-left: 3px solid #0ea5e9; padding: 8px 12px; text-align: left; border-radius: 0 6px 6px 0; }
+    .tech h3 { color: #bae6fd; }
+    .tech p { color: #b8c9db; }
+    .tech table { background: rgba(13,19,32,0.9); border: 1px solid rgba(14,165,233,0.2); box-shadow: 0 0 20px rgba(14,165,233,0.08); }
+    .tech thead { background: rgba(14,165,233,0.12); }
+    .tech th { color: #38bdf8; border-bottom: 1px solid rgba(14,165,233,0.3); text-shadow: 0 0 10px rgba(56,189,248,0.2); }
+    .tech td { color: #d4e4f2; border-bottom: 1px solid rgba(14,165,233,0.08); }
+    .tech tbody tr:nth-child(even) { background: rgba(14,165,233,0.03); }
+    .tech .theme-name { background: linear-gradient(90deg, #0c4a6e, #0369a1); }
+    
+    /* ========== LUXURY ========== */
+    .luxury {
+      background: linear-gradient(180deg, #0c0c0c 0%, #050505 100%);
+      color: #e8e8e8;
+      border-top: 2px solid #d4af37;
+    }
+    .luxury h2 { color: #e8d5a3; border-bottom: 1px solid rgba(212,175,55,0.3); padding-bottom: 8px; }
+    .luxury h3 { color: #d4af37; }
+    .luxury p { color: #c4c4c4; }
+    .luxury table { background: rgba(12,12,12,0.9); border: 1px solid rgba(212,175,55,0.2); }
+    .luxury thead { background: rgba(212,175,55,0.1); }
+    .luxury th { color: #d4af37; border-bottom: 1px solid rgba(212,175,55,0.3); letter-spacing: 0.1em; }
+    .luxury td { color: #d4d4d4; border-bottom: 1px solid rgba(212,175,55,0.06); }
+    .luxury tbody tr:nth-child(even) { background: rgba(212,175,55,0.02); }
+    .luxury .theme-name { background: linear-gradient(90deg, #78350f, #92400e); }
+    
+    /* ========== MINIMAL ========== */
+    .minimal {
+      background: #ffffff;
+      color: #171717;
+    }
+    .minimal h2 { color: #171717; }
+    .minimal h3 { color: #262626; }
+    .minimal p { color: #404040; }
+    .minimal table { background: #fff; border: 1px solid #e5e5e5; }
+    .minimal thead { background: #fafafa; }
+    .minimal th { color: #0a0a0a; border-bottom: 2px solid #171717; }
+    .minimal td { color: #404040; border-bottom: 1px solid #f0f0f0; }
+    .minimal tbody tr:nth-child(even) { background: #fafafa; }
+    .minimal .theme-name { background: #171717; }
+    
+    /* ========== NEON ========== */
+    .neon {
+      background: linear-gradient(180deg, #0e0e18 0%, #08080f 100%);
+      color: #e8e8f0;
+      border-top: 2px solid;
+      border-image: linear-gradient(90deg, #ec4899, #8b5cf6, #06b6d4) 1;
+    }
+    .neon h2 { color: #a78bfa; background: linear-gradient(90deg, rgba(139,92,246,0.1) 0%, transparent 70%); border-left: 3px solid #8b5cf6; padding: 8px 12px; text-align: left; border-radius: 0 6px 6px 0; }
+    .neon h3 { color: #22d3ee; }
+    .neon p { color: #c4c4d0; }
+    .neon table { background: rgba(14,14,24,0.9); border: 1px solid rgba(139,92,246,0.2); box-shadow: 0 0 30px rgba(139,92,246,0.08); }
+    .neon thead { background: rgba(139,92,246,0.12); }
+    .neon th { color: #f472b6; border-bottom: 1px solid rgba(236,72,153,0.3); text-shadow: 0 0 10px rgba(236,72,153,0.3); }
+    .neon td { color: #d4d4e0; border-bottom: 1px solid rgba(139,92,246,0.1); }
+    .neon tbody tr:nth-child(even) { background: rgba(139,92,246,0.03); }
+    .neon .theme-name { background: linear-gradient(90deg, #7c3aed, #db2777); }
+    
+    /* ========== ZEN ========== */
+    .zen {
+      background: linear-gradient(180deg, #faf9f7 0%, #f5f3ef 100%);
+      color: #3d3d3d;
+    }
+    .zen h2 { color: #6b5b4f; border-bottom: 1px solid rgba(139,119,101,0.25); padding-bottom: 8px; }
+    .zen h3 { color: #7a6a5e; }
+    .zen p { color: #4a4a4a; }
+    .zen table { background: #faf9f7; border: 1px solid rgba(139,119,101,0.15); }
+    .zen thead { background: rgba(139,119,101,0.06); }
+    .zen th { color: #5c4a3d; border-bottom: 1px solid rgba(139,119,101,0.2); }
+    .zen td { color: #4a4a4a; border-bottom: 1px solid rgba(139,119,101,0.08); }
+    .zen tbody tr:nth-child(even) { background: rgba(139,119,101,0.03); }
+    .zen .theme-name { background: #5c4a3d; }
+    
+    /* ========== CORPORATE ========== */
+    .corporate {
+      background: #ffffff;
+      color: #1e293b;
+      border-top: 3px solid #3b82f6;
+    }
+    .corporate h2 { color: #1e293b; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; }
+    .corporate h3 { color: #334155; }
+    .corporate p { color: #475569; }
+    .corporate table { background: #fff; border: 1px solid #e2e8f0; }
+    .corporate thead { background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%); }
+    .corporate th { color: #1e40af; border-bottom: 2px solid #e2e8f0; }
+    .corporate td { color: #475569; border-bottom: 1px solid #f1f5f9; }
+    .corporate tbody tr:nth-child(even) { background: #f8fafc; }
+    .corporate .theme-name { background: linear-gradient(90deg, #1e40af, #3b82f6); }
+    
+    /* ========== GAMING ========== */
+    .gaming {
+      background: linear-gradient(180deg, #0a0a0a 0%, #050505 100%);
+      color: #e5e5e5;
+      border-top: 2px solid;
+      border-image: linear-gradient(90deg, #22c55e 45%, #ef4444 50%, #22c55e 55%) 1;
+    }
+    .gaming h2 { color: #ef4444; background: linear-gradient(90deg, rgba(239,68,68,0.1) 0%, transparent 70%); border-left: 3px solid #ef4444; padding: 8px 12px; text-align: left; border-radius: 0 6px 6px 0; font-family: 'Orbitron', monospace; letter-spacing: 0.04em; }
+    .gaming h3 { color: #fff; }
+    .gaming p { color: #d4d4d4; }
+    .gaming table { background: rgba(10,10,10,0.95); border: 1px solid rgba(34,197,94,0.15); box-shadow: 0 0 20px rgba(34,197,94,0.05); }
+    .gaming thead { background: rgba(34,197,94,0.1); }
+    .gaming th { color: #22c55e; border-bottom: 1px solid rgba(34,197,94,0.3); text-shadow: 0 0 8px rgba(34,197,94,0.2); font-family: 'Orbitron', monospace; }
+    .gaming td { color: #e5e5e5; border-bottom: 1px solid rgba(34,197,94,0.06); }
+    .gaming tbody tr:nth-child(even) { background: rgba(255,255,255,0.015); }
+    .gaming .theme-name { background: linear-gradient(90deg, #166534, #15803d); }
+    
+    /* ========== NATURE ========== */
+    .nature {
+      background: linear-gradient(180deg, #f7faf8 0%, #f2f7f4 100%);
+      color: #2d3b2d;
+      border-top: 3px solid #22c55e;
+    }
+    .nature h2 { color: #15803d; background: linear-gradient(90deg, rgba(22,163,74,0.1) 0%, transparent 70%); border-left: 3px solid #22c55e; padding: 8px 12px; text-align: left; border-radius: 0 6px 6px 0; }
+    .nature h3 { color: #166534; }
+    .nature p { color: #3d4d3d; }
+    .nature table { background: #fff; border: 1px solid rgba(22,163,74,0.15); }
+    .nature thead { background: rgba(22,163,74,0.1); }
+    .nature th { color: #166534; border-bottom: 2px solid rgba(22,163,74,0.25); }
+    .nature td { color: #3d4d3d; border-bottom: 1px solid rgba(22,163,74,0.08); }
+    .nature tbody tr:nth-child(even) { background: rgba(22,163,74,0.03); }
+    .nature .theme-name { background: linear-gradient(90deg, #166534, #15803d); }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="header">
+    <h1>TECHNO SUTRA VR</h1>
+    <p>Theme Preview System — Modern 2026 Design</p>
+  </div>
+  
+  <div class="themes-grid">
+    <!-- CLASSIC -->
+    <div class="theme-card">
+      <div class="theme-preview classic">
+        <h2>Proposta Técnica</h2>
+        <h3>Visão do Projeto</h3>
+        <p>Experiência VR imersiva baseada no Avatamsaka Sutra, combinando arte budista tradicional com tecnologia de ponta.</p>
+        <table>
+          <thead>
+            <tr><th>Fase</th><th>Duração</th><th>Valor</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Pré-Produção</td><td>2 meses</td><td>R$ 30.000</td></tr>
+            <tr><td>Produção</td><td>6 meses</td><td>R$ 120.000</td></tr>
+            <tr><td>Finalização</td><td>4 meses</td><td>R$ 50.000</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="theme-name">Classic</div>
+    </div>
+    
+    <!-- TECH -->
+    <div class="theme-card">
+      <div class="theme-preview tech">
+        <h2>Proposta Técnica</h2>
+        <h3>Visão do Projeto</h3>
+        <p>Experiência VR imersiva baseada no Avatamsaka Sutra, combinando arte budista tradicional com tecnologia de ponta.</p>
+        <table>
+          <thead>
+            <tr><th>Fase</th><th>Duração</th><th>Valor</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Pré-Produção</td><td>2 meses</td><td>R$ 30.000</td></tr>
+            <tr><td>Produção</td><td>6 meses</td><td>R$ 120.000</td></tr>
+            <tr><td>Finalização</td><td>4 meses</td><td>R$ 50.000</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="theme-name">Tech</div>
+    </div>
+    
+    <!-- LUXURY -->
+    <div class="theme-card">
+      <div class="theme-preview luxury">
+        <h2>Proposta Técnica</h2>
+        <h3>Visão do Projeto</h3>
+        <p>Experiência VR imersiva baseada no Avatamsaka Sutra, combinando arte budista tradicional com tecnologia de ponta.</p>
+        <table>
+          <thead>
+            <tr><th>Fase</th><th>Duração</th><th>Valor</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Pré-Produção</td><td>2 meses</td><td>R$ 30.000</td></tr>
+            <tr><td>Produção</td><td>6 meses</td><td>R$ 120.000</td></tr>
+            <tr><td>Finalização</td><td>4 meses</td><td>R$ 50.000</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="theme-name">Luxury</div>
+    </div>
+    
+    <!-- MINIMAL -->
+    <div class="theme-card">
+      <div class="theme-preview minimal">
+        <h2>Proposta Técnica</h2>
+        <h3>Visão do Projeto</h3>
+        <p>Experiência VR imersiva baseada no Avatamsaka Sutra, combinando arte budista tradicional com tecnologia de ponta.</p>
+        <table>
+          <thead>
+            <tr><th>Fase</th><th>Duração</th><th>Valor</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Pré-Produção</td><td>2 meses</td><td>R$ 30.000</td></tr>
+            <tr><td>Produção</td><td>6 meses</td><td>R$ 120.000</td></tr>
+            <tr><td>Finalização</td><td>4 meses</td><td>R$ 50.000</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="theme-name">Minimal</div>
+    </div>
+    
+    <!-- NEON -->
+    <div class="theme-card">
+      <div class="theme-preview neon">
+        <h2>Proposta Técnica</h2>
+        <h3>Visão do Projeto</h3>
+        <p>Experiência VR imersiva baseada no Avatamsaka Sutra, combinando arte budista tradicional com tecnologia de ponta.</p>
+        <table>
+          <thead>
+            <tr><th>Fase</th><th>Duração</th><th>Valor</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Pré-Produção</td><td>2 meses</td><td>R$ 30.000</td></tr>
+            <tr><td>Produção</td><td>6 meses</td><td>R$ 120.000</td></tr>
+            <tr><td>Finalização</td><td>4 meses</td><td>R$ 50.000</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="theme-name">Neon</div>
+    </div>
+    
+    <!-- ZEN -->
+    <div class="theme-card">
+      <div class="theme-preview zen">
+        <h2>Proposta Técnica</h2>
+        <h3>Visão do Projeto</h3>
+        <p>Experiência VR imersiva baseada no Avatamsaka Sutra, combinando arte budista tradicional com tecnologia de ponta.</p>
+        <table>
+          <thead>
+            <tr><th>Fase</th><th>Duração</th><th>Valor</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Pré-Produção</td><td>2 meses</td><td>R$ 30.000</td></tr>
+            <tr><td>Produção</td><td>6 meses</td><td>R$ 120.000</td></tr>
+            <tr><td>Finalização</td><td>4 meses</td><td>R$ 50.000</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="theme-name">Zen</div>
+    </div>
+    
+    <!-- CORPORATE -->
+    <div class="theme-card">
+      <div class="theme-preview corporate">
+        <h2>Proposta Técnica</h2>
+        <h3>Visão do Projeto</h3>
+        <p>Experiência VR imersiva baseada no Avatamsaka Sutra, combinando arte budista tradicional com tecnologia de ponta.</p>
+        <table>
+          <thead>
+            <tr><th>Fase</th><th>Duração</th><th>Valor</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Pré-Produção</td><td>2 meses</td><td>R$ 30.000</td></tr>
+            <tr><td>Produção</td><td>6 meses</td><td>R$ 120.000</td></tr>
+            <tr><td>Finalização</td><td>4 meses</td><td>R$ 50.000</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="theme-name">Corporate</div>
+    </div>
+    
+    <!-- GAMING -->
+    <div class="theme-card">
+      <div class="theme-preview gaming">
+        <h2>Proposta Técnica</h2>
+        <h3>Visão do Projeto</h3>
+        <p>Experiência VR imersiva baseada no Avatamsaka Sutra, combinando arte budista tradicional com tecnologia de ponta.</p>
+        <table>
+          <thead>
+            <tr><th>Fase</th><th>Duração</th><th>Valor</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Pré-Produção</td><td>2 meses</td><td>R$ 30.000</td></tr>
+            <tr><td>Produção</td><td>6 meses</td><td>R$ 120.000</td></tr>
+            <tr><td>Finalização</td><td>4 meses</td><td>R$ 50.000</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="theme-name">Gaming</div>
+    </div>
+    
+    <!-- NATURE -->
+    <div class="theme-card">
+      <div class="theme-preview nature">
+        <h2>Proposta Técnica</h2>
+        <h3>Visão do Projeto</h3>
+        <p>Experiência VR imersiva baseada no Avatamsaka Sutra, combinando arte budista tradicional com tecnologia de ponta.</p>
+        <table>
+          <thead>
+            <tr><th>Fase</th><th>Duração</th><th>Valor</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Pré-Produção</td><td>2 meses</td><td>R$ 30.000</td></tr>
+            <tr><td>Produção</td><td>6 meses</td><td>R$ 120.000</td></tr>
+            <tr><td>Finalização</td><td>4 meses</td><td>R$ 50.000</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="theme-name">Nature</div>
+    </div>
+  </div>
+</body>
+</html>

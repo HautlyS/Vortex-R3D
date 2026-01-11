@@ -1,0 +1,720 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Space+Mono&display=swap');
+:root{--bg:#0a0a0f;--bg2:#12121a;--cyan:#00f5ff;--magenta:#ff00ff;--gold:#ffd700;--text:#e0e0e0;--glow:rgba(0,245,255,0.3);--grad:linear-gradient(135deg,#00f5ff,#ff00ff,#ffd700)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Rajdhani',Arial,sans-serif;font-size:11pt;line-height:1.5;color:var(--text);background:var(--bg);padding:1.5cm;text-align:justify}
+h1{font-family:'Orbitron',sans-serif;font-size:20pt;text-align:center;text-transform:uppercase;letter-spacing:3px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:1cm 0;padding:0.5cm}
+h2{font-family:'Orbitron',sans-serif;font-size:14pt;color:var(--cyan);text-align:center;text-transform:uppercase;margin:1cm 0 0.5cm;border-bottom:1px solid var(--glow);padding-bottom:0.3cm}
+h3{font-size:12pt;color:var(--magenta);margin:0.8cm 0 0.3cm;padding-left:0.4cm;border-left:3px solid var(--magenta)}
+h4{font-size:11pt;color:var(--gold);margin:0.5cm 0 0.2cm}
+p{text-indent:1cm;margin-bottom:0.4cm}
+ul,ol{margin:0.4cm 0 0.4cm 1.2cm}
+li{margin-bottom:0.2cm}
+table{width:100%;border-collapse:collapse;margin:0.8cm 0;background:var(--bg2);border:1px solid var(--glow);font-size:10pt}
+th{font-family:'Orbitron',sans-serif;font-size:9pt;color:var(--cyan);padding:0.3cm;text-align:center;border-bottom:2px solid var(--cyan);background:#1a1a2e}
+td{padding:0.25cm;text-align:center;border-bottom:1px solid rgba(255,255,255,0.1)}
+tr:nth-child(even){background:rgba(0,245,255,0.03)}
+code{font-family:'Space Mono',monospace;font-size:9pt;background:#1a1a2e;color:var(--gold);padding:0.1cm 0.2cm;border-radius:2px}
+pre{font-family:'Space Mono',monospace;font-size:8pt;background:var(--bg2);color:var(--cyan);padding:0.4cm;margin:0.4cm 0;border:1px solid var(--glow);overflow-x:auto;white-space:pre-wrap}
+pre code{background:none;padding:0;color:inherit}
+blockquote{margin:0.5cm 1cm;padding:0.4cm;background:var(--bg2);border-left:3px solid #8b5cf6;font-style:italic;color:#a0a0a0}
+hr{border:none;height:2px;background:var(--grad);margin:1cm 0;opacity:0.5}
+strong{color:var(--gold)}
+a{color:var(--cyan)}
+@media print{body{background:var(--bg)!important}*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}}
+</style></head><body>
+<h1 id="proposta-técnica---techno-sutra-vr">PROPOSTA TÉCNICA - TECHNO
+SUTRA VR</h1>
+<h2 id="edital-fomento-cultsp---pnab-nº-122025">Edital FOMENTO CULTSP -
+PNAB Nº 12/2025</h2>
+<h3 id="módulo-iii---realidade-virtual-e-mista">Módulo III - Realidade
+Virtual e Mista</h3>
+<hr />
+<h1 id="introdução">1. INTRODUÇÃO</h1>
+<h2 id="título-do-projeto">1.1 Título do Projeto</h2>
+<p><strong>TECHNO SUTRA VR - Jornada Imersiva do Avatamsaka
+Sutra</strong></p>
+<h2 id="sinopse">1.2 Sinopse</h2>
+<p>Experiência imersiva em Realidade Virtual que transporta o usuário
+para a jornada espiritual de Suddhana, protagonista do Avatamsaka Sutra.
+Através de ambientes 360° e encontros com 56 Kalyanamitras (amigos
+espirituais) em 3D, o projeto oferece uma forma inovadora de vivenciar
+um dos textos mais profundos do budismo Mahayana.</p>
+<h2 id="gênero">1.3 Gênero</h2>
+<ul>
+<li><strong>Primário</strong>: Experiência Narrativa Imersiva</li>
+<li><strong>Secundário</strong>: Meditação/Wellness VR</li>
+<li><strong>Terciário</strong>: Educacional/Cultural</li>
+</ul>
+<h2 id="plataformas-alvo">1.4 Plataformas Alvo</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Plataforma</th>
+<th>Prioridade</th>
+<th>Tecnologia</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Meta Quest 2/3/Pro</td>
+<td>Alta</td>
+<td>OpenXR (Android)</td>
+</tr>
+<tr class="even">
+<td>SteamVR (PC)</td>
+<td>Alta</td>
+<td>OpenXR (Windows)</td>
+</tr>
+<tr class="odd">
+<td>WebXR</td>
+<td>Média</td>
+<td>WebGPU</td>
+</tr>
+<tr class="even">
+<td>Desktop (não-VR)</td>
+<td>Média</td>
+<td>Vulkan/DX12</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="conceito-e-narrativa">2. CONCEITO E NARRATIVA</h1>
+<h2 id="premissa">2.1 Premissa</h2>
+<p>O usuário assume o papel de Suddhana, um jovem mercador que parte em
+busca da iluminação. Guiado por Manjushri, ele viaja por reinos
+fantásticos encontrando 56 mestres espirituais, cada um oferecendo um
+ensinamento único sobre o caminho do Bodhisattva.</p>
+<h2 id="estrutura-narrativa">2.2 Estrutura Narrativa</h2>
+<pre><code>PRÓLOGO
+└── Encontro com Manjushri (tutorial VR)
+
+JORNADA (56 Capítulos)
+├── Capítulo 1-10: Mestres Humanos
+├── Capítulo 11-20: Deuses e Devas
+├── Capítulo 21-30: Bodhisattvas
+├── Capítulo 31-40: Seres Celestiais
+├── Capítulo 41-50: Manifestações Cósmicas
+└── Capítulo 51-56: Samantabhadra e Iluminação
+
+EPÍLOGO
+└── Oração de Samantabhadra (meditação guiada)</code></pre>
+<h2 id="mecânicas-de-interação">2.3 Mecânicas de Interação</h2>
+<ol type="1">
+<li><strong>Teleporte</strong>: Movimento entre pontos de interesse</li>
+<li><strong>Gaze Interaction</strong>: Seleção por olhar
+(acessibilidade)</li>
+<li><strong>Controller Pointing</strong>: Apontar e selecionar</li>
+<li><strong>Gesture Recognition</strong>: Gestos de reverência
+(opcional)</li>
+<li><strong>Voice Commands</strong>: Comandos de voz (futuro)</li>
+</ol>
+<hr />
+<h1 id="design-visual">3. DESIGN VISUAL</h1>
+<h2 id="direção-de-arte">3.1 Direção de Arte</h2>
+<ul>
+<li><strong>Estilo</strong>: Realismo estilizado com elementos de arte
+budista tradicional</li>
+<li><strong>Paleta</strong>: Tons dourados, azuis celestiais, verdes
+naturais</li>
+<li><strong>Iluminação</strong>: HDR com luz volumétrica para atmosfera
+mística</li>
+<li><strong>Referências</strong>: Arte Thangka tibetana, templos
+japoneses, paisagens do interior paulista</li>
+</ul>
+<h2 id="ambientes-panoramas-360">3.2 Ambientes (Panoramas 360°)</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Ambiente</th>
+<th>Descrição</th>
+<th>Resolução</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Jetavana</td>
+<td>Jardim do monastério inicial</td>
+<td>8K equirretangular</td>
+</tr>
+<tr class="even">
+<td>Montanha Sagrada</td>
+<td>Pico nevado com templo</td>
+<td>8K equirretangular</td>
+</tr>
+<tr class="odd">
+<td>Palácio Celestial</td>
+<td>Salão dourado com nuvens</td>
+<td>8K equirretangular</td>
+</tr>
+<tr class="even">
+<td>Floresta Encantada</td>
+<td>Árvores bioluminescentes</td>
+<td>8K equirretangular</td>
+</tr>
+<tr class="odd">
+<td>Oceano Cósmico</td>
+<td>Mar infinito com ilhas</td>
+<td>8K equirretangular</td>
+</tr>
+<tr class="even">
+<td>Águas da Prata</td>
+<td>Paisagem real de SP</td>
+<td>8K equirretangular</td>
+</tr>
+</tbody>
+</table>
+<h2 id="personagens-3d-56-kalyanamitras">3.3 Personagens 3D (56
+Kalyanamitras)</h2>
+<ul>
+<li><strong>Formato</strong>: GLB/GLTF 2.0</li>
+<li><strong>Polígonos</strong>: 10.000-50.000 por personagem</li>
+<li><strong>Rigging</strong>: Esqueleto humanoid padrão</li>
+<li><strong>Animações</strong>: Idle, Talk, Gesture, Blessing</li>
+<li><strong>LOD</strong>: 3 níveis de detalhe</li>
+</ul>
+<h2 id="interface-de-usuário">3.4 Interface de Usuário</h2>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│                         TECHNO SUTRA VR                         │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│     [Menu Principal]                                            │
+│     ├── Iniciar Jornada                                         │
+│     ├── Continuar (Capítulo X)                                  │
+│     ├── Biblioteca (56 Capítulos)                               │
+│     ├── Galeria (Personagens)                                   │
+│     ├── Configurações                                           │
+│     └── Créditos                                                │
+│                                                                 │
+│     [HUD em Jornada]                                            │
+│     ├── Bússola (direção do próximo mestre)                     │
+│     ├── Progresso (X/56)                                        │
+│     ├── Nome do Kalyanamitra atual                              │
+│     └── Botão de pausa                                          │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+<hr />
+<h1 id="design-de-áudio">4. DESIGN DE ÁUDIO</h1>
+<h2 id="trilha-sonora">4.1 Trilha Sonora</h2>
+<ul>
+<li><strong>Compositor</strong>: A definir</li>
+<li><strong>Estilo</strong>: Ambient meditativo com elementos de música
+tradicional asiática</li>
+<li><strong>Formato</strong>: OGG Vorbis, 44.1kHz, estéreo</li>
+<li><strong>Duração</strong>: ~60 minutos de música original</li>
+</ul>
+<h2 id="efeitos-sonoros">4.2 Efeitos Sonoros</h2>
+<ul>
+<li>Ambiente: Natureza, templos, sinos</li>
+<li>Interação: Feedback de seleção, transições</li>
+<li>Personagens: Passos, roupas, objetos</li>
+</ul>
+<h2 id="narraçãodiálogos">4.3 Narração/Diálogos</h2>
+<ul>
+<li><strong>Idiomas</strong>: Português (BR), Inglês</li>
+<li><strong>Vozes</strong>: 56 personagens + narrador</li>
+<li><strong>Formato</strong>: OGG Vorbis, 44.1kHz, mono</li>
+<li><strong>Áudio Espacial</strong>: HRTF para posicionamento 3D</li>
+</ul>
+<hr />
+<h1 id="arquitetura-técnica">5. ARQUITETURA TÉCNICA</h1>
+<h2 id="engine-e-linguagem">5.1 Engine e Linguagem</h2>
+<pre><code>┌─────────────────────────────────────────┐
+│           BEVY ENGINE (Rust)            │
+├─────────────────────────────────────────┤
+│  ├── bevy 0.15+                         │
+│  ├── bevy_oxr (OpenXR)                  │
+│  ├── bevy_egui (UI)                     │
+│  ├── bevy_kira_audio (Áudio)            │
+│  └── wgpu (Gráficos)                    │
+└─────────────────────────────────────────┘</code></pre>
+<h2 id="pipeline-de-renderização">5.2 Pipeline de Renderização</h2>
+<pre><code>Equirectangular 360° (8K)
+        │
+        ▼
+┌───────────────────┐
+│ GPU Compute Shader│ ← Conversão para Cubemap
+└───────────────────┘
+        │
+        ▼
+┌───────────────────┐
+│ Cubemap (6 faces) │ ← 2K por face
+└───────────────────┘
+        │
+        ▼
+┌───────────────────┐
+│ Skybox Rendering  │ ← Shader de ambiente
+└───────────────────┘
+        │
+        ▼
+┌───────────────────┐
+│ Character Layer   │ ← Modelos 3D + animações
+└───────────────────┘
+        │
+        ▼
+┌───────────────────┐
+│ UI Layer          │ ← HUD e menus
+└───────────────────┘
+        │
+        ▼
+┌───────────────────┐
+│ VR Stereo Output  │ ← OpenXR para headset
+└───────────────────┘</code></pre>
+<h2 id="sistema-de-estados">5.3 Sistema de Estados</h2>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>derive<span class="at">(</span>States<span class="op">,</span> <span class="bu">Default</span><span class="op">,</span> <span class="bu">Clone</span><span class="op">,</span> <span class="bu">Eq</span><span class="op">,</span> <span class="bu">PartialEq</span><span class="op">,</span> <span class="bu">Debug</span><span class="op">,</span> <span class="bu">Hash</span><span class="at">)]</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">enum</span> AppState <span class="op">{</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">#[</span><span class="kw">default</span><span class="at">]</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    Loading<span class="op">,</span>        <span class="co">// Carregamento inicial</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    MainMenu<span class="op">,</span>       <span class="co">// Menu principal</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    Journey<span class="op">,</span>        <span class="co">// Jornada ativa</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    Dialogue<span class="op">,</span>       <span class="co">// Diálogo com Kalyanamitra</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    Meditation<span class="op">,</span>     <span class="co">// Modo meditação</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    Library<span class="op">,</span>        <span class="co">// Biblioteca de capítulos</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    Settings<span class="op">,</span>       <span class="co">// Configurações</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    Paused<span class="op">,</span>         <span class="co">// Pausado</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h2 id="requisitos-de-sistema">5.4 Requisitos de Sistema</h2>
+<h3 id="meta-quest-standalone">Meta Quest (Standalone)</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Componente</th>
+<th>Requisito</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Dispositivo</td>
+<td>Quest 2 ou superior</td>
+</tr>
+<tr class="even">
+<td>Armazenamento</td>
+<td>2 GB</td>
+</tr>
+<tr class="odd">
+<td>RAM</td>
+<td>6 GB (Quest 2)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="pc-vr">PC VR</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Componente</th>
+<th>Mínimo</th>
+<th>Recomendado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>GPU</td>
+<td>GTX 1060 / RX 580</td>
+<td>RTX 3060 / RX 6700</td>
+</tr>
+<tr class="even">
+<td>CPU</td>
+<td>i5-8400 / Ryzen 5 2600</td>
+<td>i7-10700 / Ryzen 7 3700X</td>
+</tr>
+<tr class="odd">
+<td>RAM</td>
+<td>8 GB</td>
+<td>16 GB</td>
+</tr>
+<tr class="even">
+<td>Armazenamento</td>
+<td>4 GB SSD</td>
+<td>8 GB NVMe</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="fluxo-de-experiência">6. FLUXO DE EXPERIÊNCIA</h1>
+<h2 id="primeira-execução">6.1 Primeira Execução</h2>
+<pre><code>1. Splash Screen (logos)
+2. Calibração VR (altura, limites)
+3. Tutorial de Controles
+4. Introdução Narrativa (Manjushri)
+5. Primeiro Capítulo</code></pre>
+<h2 id="sessão-típica">6.2 Sessão Típica</h2>
+<pre><code>1. Menu Principal
+2. Continuar/Selecionar Capítulo
+3. Transição (portal/fade)
+4. Ambiente 360° carrega
+5. Kalyanamitra aparece
+6. Diálogo interativo
+7. Ensinamento/Meditação
+8. Transição para próximo
+9. Salvar progresso</code></pre>
+<h2 id="sistema-de-progressão">6.3 Sistema de Progressão</h2>
+<ul>
+<li><strong>Salvamento</strong>: Automático por capítulo</li>
+<li><strong>Desbloqueio</strong>: Linear (1→56) ou livre
+(configurável)</li>
+<li><strong>Conquistas</strong>: Completar capítulos, tempo de
+meditação</li>
+<li><strong>Estatísticas</strong>: Tempo total, capítulos visitados</li>
+</ul>
+<hr />
+<h1 id="acessibilidade">7. ACESSIBILIDADE</h1>
+<h2 id="opções-de-conforto-vr">7.1 Opções de Conforto VR</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" />Vinheta de conforto (reduz
+enjoo)</label></li>
+<li><label><input type="checkbox" />Teleporte snap (rotação em
+incrementos)</label></li>
+<li><label><input type="checkbox" />Modo sentado</label></li>
+<li><label><input type="checkbox" />Ajuste de altura</label></li>
+<li><label><input type="checkbox" />Redução de movimento</label></li>
+</ul>
+<h2 id="acessibilidade-visual">7.2 Acessibilidade Visual</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" />Legendas para diálogos</label></li>
+<li><label><input type="checkbox" />Alto contraste</label></li>
+<li><label><input type="checkbox" />Tamanho de fonte
+ajustável</label></li>
+<li><label><input type="checkbox" />Daltonismo (filtros)</label></li>
+</ul>
+<h2 id="acessibilidade-auditiva">7.3 Acessibilidade Auditiva</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" />Legendas completas</label></li>
+<li><label><input type="checkbox" />Indicadores visuais de
+áudio</label></li>
+<li><label><input type="checkbox" />Vibração háptica</label></li>
+</ul>
+<h2 id="acessibilidade-motora">7.4 Acessibilidade Motora</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" />Controle por olhar
+(gaze)</label></li>
+<li><label><input type="checkbox" />Um único botão</label></li>
+<li><label><input type="checkbox" />Remapeamento de
+controles</label></li>
+<li><label><input type="checkbox" />Modo automático</label></li>
+</ul>
+<h2 id="modo-desktop-não-vr">7.5 Modo Desktop (Não-VR)</h2>
+<ul>
+<li>Versão completa jogável sem headset</li>
+<li>Mouse + teclado</li>
+<li>Gamepad suportado</li>
+</ul>
+<hr />
+<h1 id="democratização">8. DEMOCRATIZAÇÃO</h1>
+<h2 id="making-of-vídeos">8.1 Making-Of (Vídeos)</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Episódio</th>
+<th>Tema</th>
+<th>Duração</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Conceito e Pesquisa</td>
+<td>10 min</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Modelagem 3D</td>
+<td>15 min</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Programação VR</td>
+<td>15 min</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Design de Áudio</td>
+<td>10 min</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>Testes e Otimização</td>
+<td>10 min</td>
+</tr>
+</tbody>
+</table>
+<h2 id="tutoriais-técnicos">8.2 Tutoriais Técnicos</h2>
+<ul>
+<li>Introdução ao Bevy Engine</li>
+<li>Desenvolvimento VR com OpenXR</li>
+<li>Criação de panoramas 360°</li>
+<li>Áudio espacial em jogos</li>
+<li>Otimização para Quest</li>
+</ul>
+<h2 id="ações-formativas">8.3 Ações Formativas</h2>
+<ul>
+<li>Workshop em escola pública (2x)</li>
+<li>Palestra em universidade (2x)</li>
+<li>Live stream de desenvolvimento (mensal)</li>
+<li>Documentação open-source</li>
+</ul>
+<h2 id="agenda-vivasp">8.4 Agenda VivaSP</h2>
+<ul>
+<li>Cadastro do projeto</li>
+<li>Divulgação de eventos</li>
+<li>Registro de ações</li>
+</ul>
+<hr />
+<h1 id="cronograma-detalhado">9. CRONOGRAMA DETALHADO</h1>
+<h2 id="mês-1-2-pré-produção">Mês 1-2: Pré-Produção</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" />Finalização do GDD</label></li>
+<li><label><input type="checkbox" />Contratação da equipe</label></li>
+<li><label><input type="checkbox" />Setup de ambiente de
+desenvolvimento</label></li>
+<li><label><input type="checkbox" />Prototipagem de mecânicas
+core</label></li>
+</ul>
+<h2 id="mês-3-4-produção---fase-1">Mês 3-4: Produção - Fase 1</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" />10 primeiros ambientes
+360°</label></li>
+<li><label><input type="checkbox" />10 primeiros personagens
+3D</label></li>
+<li><label><input type="checkbox" />Sistema de navegação VR</label></li>
+<li><label><input type="checkbox" />Sistema de diálogos</label></li>
+</ul>
+<h2 id="mês-5-6-produção---fase-2">Mês 5-6: Produção - Fase 2</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" />20 ambientes adicionais</label></li>
+<li><label><input type="checkbox" />20 personagens
+adicionais</label></li>
+<li><label><input type="checkbox" />Sistema de áudio
+espacial</label></li>
+<li><label><input type="checkbox" />UI/UX completa</label></li>
+</ul>
+<h2 id="mês-7-8-produção---fase-3">Mês 7-8: Produção - Fase 3</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" />26 ambientes finais</label></li>
+<li><label><input type="checkbox" />26 personagens finais</label></li>
+<li><label><input type="checkbox" />Trilha sonora</label></li>
+<li><label><input type="checkbox" />Narração/diálogos</label></li>
+</ul>
+<h2 id="mês-9-10-integração-e-testes">Mês 9-10: Integração e Testes</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" />Integração de todos os
+assets</label></li>
+<li><label><input type="checkbox" />Testes de QA</label></li>
+<li><label><input type="checkbox" />Otimização de
+performance</label></li>
+<li><label><input type="checkbox" />Testes de
+acessibilidade</label></li>
+</ul>
+<h2 id="mês-11-polimento">Mês 11: Polimento</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" />Correção de bugs</label></li>
+<li><label><input type="checkbox" />Ajustes de
+balanceamento</label></li>
+<li><label><input type="checkbox" />Localização (PT/EN)</label></li>
+<li><label><input type="checkbox" />Preparação de builds</label></li>
+</ul>
+<h2 id="mês-12-lançamento">Mês 12: Lançamento</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" />Build final</label></li>
+<li><label><input type="checkbox" />Submissão para lojas</label></li>
+<li><label><input type="checkbox" />Material de marketing</label></li>
+<li><label><input type="checkbox" />Evento de lançamento</label></li>
+<li><label><input type="checkbox" />Prestação de contas</label></li>
+</ul>
+<hr />
+<h1 id="equipe">10. EQUIPE</h1>
+<h2 id="estrutura">10.1 Estrutura</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Função</th>
+<th>Dedicação</th>
+<th>Responsabilidades</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Diretor Criativo</strong></td>
+<td>100%</td>
+<td>Visão artística, narrativa, supervisão</td>
+</tr>
+<tr class="even">
+<td><strong>Desenvolvedor VR Lead</strong></td>
+<td>100%</td>
+<td>Arquitetura, programação core</td>
+</tr>
+<tr class="odd">
+<td><strong>Desenvolvedor VR Jr</strong></td>
+<td>100%</td>
+<td>Features, integração</td>
+</tr>
+<tr class="even">
+<td><strong>Artista 3D Lead</strong></td>
+<td>100%</td>
+<td>Personagens, ambientes</td>
+</tr>
+<tr class="odd">
+<td><strong>Artista 3D Jr</strong></td>
+<td>50%</td>
+<td>Modelagem, texturização</td>
+</tr>
+<tr class="even">
+<td><strong>Sound Designer</strong></td>
+<td>50%</td>
+<td>Áudio, música, mixagem</td>
+</tr>
+<tr class="odd">
+<td><strong>UX Designer</strong></td>
+<td>50%</td>
+<td>Interface, acessibilidade</td>
+</tr>
+<tr class="even">
+<td><strong>Produtor</strong></td>
+<td>50%</td>
+<td>Gestão, cronograma, documentação</td>
+</tr>
+</tbody>
+</table>
+<h2 id="colaboradores-externos">10.2 Colaboradores Externos</h2>
+<ul>
+<li>Compositor (trilha sonora)</li>
+<li>Locutor (narração)</li>
+<li>Tradutor (inglês)</li>
+<li>Consultor budista</li>
+</ul>
+<hr />
+<h1 id="orçamento-resumido">11. ORÇAMENTO RESUMIDO</h1>
+<table>
+<thead>
+<tr class="header">
+<th>Categoria</th>
+<th>Valor (R$)</th>
+<th>%</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Equipe (salários)</td>
+<td>140.000</td>
+<td>70%</td>
+</tr>
+<tr class="even">
+<td>Equipamentos</td>
+<td>20.000</td>
+<td>10%</td>
+</tr>
+<tr class="odd">
+<td>Software/Licenças</td>
+<td>10.000</td>
+<td>5%</td>
+</tr>
+<tr class="even">
+<td>Áudio (música, locução)</td>
+<td>15.000</td>
+<td>7.5%</td>
+</tr>
+<tr class="odd">
+<td>Marketing/Lançamento</td>
+<td>10.000</td>
+<td>5%</td>
+</tr>
+<tr class="even">
+<td>Contingência</td>
+<td>5.000</td>
+<td>2.5%</td>
+</tr>
+<tr class="odd">
+<td><strong>TOTAL</strong></td>
+<td><strong>200.000</strong></td>
+<td><strong>100%</strong></td>
+</tr>
+</tbody>
+</table>
+<p><em>Detalhamento completo na planilha orçamentária</em></p>
+<hr />
+<h1 id="riscos-e-mitigações">12. RISCOS E MITIGAÇÕES</h1>
+<table>
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 35%" />
+<col style="width: 21%" />
+<col style="width: 26%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Risco</th>
+<th>Probabilidade</th>
+<th>Impacto</th>
+<th>Mitigação</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Atraso na produção de assets</td>
+<td>Média</td>
+<td>Alto</td>
+<td>Buffer no cronograma, priorização</td>
+</tr>
+<tr class="even">
+<td>Performance insuficiente Quest</td>
+<td>Média</td>
+<td>Alto</td>
+<td>Otimização contínua, LODs</td>
+</tr>
+<tr class="odd">
+<td>Rejeição nas lojas</td>
+<td>Baixa</td>
+<td>Alto</td>
+<td>Seguir guidelines, beta testing</td>
+</tr>
+<tr class="even">
+<td>Saída de membro da equipe</td>
+<td>Baixa</td>
+<td>Médio</td>
+<td>Documentação, backup de conhecimento</td>
+</tr>
+<tr class="odd">
+<td>Problemas de acessibilidade</td>
+<td>Média</td>
+<td>Médio</td>
+<td>Testes com usuários diversos</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="métricas-de-sucesso">13. MÉTRICAS DE SUCESSO</h1>
+<h2 id="quantitativas">13.1 Quantitativas</h2>
+<ul>
+<li>Downloads: 10.000 no primeiro ano</li>
+<li>Avaliação: 4.5+ estrelas</li>
+<li>Completude: 30% dos usuários terminam a jornada</li>
+<li>Retenção: 50% retornam após primeira sessão</li>
+</ul>
+<h2 id="qualitativas">13.2 Qualitativas</h2>
+<ul>
+<li>Cobertura de mídia especializada</li>
+<li>Feedback positivo da comunidade budista</li>
+<li>Reconhecimento em festivais de games/XR</li>
+<li>Adoção por instituições educacionais</li>
+</ul>
+<hr />
+<h1 id="anexos">14. ANEXOS</h1>
+<h2 id="links-de-referência">14.1 Links de Referência</h2>
+<ul>
+<li>App AR (prova de conceito):
+https://technosutra.bhumisparshaschool.org/</li>
+<li>Site do projeto: https://technosutra84.wixstudio.com/stem-array</li>
+<li>Tradução do Sutra: https://84000.co/</li>
+</ul>
+<h2 id="documentos-complementares">14.2 Documentos Complementares</h2>
+<ul>
+<li>Planilha orçamentária detalhada</li>
+<li>Cronograma em Gantt</li>
+<li>Portfólios da equipe</li>
+<li>Termos de participação assinados</li>
+</ul>
+<hr />
+<p><em>Proposta Técnica - TECHNO SUTRA VR</em> <em>Versão 1.0 - Janeiro
+2026</em></p>
+</body></html>

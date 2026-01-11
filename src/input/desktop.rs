@@ -7,28 +7,33 @@ use bevy::window::{CursorGrabMode, CursorOptions, PrimaryWindow};
 
 use super::{InputEvent, InputState, UiWantsPointer};
 use crate::platform::on_desktop;
+use crate::GameState;
 
 pub struct DesktopInputPlugin;
 
 impl Plugin for DesktopInputPlugin {
     fn build(&self, app: &mut App) {
         use bevy::ecs::schedule::IntoScheduleConfigs;
-        info!("🎮 [DEBUG] DesktopInputPlugin registered");
-        app.add_systems(Startup, debug_platform_state).add_systems(
+        app.init_resource::<CursorGrabDelay>().add_systems(
             Update,
-            (handle_cursor_grab, read_desktop_input)
+            (update_grab_delay, handle_cursor_grab, read_desktop_input)
                 .chain_ignore_deferred()
-                .run_if(on_desktop),
+                .run_if(on_desktop)
+                .run_if(in_state(GameState::Viewing)),
         );
     }
 }
 
-fn debug_platform_state(platform: Res<crate::platform::Platform>) {
-    info!("🎮 [DEBUG] Platform state at startup: {:?}", *platform);
-    info!(
-        "🎮 [DEBUG] on_desktop would return: {}",
-        *platform == crate::platform::Platform::Desktop
-    );
+/// Delay cursor grab after state transitions to let UI settle
+#[derive(Resource, Default)]
+pub struct CursorGrabDelay {
+    frames_since_viewing: u32,
+}
+
+const GRAB_DELAY_FRAMES: u32 = 3;
+
+fn update_grab_delay(mut delay: ResMut<CursorGrabDelay>) {
+    delay.frames_since_viewing = delay.frames_since_viewing.saturating_add(1);
 }
 
 fn handle_cursor_grab(
@@ -37,17 +42,23 @@ fn handle_cursor_grab(
     keys: Res<ButtonInput<KeyCode>>,
     mut state: ResMut<InputState>,
     ui_wants: Res<UiWantsPointer>,
+    delay: Res<CursorGrabDelay>,
 ) {
     let Ok(mut cursor) = cursor_q.single_mut() else {
         return;
     };
 
-    // Don't grab cursor if UI wants pointer input
-    if mouse.just_pressed(MouseButton::Left) && !ui_wants.0 {
+    // Don't grab cursor if:
+    // 1. UI wants pointer input
+    // 2. Not enough frames since state transition
+    let can_grab = !ui_wants.0 && delay.frames_since_viewing >= GRAB_DELAY_FRAMES;
+
+    if mouse.just_pressed(MouseButton::Left) && can_grab {
         cursor.grab_mode = CursorGrabMode::Locked;
         cursor.visible = false;
         state.cursor_locked = true;
     }
+
     if keys.just_pressed(KeyCode::Escape) {
         cursor.grab_mode = CursorGrabMode::None;
         cursor.visible = true;
@@ -87,7 +98,7 @@ fn read_desktop_input(
         events.write(InputEvent::Move(state.movement));
     }
 
-    // Look
+    // Look - only when cursor is locked
     if state.cursor_locked && mouse_motion.delta != Vec2::ZERO {
         state.look_delta = mouse_motion.delta;
         events.write(InputEvent::Look(mouse_motion.delta));
@@ -111,7 +122,4 @@ fn read_desktop_input(
     if keys.just_pressed(KeyCode::Escape) {
         events.write(InputEvent::ToggleMenu);
     }
-
-    // Book Reader: Now handled by bevy_egui_kbgp in book_reader module
-    // B key and gamepad West button are bound via KbgpSettings
 }

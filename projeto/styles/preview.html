@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TECHNO SUTRA VR - Preview</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Space+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a2e;
+            --accent-cyan: #00f5ff;
+            --accent-magenta: #ff00ff;
+            --accent-gold: #ffd700;
+            --accent-purple: #8b5cf6;
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --border-glow: rgba(0, 245, 255, 0.3);
+            --gradient-holographic: linear-gradient(135deg, #00f5ff 0%, #ff00ff 50%, #ffd700 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 210mm;
+            margin: 0 auto;
+            background: var(--bg-secondary);
+            padding: 3rem;
+            border: 1px solid var(--border-glow);
+            box-shadow: 0 0 50px rgba(0, 245, 255, 0.1);
+        }
+
+        /* Capa */
+        .cover {
+            text-align: center;
+            padding: 4rem 2rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cover::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(0, 245, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 0, 255, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .logo {
+            width: 200px;
+            height: 200px;
+            margin-bottom: 2rem;
+            border-radius: 50%;
+            border: 3px solid var(--accent-cyan);
+            box-shadow: 0 0 30px var(--accent-cyan);
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 30px var(--accent-cyan); }
+            50% { box-shadow: 0 0 60px var(--accent-cyan), 0 0 100px var(--accent-magenta); }
+        }
+
+        .title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            background: var(--gradient-holographic);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            animation: shimmer 3s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            letter-spacing: 2px;
+        }
+
+        .divider {
+            width: 60%;
+            height: 2px;
+            background: var(--gradient-holographic);
+            margin: 2rem auto;
+        }
+
+        .info {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-top: 2rem;
+        }
+
+        .info strong {
+            color: var(--accent-gold);
+        }
+
+        /* Seções */
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            background: var(--gradient-holographic);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 3rem 0 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-glow);
+        }
+
+        h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+            margin: 2rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-glow);
+        }
+
+        h3 {
+            font-size: 1.1rem;
+            color: var(--accent-magenta);
+            margin: 1.5rem 0 0.5rem;
+            padding-left: 1rem;
+            border-left: 3px solid var(--accent-magenta);
+        }
+
+        p {
+            text-indent: 2rem;
+            text-align: justify;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        /* Tabelas */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-glow);
+        }
+
+        th {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-cyan);
+            padding: 1rem;
+            text-align: center;
+            background: linear-gradient(90deg, var(--bg-primary), var(--bg-secondary));
+            border-bottom: 2px solid var(--accent-cyan);
+        }
+
+        td {
+            padding: 0.8rem 1rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        tr:nth-child(even) {
+            background: rgba(0, 245, 255, 0.03);
+        }
+
+        /* Código */
+        code {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.9rem;
+            background: var(--bg-tertiary);
+            color: var(--accent-gold);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        pre {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            background: var(--bg-primary);
+            color: var(--accent-cyan);
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            border: 1px solid var(--border-glow);
+            overflow-x: auto;
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Citações */
+        blockquote {
+            margin: 1.5rem 2rem;
+            padding: 1rem 1.5rem;
+            background: var(--bg-tertiary);
+            border-left: 4px solid var(--accent-purple);
+            font-style: italic;
+            color: var(--text-secondary);
+            position: relative;
+        }
+
+        blockquote::before {
+            content: '"';
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4rem;
+            color: var(--accent-purple);
+            opacity: 0.2;
+            position: absolute;
+            top: -1rem;
+            left: 0.5rem;
+        }
+
+        /* Listas */
+        ul, ol {
+            margin: 1rem 0 1rem 2rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+        }
+
+        ul li::marker {
+            color: var(--accent-cyan);
+        }
+
+        /* Boxes */
+        .highlight-box {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--accent-cyan);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 0 20px rgba(0, 245, 255, 0.1);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-glow);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Print */
+        @media print {
+            body { background: var(--bg-primary) !important; }
+            .container { box-shadow: none; border: none; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- CAPA -->
+        <div class="cover">
+            <img src="anexos/imagens/technosutra-logo1.png" alt="Techno Sutra Logo" class="logo" onerror="this.style.display='none'">
+            
+            <h1 class="title">TECHNO SUTRA VR</h1>
+            <p class="subtitle">Jornada Imersiva do Avatamsaka Sutra</p>
+            
+            <div class="divider"></div>
+            
+            <p class="info">
+                <strong>Edital FOMENTO CULTSP - PNAB Nº 12/2025</strong><br>
+                Módulo III - Realidade Virtual e Mista<br>
+                R$ 200.000,00
+            </p>
+            
+            <div class="divider"></div>
+            
+            <p class="info">
+                <strong>Localização:</strong> Águas da Prata, SP<br>
+                <strong>Prazo:</strong> 12 meses<br>
+                <strong>Data:</strong> Janeiro 2026
+            </p>
+        </div>
+
+        <!-- CONTEÚDO EXEMPLO -->
+        <h1>1. Apresentação do Projeto</h1>
+        
+        <p>O projeto <strong>TECHNO SUTRA VR</strong> propõe a criação de uma experiência imersiva em Realidade Virtual baseada no Avatamsaka Sutra, um dos textos mais importantes do budismo Mahayana.</p>
+
+        <blockquote>
+            "No Avatamsaka Sutra, a plateia inclui deuses, fantasmas, asuras... Muitos com duas cabeças ou bocas no estômago!"
+            <br><br>
+            — Khyentse Norbu Rinpoche
+        </blockquote>
+
+        <h2>1.1 Prova de Conceito</h2>
+        
+        <p>O projeto possui um aplicativo AR funcional como demonstração de capacidade técnica:</p>
+
+        <div class="highlight-box">
+            <strong>App AR em Produção:</strong><br>
+            <code>https://technosutra.bhumisparshaschool.org/</code>
+        </div>
+
+        <h2>1.2 Tecnologias</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Componente</th>
+                    <th>Tecnologia</th>
+                    <th>Versão</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Engine</td>
+                    <td>Bevy</td>
+                    <td>0.15+</td>
+                </tr>
+                <tr>
+                    <td>Linguagem</td>
+                    <td>Rust</td>
+                    <td>1.75+</td>
+                </tr>
+                <tr>
+                    <td>VR</td>
+                    <td>OpenXR</td>
+                    <td>1.0</td>
+                </tr>
+                <tr>
+                    <td>Gráficos</td>
+                    <td>wgpu</td>
+                    <td>WebGPU</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>1.3 Orçamento</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Categoria</th>
+                    <th>Valor (R$)</th>
+                    <th>%</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Recursos Humanos</td>
+                    <td>140.000,00</td>
+                    <td>70%</td>
+                </tr>
+                <tr>
+                    <td>Equipamentos</td>
+                    <td>20.000,00</td>
+                    <td>10%</td>
+                </tr>
+                <tr>
+                    <td>Software</td>
+                    <td>10.000,00</td>
+                    <td>5%</td>
+                </tr>
+                <tr>
+                    <td>Áudio</td>
+                    <td>15.000,00</td>
+                    <td>7,5%</td>
+                </tr>
+                <tr>
+                    <td>Marketing</td>
+                    <td>10.000,00</td>
+                    <td>5%</td>
+                </tr>
+                <tr>
+                    <td>Contingência</td>
+                    <td>5.000,00</td>
+                    <td>2,5%</td>
+                </tr>
+                <tr>
+                    <td><strong>TOTAL</strong></td>
+                    <td><strong>200.000,00</strong></td>
+                    <td><strong>100%</strong></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Código de Exemplo</h3>
+
+        <pre><code>// Bevy VR Setup
+fn setup_vr(mut commands: Commands) {
+    commands.spawn(Camera3dBundle {
+        transform: Transform::from_xyz(0.0, 1.6, 0.0),
+        ..default()
+    });
+}</code></pre>
+
+        <div class="footer">
+            <p>TECHNO SUTRA VR © 2026 | Bhumisparsha School</p>
+            <p>Edital FOMENTO CULTSP - PNAB Nº 12/2025</p>
+        </div>
+    </div>
+</body>
+</html>

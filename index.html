@@ -52,6 +52,7 @@
             font-size: clamp(16px, 4vw, 24px);
             text-align: center;
             z-index: 1000;
+            transition: opacity 0.3s ease-out;
         }
         
         .loading-spinner {
@@ -88,11 +89,12 @@
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             max-width: calc(100vw - 40px);
+            display: none;
         }
         
         /* Hide desktop controls on mobile */
         @media (max-width: 768px), (hover: none) {
-            .controls { display: none; }
+            .controls { display: none !important; }
         }
         
         .controls h3 {
@@ -126,7 +128,7 @@
         }
         
         @media (hover: none) and (pointer: coarse) {
-            .touch-hint { opacity: 1; }
+            .touch-hint.visible { opacity: 1; }
         }
         
         /* Error state */
@@ -146,7 +148,7 @@
         <div class="loading-progress" id="progress">Initializing...</div>
     </div>
     
-    <div class="controls" id="controls" style="display: none;">
+    <div class="controls" id="controls">
         <h3>Controls</h3>
         <ul>
             <li><strong>Click</strong> - Capture mouse</li>
@@ -199,12 +201,14 @@
         import init from './techno_sutra.js';
         
         init().then(() => {
-            loading.style.display = 'none';
-            if (!isMobile) {
-                controls.style.display = 'block';
+            // WASM initialized - Bevy will call hide_loading_overlay() when assets are ready
+            progress.textContent = 'Loading assets...';
+            
+            // Show touch hint on mobile (will be hidden by CSS on desktop)
+            if (isMobile) {
+                touchHint.classList.add('visible');
+                setTimeout(() => touchHint.classList.remove('visible'), 5000);
             }
-            // Hide touch hint after 3s
-            setTimeout(() => { touchHint.style.opacity = '0'; }, 3000);
         }).catch((error) => {
             loading.innerHTML = `<div class="error">
                 <div>Failed to load</div>

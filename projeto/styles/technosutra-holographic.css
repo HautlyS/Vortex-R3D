@@ -1,0 +1,429 @@
+/* TECHNO SUTRA - Estilo Futurista Holográfico para PDF */
+/* Normas ABNT adaptadas com design moderno */
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Space+Mono&display=swap');
+
+:root {
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #12121a;
+  --bg-tertiary: #1a1a2e;
+  --accent-cyan: #00f5ff;
+  --accent-magenta: #ff00ff;
+  --accent-gold: #ffd700;
+  --accent-purple: #8b5cf6;
+  --text-primary: #e0e0e0;
+  --text-secondary: #a0a0a0;
+  --border-glow: rgba(0, 245, 255, 0.3);
+  --gradient-holographic: linear-gradient(135deg, #00f5ff 0%, #ff00ff 50%, #ffd700 100%);
+}
+
+/* Reset e Base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 12pt; /* ABNT: 12pt */
+}
+
+body {
+  font-family: 'Rajdhani', 'Arial', sans-serif;
+  font-size: 12pt;
+  line-height: 1.5; /* ABNT: 1.5 */
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  text-align: justify; /* ABNT */
+  padding: 2cm 2cm 2cm 3cm; /* ABNT: margens */
+}
+
+/* Página */
+@page {
+  size: A4;
+  margin: 2cm 2cm 2cm 3cm; /* ABNT */
+  background: var(--bg-primary);
+  
+  @top-center {
+    content: "TECHNO SUTRA VR";
+    font-family: 'Orbitron', sans-serif;
+    font-size: 9pt;
+    color: var(--accent-cyan);
+    letter-spacing: 2px;
+  }
+  
+  @bottom-center {
+    content: counter(page);
+    font-family: 'Space Mono', monospace;
+    font-size: 10pt;
+    color: var(--accent-cyan);
+  }
+}
+
+@page:first {
+  @top-center { content: none; }
+}
+
+/* Títulos - Estilo Holográfico */
+h1 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 24pt;
+  font-weight: 900;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  margin: 2cm 0 1cm 0;
+  padding: 1cm;
+  background: var(--gradient-holographic);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+}
+
+h1::before,
+h1::after {
+  content: '';
+  display: block;
+  height: 2px;
+  background: var(--gradient-holographic);
+  margin: 0.5cm auto;
+  width: 60%;
+}
+
+h2 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 16pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--accent-cyan);
+  text-align: center;
+  margin: 1.5cm 0 0.5cm 0;
+  padding-bottom: 0.3cm;
+  border-bottom: 1px solid var(--border-glow);
+}
+
+h3 {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 14pt;
+  font-weight: 600;
+  color: var(--accent-magenta);
+  margin: 1cm 0 0.5cm 0;
+  padding-left: 0.5cm;
+  border-left: 3px solid var(--accent-magenta);
+}
+
+h4 {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 12pt;
+  font-weight: 600;
+  color: var(--accent-gold);
+  margin: 0.8cm 0 0.3cm 0;
+}
+
+/* Parágrafos */
+p {
+  text-indent: 1.25cm; /* ABNT */
+  margin-bottom: 0.5cm;
+  text-align: justify;
+}
+
+/* Listas */
+ul, ol {
+  margin: 0.5cm 0 0.5cm 1.5cm;
+  padding-left: 0.5cm;
+}
+
+li {
+  margin-bottom: 0.3cm;
+  position: relative;
+}
+
+ul li::marker {
+  color: var(--accent-cyan);
+  content: '▸ ';
+}
+
+ol li::marker {
+  color: var(--accent-gold);
+  font-family: 'Space Mono', monospace;
+}
+
+/* Tabelas - Estilo Futurista */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1cm auto;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-glow);
+  box-shadow: 0 0 20px rgba(0, 245, 255, 0.1);
+}
+
+thead {
+  background: linear-gradient(90deg, var(--bg-tertiary), var(--bg-secondary));
+}
+
+th {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 10pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--accent-cyan);
+  padding: 0.4cm;
+  text-align: center;
+  border-bottom: 2px solid var(--accent-cyan);
+}
+
+td {
+  padding: 0.3cm 0.4cm;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 11pt;
+}
+
+tr:nth-child(even) {
+  background: rgba(0, 245, 255, 0.03);
+}
+
+tr:hover {
+  background: rgba(0, 245, 255, 0.08);
+}
+
+/* Código */
+code {
+  font-family: 'Space Mono', 'Courier New', monospace;
+  font-size: 10pt;
+  background: var(--bg-tertiary);
+  color: var(--accent-gold);
+  padding: 0.1cm 0.2cm;
+  border-radius: 3px;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+pre {
+  font-family: 'Space Mono', monospace;
+  font-size: 9pt;
+  background: var(--bg-secondary);
+  color: var(--accent-cyan);
+  padding: 0.5cm;
+  margin: 0.5cm 0;
+  border-radius: 5px;
+  border: 1px solid var(--border-glow);
+  overflow-x: auto;
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5);
+}
+
+pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  color: inherit;
+}
+
+/* Blockquotes - Citações */
+blockquote {
+  margin: 1cm 2cm;
+  padding: 0.5cm 1cm;
+  background: var(--bg-secondary);
+  border-left: 4px solid var(--accent-purple);
+  font-style: italic;
+  color: var(--text-secondary);
+  position: relative;
+}
+
+blockquote::before {
+  content: '"';
+  font-family: 'Orbitron', sans-serif;
+  font-size: 48pt;
+  color: var(--accent-purple);
+  opacity: 0.3;
+  position: absolute;
+  top: -0.3cm;
+  left: 0.3cm;
+}
+
+/* Links */
+a {
+  color: var(--accent-cyan);
+  text-decoration: none;
+  border-bottom: 1px dotted var(--accent-cyan);
+}
+
+a:hover {
+  color: var(--accent-magenta);
+  border-bottom-color: var(--accent-magenta);
+}
+
+/* Imagens */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1cm auto;
+  border: 1px solid var(--border-glow);
+  box-shadow: 0 0 30px rgba(0, 245, 255, 0.2);
+}
+
+figure {
+  text-align: center;
+  margin: 1cm 0;
+}
+
+figcaption {
+  font-size: 10pt;
+  color: var(--text-secondary);
+  margin-top: 0.3cm;
+  font-style: italic;
+}
+
+/* Separadores */
+hr {
+  border: none;
+  height: 2px;
+  background: var(--gradient-holographic);
+  margin: 1.5cm 0;
+  opacity: 0.5;
+}
+
+/* Caixas de Destaque */
+.highlight-box {
+  background: var(--bg-secondary);
+  border: 1px solid var(--accent-cyan);
+  border-radius: 8px;
+  padding: 1cm;
+  margin: 1cm 0;
+  box-shadow: 0 0 20px rgba(0, 245, 255, 0.15);
+}
+
+.warning-box {
+  background: rgba(255, 215, 0, 0.1);
+  border: 1px solid var(--accent-gold);
+  border-radius: 8px;
+  padding: 1cm;
+  margin: 1cm 0;
+}
+
+/* Checkboxes */
+input[type="checkbox"] {
+  appearance: none;
+  width: 1em;
+  height: 1em;
+  border: 2px solid var(--accent-cyan);
+  border-radius: 3px;
+  margin-right: 0.3cm;
+  vertical-align: middle;
+}
+
+input[type="checkbox"]:checked {
+  background: var(--accent-cyan);
+}
+
+input[type="checkbox"]:checked::after {
+  content: '✓';
+  color: var(--bg-primary);
+  font-size: 0.8em;
+  display: block;
+  text-align: center;
+}
+
+/* Capa do Documento */
+.cover-page {
+  page-break-after: always;
+  text-align: center;
+  padding-top: 5cm;
+}
+
+.cover-page h1 {
+  font-size: 36pt;
+  margin-bottom: 2cm;
+}
+
+.cover-page .subtitle {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 18pt;
+  color: var(--text-secondary);
+  margin-bottom: 3cm;
+}
+
+.cover-page .info {
+  font-size: 12pt;
+  color: var(--text-secondary);
+  margin-top: 5cm;
+}
+
+/* Sumário */
+.toc {
+  page-break-after: always;
+}
+
+.toc h2 {
+  margin-bottom: 1cm;
+}
+
+.toc ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.toc li {
+  padding: 0.3cm 0;
+  border-bottom: 1px dotted rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+}
+
+.toc a {
+  border: none;
+}
+
+/* Assinaturas */
+.signature-block {
+  margin-top: 2cm;
+  text-align: center;
+}
+
+.signature-line {
+  width: 60%;
+  margin: 0 auto 0.3cm auto;
+  border-bottom: 1px solid var(--text-secondary);
+  padding-top: 2cm;
+}
+
+/* Rodapé de Página */
+.page-footer {
+  position: fixed;
+  bottom: 1cm;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 9pt;
+  color: var(--text-secondary);
+}
+
+/* Quebras de Página */
+.page-break {
+  page-break-after: always;
+}
+
+/* Animação de Glow (para visualização HTML) */
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(0, 245, 255, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(0, 245, 255, 0.6); }
+}
+
+/* Print Styles */
+@media print {
+  body {
+    background: var(--bg-primary) !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

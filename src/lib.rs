@@ -11,8 +11,12 @@ mod glb_character;
 mod holographic;
 mod ibl;
 mod input;
+mod js_bridge;
 mod loading;
 mod panorama;
+#[cfg(feature = "particles")]
+mod particles;
+mod performance;
 mod platform;
 mod player;
 mod portals;
@@ -40,6 +44,12 @@ pub use ibl::IblPlugin;
 pub use input::{InputEvent, InputPlugin, InputState, UiWantsPointer};
 pub use loading::LoadingPlugin;
 pub use panorama::PanoramaPlugin;
+#[cfg(feature = "particles")]
+pub use particles::GpuParticlesPlugin;
+pub use performance::{
+    spawn_fps_overlay, update_fps_overlay, FpsMonitor, FpsOverlay, PerformancePlugin,
+    QualityLevel, QualitySettings,
+};
 pub use platform::{on_desktop, on_vr, on_webxr, Platform, PlatformPlugin, SwitchPlatform};
 pub use player::PlayerPlugin;
 pub use portals::PortalsPlugin;
@@ -77,6 +87,12 @@ impl Plugin for GameCorePlugin {
 
         let mode = get_app_mode();
 
+        // JS Bridge FIRST - needed for loading state communication
+        app.add_plugins(js_bridge::JsBridgePlugin);
+
+        // Performance system - other plugins depend on QualitySettings
+        app.add_plugins(PerformancePlugin);
+
         // Shared plugins for all modes
         app.add_plugins((CorePlugin, InputPlugin, CameraPlugin));
 
@@ -97,6 +113,11 @@ impl Plugin for GameCorePlugin {
                     BookReaderPlugin,
                     PostProcessPlugin,
                 ));
+
+                // GPU particles (desktop only)
+                #[cfg(feature = "particles")]
+                app.add_plugins((EnergyParticlesPlugin, GpuParticlesPlugin));
+
                 info!("🏠 Full Experience Mode (Room 1)");
             }
             AppMode::UploadRoom => {

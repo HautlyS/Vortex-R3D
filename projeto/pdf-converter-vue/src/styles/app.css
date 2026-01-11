@@ -1,0 +1,49 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #141414;
+  --bg-tertiary: #1f1f1f;
+  --border: #262626;
+  --text-primary: #e5e5e5;
+  --text-secondary: #a3a3a3;
+  --accent: #22c55e;
+  --accent-red: #ef4444;
+  --accent-yellow: #fbbf24;
+}
+
+html, body, #app {
+  height: 100%;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Sora', system-ui, sans-serif;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* Buttons */
+.btn {
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn:hover { border-color: var(--accent); background: var(--bg-tertiary); }
+.btn-primary { background: #166534; border-color: #166534; }
+.btn-primary:hover { background: #15803d; }
+.btn-danger { background: #991b1b; border-color: #991b1b; }
+.btn-danger:hover { background: #b91c1c; }

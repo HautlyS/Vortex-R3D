@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<base href="file:///home/hautly/techno-sutra-demo/projeto/documentos/">
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Orbitron:wght@500;600;700;800;900&family=Rajdhani:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+@page {
+  size: 210mm 297mm;
+  margin: 0;
+}
+
+html {
+  width: 210mm;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  width: 210mm;
+  min-height: 297mm;
+  margin: 0;
+  padding: 0;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.page {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 20mm 22mm 22mm 22mm;
+  margin: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+h1 {
+  font-size: 22pt;
+  font-weight: 800;
+  margin: 0 0 22px 0;
+  text-align: center;
+  line-height: 1.25;
+}
+
+h2 {
+  font-size: 14pt;
+  font-weight: 700;
+  margin: 26px 0 12px 0;
+  line-height: 1.3;
+}
+
+h3 {
+  font-size: 11.5pt;
+  font-weight: 600;
+  margin: 20px 0 10px 0;
+  line-height: 1.4;
+}
+
+h4 {
+  font-size: 10pt;
+  font-weight: 600;
+  margin: 16px 0 8px 0;
+}
+
+p {
+  font-size: 10pt;
+  margin: 10px 0;
+  text-align: justify;
+}
+
+strong { font-weight: 700; }
+em { font-style: italic; }
+
+ul, ol {
+  margin: 12px 0 12px 22px;
+  padding: 0;
+}
+
+li {
+  margin: 6px 0;
+  padding-left: 4px;
+  font-size: 10pt;
+  line-height: 1.55;
+}
+
+li::marker {
+  font-weight: 600;
+}
+
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 18px 0;
+  font-size: 9pt;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+th {
+  padding: 11px 12px;
+  text-align: center;
+  vertical-align: middle;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  font-size: 8pt;
+}
+
+td {
+  padding: 10px 12px;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 9pt;
+  line-height: 1.45;
+}
+
+td:first-child, th:first-child {
+  text-align: left;
+  padding-left: 14px;
+}
+
+code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8.5pt;
+  padding: 2px 5px;
+  border-radius: 4px;
+}
+
+pre {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8pt;
+  padding: 14px 18px;
+  margin: 14px 0;
+  border-radius: 8px;
+  overflow-x: auto;
+  line-height: 1.55;
+}
+
+pre code {
+  padding: 0;
+  background: transparent;
+  border: none;
+}
+
+blockquote {
+  margin: 16px 0;
+  padding: 14px 20px;
+  border-radius: 0 8px 8px 0;
+  font-style: italic;
+}
+
+blockquote p {
+  margin: 0;
+  font-size: 10pt;
+}
+
+hr {
+  border: none;
+  height: 1px;
+  margin: 24px 0;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 18px auto;
+  border-radius: 8px;
+}
+
+a {
+  text-decoration: none;
+  font-weight: 500;
+}
+
+@media print {
+  html, body {
+    width: 210mm !important;
+    min-height: 297mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  .page {
+    width: 210mm !important;
+    min-height: 297mm !important;
+    margin: 0 !important;
+    padding: 20mm 22mm 22mm 22mm !important;
+    box-shadow: none !important;
+    border: none !important;
+    page-break-after: always;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
+
+body {
+  font-family: 'Rajdhani', 'Inter', system-ui, sans-serif;
+  background: #050505;
+  color: #e5e5e5;
+}
+
+.page {
+  background: linear-gradient(175deg, #0a0a0a 0%, #080808 50%, #0a0a0a 100%);
+  border: 1px solid rgba(34, 197, 94, 0.12);
+  position: relative;
+}
+
+.page::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #22c55e 0%, #22c55e 40%, #ef4444 50%, #22c55e 60%, #22c55e 100%);
+}
+
+.page::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, rgba(34, 197, 94, 0.25) 20%, rgba(34, 197, 94, 0.4) 50%, rgba(34, 197, 94, 0.25) 80%, transparent 100%);
+}
+
+h1 {
+  font-family: 'Orbitron', monospace;
+  font-weight: 900;
+  color: #22c55e;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  padding-bottom: 16px;
+  margin-bottom: 24px;
+  border-bottom: 2px solid #22c55e;
+  text-shadow: 0 0 20px rgba(34, 197, 94, 0.35), 0 0 40px rgba(34, 197, 94, 0.15);
+  position: relative;
+}
+
+h1::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 2px;
+  background: #ef4444;
+}
+
+h2 {
+  font-family: 'Orbitron', monospace;
+  font-weight: 700;
+  color: #ef4444;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  padding: 10px 0 10px 16px;
+  border-left: 3px solid #ef4444;
+  background: linear-gradient(90deg, rgba(239, 68, 68, 0.06) 0%, transparent 60%);
+}
+
+h3 {
+  font-family: 'Orbitron', monospace;
+  font-weight: 600;
+  color: #ffffff;
+  padding: 8px 12px;
+  background: linear-gradient(90deg, #131313 0%, #0a0a0a 100%);
+  border-left: 2px solid #22c55e;
+  border-radius: 0 5px 5px 0;
+  display: inline-block;
+  min-width: 180px;
+}
+
+h4 {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  color: #a3a3a3;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-size: 9.5pt;
+}
+
+p { color: #d4d4d4; }
+strong { color: #22c55e; font-weight: 700; }
+em { color: #fbbf24; font-style: normal; font-weight: 500; }
+a { color: #22c55e; }
+li::marker { color: #22c55e; font-weight: 700; }
+
+table {
+  background: #090909;
+  border: 1px solid #181818;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.08), 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+thead {
+  background: linear-gradient(180deg, #141414 0%, #0c0c0c 100%);
+}
+
+th {
+  font-family: 'Orbitron', monospace;
+  color: #22c55e;
+  font-weight: 600;
+  font-size: 7.5pt;
+  letter-spacing: 0.8px;
+  border-bottom: 1px solid #22c55e;
+  padding: 12px 10px;
+}
+
+td {
+  color: #e5e5e5;
+  border-bottom: 1px solid #181818;
+  padding: 10px;
+}
+
+tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.012);
+}
+
+tbody tr:hover td {
+  background: rgba(34, 197, 94, 0.05);
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+td strong { color: #22c55e; }
+td em { color: #fbbf24; }
+
+code {
+  background: #131313;
+  color: #22c55e;
+  border: 1px solid #222;
+  font-size: 8.5pt;
+}
+
+pre {
+  background: linear-gradient(180deg, #0c0c0c 0%, #080808 100%);
+  color: #22c55e;
+  border: 1px solid #181818;
+  border-left: 2px solid #22c55e;
+  border-radius: 0 6px 6px 0;
+}
+
+blockquote {
+  background: linear-gradient(90deg, rgba(239, 68, 68, 0.05) 0%, transparent 70%);
+  border-left: 3px solid #ef4444;
+  color: #a3a3a3;
+  padding: 12px 18px;
+}
+
+hr {
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, #22c55e 20%, #ef4444 50%, #22c55e 80%, transparent 100%);
+}
+
+img {
+  border: 1px solid #181818;
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+@media print {
+  body { background: #050505 !important; }
+  .page { background: #0a0a0a !important; }
+}
+
+</style>
+</head>
+<body>
+<div class="page">
+<h1 id="planilha-orçamentária-detalhada">PLANILHA ORÇAMENTÁRIA DETALHADA</h1>
+<h2 id="techno-sutra-vr---módulo-iii-r-200.00000">TECHNO SUTRA VR - Módulo III (R$ 200.000,00)</h2>
+<h3 id="edital-fomento-cultsp---pnab-nº-122025">Edital FOMENTO CULTSP - PNAB Nº 12/2025</h3>
+<hr />
+<h2 id="resumo-executivo">RESUMO EXECUTIVO</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Categoria</th>
+<th>Valor (R$)</th>
+<th>Percentual</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1. Recursos Humanos</td>
+<td>140.000,00</td>
+<td>70,0%</td>
+</tr>
+<tr class="even">
+<td>2. Equipamentos e Infraestrutura</td>
+<td>20.000,00</td>
+<td>10,0%</td>
+</tr>
+<tr class="odd">
+<td>3. Software e Licenças</td>
+<td>10.000,00</td>
+<td>5,0%</td>
+</tr>
+<tr class="even">
+<td>4. Produção de Áudio</td>
+<td>15.000,00</td>
+<td>7,5%</td>
+</tr>
+<tr class="odd">
+<td>5. Marketing e Lançamento</td>
+<td>10.000,00</td>
+<td>5,0%</td>
+</tr>
+<tr class="even">
+<td>6. Contingência</td>
+<td>5.000,00</td>
+<td>2,5%</td>
+</tr>
+<tr class="odd">
+<td><strong>TOTAL GERAL</strong></td>
+<td><strong>200.000,00</strong></td>
+<td><strong>100%</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="recursos-humanos-r-140.00000">1. RECURSOS HUMANOS (R$ 140.000,00)</h2>
+<h3 id="equipe-principal">1.1 Equipe Principal</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Função</th>
+<th>Meses</th>
+<th>Dedicação</th>
+<th>Valor/Mês</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Diretor Criativo</td>
+<td>12</td>
+<td>100%</td>
+<td>5.000,00</td>
+<td>60.000,00</td>
+</tr>
+<tr class="even">
+<td>Desenvolvedor VR Lead</td>
+<td>12</td>
+<td>100%</td>
+<td>4.500,00</td>
+<td>54.000,00</td>
+</tr>
+<tr class="odd">
+<td>Artista 3D Lead</td>
+<td>10</td>
+<td>100%</td>
+<td>4.000,00</td>
+<td>40.000,00</td>
+</tr>
+<tr class="even">
+<td>Sound Designer</td>
+<td>6</td>
+<td>50%</td>
+<td>3.000,00</td>
+<td>9.000,00</td>
+</tr>
+<tr class="odd">
+<td>UX Designer</td>
+<td>6</td>
+<td>50%</td>
+<td>3.000,00</td>
+<td>9.000,00</td>
+</tr>
+<tr class="even">
+<td>Produtor</td>
+<td>12</td>
+<td>25%</td>
+<td>2.500,00</td>
+<td>7.500,00</td>
+</tr>
+<tr class="odd">
+<td><strong>Subtotal Equipe</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td><strong>179.500,00</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="colaboradores-externos">1.2 Colaboradores Externos</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Serviço</th>
+<th>Quantidade</th>
+<th>Valor Unit.</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Compositor (trilha)</td>
+<td>1 pacote</td>
+<td>8.000,00</td>
+<td>8.000,00</td>
+</tr>
+<tr class="even">
+<td>Locutor (narração PT)</td>
+<td>60 min</td>
+<td>100,00/min</td>
+<td>6.000,00</td>
+</tr>
+<tr class="odd">
+<td>Tradutor (EN)</td>
+<td>50.000 palavras</td>
+<td>0,10/palavra</td>
+<td>5.000,00</td>
+</tr>
+<tr class="even">
+<td>Consultor Budista</td>
+<td>20 horas</td>
+<td>150,00/hora</td>
+<td>3.000,00</td>
+</tr>
+<tr class="odd">
+<td><strong>Subtotal Externos</strong></td>
+<td></td>
+<td></td>
+<td><strong>22.000,00</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="ajuste-de-recursos-humanos">1.3 Ajuste de Recursos Humanos</h3>
+<blockquote>
+<p><strong>Nota</strong>: O valor total de RH excede o orçamento da categoria. Ajuste necessário: Reduzir dedicação ou período de alguns membros.</p>
+</blockquote>
+<table>
+<thead>
+<tr class="header">
+<th>Função</th>
+<th>Ajuste</th>
+<th>Novo Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Diretor Criativo</td>
+<td>12 meses x R$ 4.000</td>
+<td>48.000,00</td>
+</tr>
+<tr class="even">
+<td>Desenvolvedor VR Lead</td>
+<td>12 meses x R$ 4.000</td>
+<td>48.000,00</td>
+</tr>
+<tr class="odd">
+<td>Artista 3D Lead</td>
+<td>8 meses x R$ 3.500</td>
+<td>28.000,00</td>
+</tr>
+<tr class="even">
+<td>Sound Designer</td>
+<td>4 meses x R$ 2.000</td>
+<td>8.000,00</td>
+</tr>
+<tr class="odd">
+<td>UX Designer</td>
+<td>4 meses x R$ 2.000</td>
+<td>8.000,00</td>
+</tr>
+<tr class="even">
+<td><strong>Subtotal Ajustado</strong></td>
+<td></td>
+<td><strong>140.000,00</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="equipamentos-e-infraestrutura-r-20.00000">2. EQUIPAMENTOS E INFRAESTRUTURA (R$ 20.000,00)</h2>
+<h3 id="hardware">2.1 Hardware</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Item</th>
+<th>Qtd</th>
+<th>Valor Unit.</th>
+<th>Total</th>
+<th>Justificativa</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Meta Quest 3</td>
+<td>2</td>
+<td>3.500,00</td>
+<td>7.000,00</td>
+<td>Desenvolvimento e testes</td>
+</tr>
+<tr class="even">
+<td>SSD NVMe 2TB</td>
+<td>2</td>
+<td>800,00</td>
+<td>1.600,00</td>
+<td>Armazenamento de assets</td>
+</tr>
+<tr class="odd">
+<td>Memória RAM 32GB</td>
+<td>2</td>
+<td>600,00</td>
+<td>1.200,00</td>
+<td>Upgrade de workstations</td>
+</tr>
+<tr class="even">
+<td>Microfone Condensador</td>
+<td>1</td>
+<td>1.500,00</td>
+<td>1.500,00</td>
+<td>Gravação de áudio</td>
+</tr>
+<tr class="odd">
+<td>Interface de Áudio</td>
+<td>1</td>
+<td>1.200,00</td>
+<td>1.200,00</td>
+<td>Produção de áudio</td>
+</tr>
+<tr class="even">
+<td>Fone de Ouvido Studio</td>
+<td>2</td>
+<td>500,00</td>
+<td>1.000,00</td>
+<td>Mixagem e testes</td>
+</tr>
+<tr class="odd">
+<td><strong>Subtotal Hardware</strong></td>
+<td></td>
+<td></td>
+<td><strong>13.500,00</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="infraestrutura">2.2 Infraestrutura</h3>
+<table>
+<colgroup>
+<col style="width: 13%" />
+<col style="width: 15%" />
+<col style="width: 23%" />
+<col style="width: 15%" />
+<col style="width: 32%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Item</th>
+<th>Meses</th>
+<th>Valor/Mês</th>
+<th>Total</th>
+<th>Justificativa</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Servidor Cloud (AWS/GCP)</td>
+<td>12</td>
+<td>300,00</td>
+<td>3.600,00</td>
+<td>Build, CI/CD, storage</td>
+</tr>
+<tr class="even">
+<td>Internet Fibra</td>
+<td>12</td>
+<td>200,00</td>
+<td>2.400,00</td>
+<td>Upload de builds</td>
+</tr>
+<tr class="odd">
+<td>Energia Elétrica (adicional)</td>
+<td>12</td>
+<td>50,00</td>
+<td>600,00</td>
+<td>Equipamentos</td>
+</tr>
+<tr class="even">
+<td><strong>Subtotal Infraestrutura</strong></td>
+<td></td>
+<td></td>
+<td><strong>6.600,00</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="ajuste-de-equipamentos">2.3 Ajuste de Equipamentos</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Categoria</th>
+<th>Valor Original</th>
+<th>Valor Ajustado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Hardware</td>
+<td>13.500,00</td>
+<td>13.500,00</td>
+</tr>
+<tr class="even">
+<td>Infraestrutura</td>
+<td>6.600,00</td>
+<td>6.500,00</td>
+</tr>
+<tr class="odd">
+<td><strong>Total Ajustado</strong></td>
+<td></td>
+<td><strong>20.000,00</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="software-e-licenças-r-10.00000">3. SOFTWARE E LICENÇAS (R$ 10.000,00)</h2>
+<h3 id="ferramentas-de-desenvolvimento">3.1 Ferramentas de Desenvolvimento</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Software</th>
+<th>Tipo</th>
+<th>Valor</th>
+<th>Justificativa</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Blender</td>
+<td>Gratuito</td>
+<td>0,00</td>
+<td>Modelagem 3D</td>
+</tr>
+<tr class="even">
+<td>Rust/Bevy</td>
+<td>Open Source</td>
+<td>0,00</td>
+<td>Engine de jogo</td>
+</tr>
+<tr class="odd">
+<td>VS Code</td>
+<td>Gratuito</td>
+<td>0,00</td>
+<td>IDE</td>
+</tr>
+<tr class="even">
+<td>Git/GitHub</td>
+<td>Gratuito</td>
+<td>0,00</td>
+<td>Versionamento</td>
+</tr>
+<tr class="odd">
+<td><strong>Subtotal Dev</strong></td>
+<td></td>
+<td><strong>0,00</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="ferramentas-de-produção">3.2 Ferramentas de Produção</h3>
+<table>
+<colgroup>
+<col style="width: 26%" />
+<col style="width: 15%" />
+<col style="width: 18%" />
+<col style="width: 39%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Software</th>
+<th>Tipo</th>
+<th>Valor</th>
+<th>Justificativa</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Adobe Creative Cloud</td>
+<td>Anual</td>
+<td>3.600,00</td>
+<td>Photoshop, Premiere, After Effects</td>
+</tr>
+<tr class="even">
+<td>Substance Painter</td>
+<td>Anual</td>
+<td>1.200,00</td>
+<td>Texturização</td>
+</tr>
+<tr class="odd">
+<td>Reaper (DAW)</td>
+<td>Licença</td>
+<td>300,00</td>
+<td>Produção de áudio</td>
+</tr>
+<tr class="even">
+<td>Audacity</td>
+<td>Gratuito</td>
+<td>0,00</td>
+<td>Edição de áudio</td>
+</tr>
+<tr class="odd">
+<td><strong>Subtotal Produção</strong></td>
+<td></td>
+<td><strong>5.100,00</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="assets-e-recursos">3.3 Assets e Recursos</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Item</th>
+<th>Quantidade</th>
+<th>Valor</th>
+<th>Justificativa</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Texturas (Poly Haven)</td>
+<td>Ilimitado</td>
+<td>0,00</td>
+<td>Open source</td>
+</tr>
+<tr class="even">
+<td>Modelos base (Mixamo)</td>
+<td>Ilimitado</td>
+<td>0,00</td>
+<td>Gratuito</td>
+</tr>
+<tr class="odd">
+<td>Fontes (Google Fonts)</td>
+<td>Ilimitado</td>
+<td>0,00</td>
+<td>Open source</td>
+</tr>
+<tr class="even">
+<td>Efeitos sonoros (Freesound)</td>
+<td>Ilimitado</td>
+<td>0,00</td>
+<td>Creative Commons</td>
+</tr>
+<tr class="odd">
+<td>Música de biblioteca</td>
+<td>10 faixas</td>
+<td>2.000,00</td>
+<td>Licença comercial</td>
+</tr>
+<tr class="even">
+<td>HDRIs (Poly Haven)</td>
+<td>Ilimitado</td>
+<td>0,00</td>
+<td>Open source</td>
+</tr>
+<tr class="odd">
+<td><strong>Subtotal Assets</strong></td>
+<td></td>
+<td><strong>2.000,00</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="publicação">3.4 Publicação</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Plataforma</th>
+<th>Taxa</th>
+<th>Valor</th>
+<th>Justificativa</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Meta Quest Store</td>
+<td>Desenvolvedor</td>
+<td>500,00</td>
+<td>Taxa única</td>
+</tr>
+<tr class="even">
+<td>Steam</td>
+<td>Desenvolvedor</td>
+<td>500,00</td>
+<td>Taxa única</td>
+</tr>
+<tr class="odd">
+<td>itch.io</td>
+<td>Gratuito</td>
+<td>0,00</td>
+<td>Distribuição indie</td>
+</tr>
+<tr class="even">
+<td><strong>Subtotal Publicação</strong></td>
+<td></td>
+<td><strong>1.000,00</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="reserva-para-licenças">3.5 Reserva para Licenças</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Item</th>
+<th>Valor</th>
+<th>Justificativa</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Licenças adicionais</td>
+<td>1.900,00</td>
+<td>Imprevistos</td>
+</tr>
+<tr class="even">
+<td><strong>Total Software</strong></td>
+<td><strong>10.000,00</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="produção-de-áudio-r-15.00000">4. PRODUÇÃO DE ÁUDIO (R$ 15.000,00)</h2>
+<h3 id="trilha-sonora-original">4.1 Trilha Sonora Original</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Item</th>
+<th>Quantidade</th>
+<th>Valor</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Composição (60 min)</td>
+<td>1 pacote</td>
+<td>8.000,00</td>
+<td>8.000,00</td>
+</tr>
+<tr class="even">
+<td>Mixagem e masterização</td>
+<td>1 pacote</td>
+<td>2.000,00</td>
+<td>2.000,00</td>
+</tr>
+<tr class="odd">
+<td><strong>Subtotal Trilha</strong></td>
+<td></td>
+<td></td>
+<td><strong>10.000,00</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="narração-e-diálogos">4.2 Narração e Diálogos</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Item</th>
+<th>Quantidade</th>
+<th>Valor Unit.</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Locutor principal (PT)</td>
+<td>60 min</td>
+<td>50,00/min</td>
+<td>3.000,00</td>
+</tr>
+<tr class="even">
+<td>Estúdio de gravação</td>
+<td>10 horas</td>
+<td>150,00/hora</td>
+<td>1.500,00</td>
+</tr>
+<tr class="odd">
+<td>Edição de diálogos</td>
+<td>1 pacote</td>
+<td>500,00</td>
+<td>500,00</td>
+</tr>
+<tr class="even">
+<td><strong>Subtotal Narração</strong></td>
+<td></td>
+<td></td>
+<td><strong>5.000,00</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="ajuste-de-áudio">4.3 Ajuste de Áudio</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Categoria</th>
+<th>Valor Original</th>
+<th>Valor Ajustado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Trilha Sonora</td>
+<td>10.000,00</td>
+<td>10.000,00</td>
+</tr>
+<tr class="even">
+<td>Narração</td>
+<td>5.000,00</td>
+<td>5.000,00</td>
+</tr>
+<tr class="odd">
+<td><strong>Total Ajustado</strong></td>
+<td></td>
+<td><strong>15.000,00</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="marketing-e-lançamento-r-10.00000">5. MARKETING E LANÇAMENTO (R$ 10.000,00)</h2>
+<h3 id="material-de-divulgação">5.1 Material de Divulgação</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Item</th>
+<th>Quantidade</th>
+<th>Valor</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Trailer profissional</td>
+<td>1</td>
+<td>3.000,00</td>
+<td>3.000,00</td>
+</tr>
+<tr class="even">
+<td>Screenshots/Key Art</td>
+<td>10</td>
+<td>200,00</td>
+<td>2.000,00</td>
+</tr>
+<tr class="odd">
+<td>Press Kit</td>
+<td>1</td>
+<td>500,00</td>
+<td>500,00</td>
+</tr>
+<tr class="even">
+<td><strong>Subtotal Material</strong></td>
+<td></td>
+<td></td>
+<td><strong>5.500,00</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="ações-de-lançamento">5.2 Ações de Lançamento</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Item</th>
+<th>Quantidade</th>
+<th>Valor</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Evento de lançamento</td>
+<td>1</td>
+<td>2.000,00</td>
+<td>2.000,00</td>
+</tr>
+<tr class="even">
+<td>Assessoria de imprensa</td>
+<td>1 mês</td>
+<td>1.500,00</td>
+<td>1.500,00</td>
+</tr>
+<tr class="odd">
+<td>Redes sociais (ads)</td>
+<td>1 campanha</td>
+<td>1.000,00</td>
+<td>1.000,00</td>
+</tr>
+<tr class="even">
+<td><strong>Subtotal Lançamento</strong></td>
+<td></td>
+<td></td>
+<td><strong>4.500,00</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="total-marketing">5.3 Total Marketing</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Categoria</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Material de Divulgação</td>
+<td>5.500,00</td>
+</tr>
+<tr class="even">
+<td>Ações de Lançamento</td>
+<td>4.500,00</td>
+</tr>
+<tr class="odd">
+<td><strong>Total Marketing</strong></td>
+<td><strong>10.000,00</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="contingência-r-5.00000">6. CONTINGÊNCIA (R$ 5.000,00)</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Finalidade</th>
+<th>Valor</th>
+<th>Percentual</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Imprevistos técnicos</td>
+<td>2.000,00</td>
+<td>1,0%</td>
+</tr>
+<tr class="even">
+<td>Ajustes de escopo</td>
+<td>1.500,00</td>
+<td>0,75%</td>
+</tr>
+<tr class="odd">
+<td>Custos adicionais</td>
+<td>1.500,00</td>
+<td>0,75%</td>
+</tr>
+<tr class="even">
+<td><strong>Total Contingência</strong></td>
+<td><strong>5.000,00</strong></td>
+<td><strong>2,5%</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="cronograma-de-desembolso">CRONOGRAMA DE DESEMBOLSO</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Mês</th>
+<th>Categoria</th>
+<th>Valor (R$)</th>
+<th>Acumulado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Equipamentos + Setup</td>
+<td>25.000,00</td>
+<td>25.000,00</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>RH + Software</td>
+<td>15.000,00</td>
+<td>40.000,00</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>RH</td>
+<td>12.000,00</td>
+<td>52.000,00</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>RH</td>
+<td>12.000,00</td>
+<td>64.000,00</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>RH + Áudio</td>
+<td>17.000,00</td>
+<td>81.000,00</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>RH</td>
+<td>12.000,00</td>
+<td>93.000,00</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>RH</td>
+<td>12.000,00</td>
+<td>105.000,00</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>RH + Áudio</td>
+<td>17.000,00</td>
+<td>122.000,00</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>RH</td>
+<td>12.000,00</td>
+<td>134.000,00</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td>RH</td>
+<td>12.000,00</td>
+<td>146.000,00</td>
+</tr>
+<tr class="odd">
+<td>11</td>
+<td>RH + Marketing</td>
+<td>22.000,00</td>
+<td>168.000,00</td>
+</tr>
+<tr class="even">
+<td>12</td>
+<td>RH + Marketing + Contingência</td>
+<td>32.000,00</td>
+<td>200.000,00</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="observações">OBSERVAÇÕES</h2>
+<ol type="1">
+<li><strong>Valores em Reais (R$)</strong> - Janeiro 2026</li>
+<li><strong>Impostos</strong>: Valores brutos, impostos inclusos onde aplicável</li>
+<li><strong>Pagamentos</strong>: Via conta exclusiva Banco do Brasil</li>
+<li><strong>Notas Fiscais</strong>: Obrigatórias para todas as despesas</li>
+<li><strong>Prestação de Contas</strong>: 30 dias após conclusão do projeto</li>
+</ol>
+<hr />
+<h2 id="declaração">DECLARAÇÃO</h2>
+<p>Declaro que os valores apresentados nesta planilha orçamentária são compatíveis com os preços praticados no mercado e que os recursos serão utilizados exclusivamente para a execução do projeto TECHNO SUTRA VR, conforme descrito na proposta técnica.</p>
+<p><strong>Local e Data</strong>: _________________, <strong><em>/</em></strong>/2026</p>
+<p><strong>Assinatura do Proponente</strong>: _________________________________</p>
+<p><strong>Nome</strong>: _________________________________</p>
+<p><strong>CPF</strong>: _________________________________</p>
+<hr />
+<p><em>Planilha Orçamentária - TECHNO SUTRA VR</em> <em>Módulo III - R$ 200.000,00</em> <em>Versão 1.0 - Janeiro 2026</em></p>
+
+</div>
+</body>
+</html>

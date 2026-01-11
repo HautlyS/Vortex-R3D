@@ -1,0 +1,973 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Space+Mono&display=swap');
+:root{--bg:#0a0a0f;--bg2:#12121a;--cyan:#00f5ff;--magenta:#ff00ff;--gold:#ffd700;--text:#e0e0e0;--glow:rgba(0,245,255,0.3);--grad:linear-gradient(135deg,#00f5ff,#ff00ff,#ffd700)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Rajdhani',Arial,sans-serif;font-size:11pt;line-height:1.5;color:var(--text);background:var(--bg);padding:1.5cm;text-align:justify}
+h1{font-family:'Orbitron',sans-serif;font-size:20pt;text-align:center;text-transform:uppercase;letter-spacing:3px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:1cm 0;padding:0.5cm}
+h2{font-family:'Orbitron',sans-serif;font-size:14pt;color:var(--cyan);text-align:center;text-transform:uppercase;margin:1cm 0 0.5cm;border-bottom:1px solid var(--glow);padding-bottom:0.3cm}
+h3{font-size:12pt;color:var(--magenta);margin:0.8cm 0 0.3cm;padding-left:0.4cm;border-left:3px solid var(--magenta)}
+h4{font-size:11pt;color:var(--gold);margin:0.5cm 0 0.2cm}
+p{text-indent:1cm;margin-bottom:0.4cm}
+ul,ol{margin:0.4cm 0 0.4cm 1.2cm}
+li{margin-bottom:0.2cm}
+table{width:100%;border-collapse:collapse;margin:0.8cm 0;background:var(--bg2);border:1px solid var(--glow);font-size:10pt}
+th{font-family:'Orbitron',sans-serif;font-size:9pt;color:var(--cyan);padding:0.3cm;text-align:center;border-bottom:2px solid var(--cyan);background:#1a1a2e}
+td{padding:0.25cm;text-align:center;border-bottom:1px solid rgba(255,255,255,0.1)}
+tr:nth-child(even){background:rgba(0,245,255,0.03)}
+code{font-family:'Space Mono',monospace;font-size:9pt;background:#1a1a2e;color:var(--gold);padding:0.1cm 0.2cm;border-radius:2px}
+pre{font-family:'Space Mono',monospace;font-size:8pt;background:var(--bg2);color:var(--cyan);padding:0.4cm;margin:0.4cm 0;border:1px solid var(--glow);overflow-x:auto;white-space:pre-wrap}
+pre code{background:none;padding:0;color:inherit}
+blockquote{margin:0.5cm 1cm;padding:0.4cm;background:var(--bg2);border-left:3px solid #8b5cf6;font-style:italic;color:#a0a0a0}
+hr{border:none;height:2px;background:var(--grad);margin:1cm 0;opacity:0.5}
+strong{color:var(--gold)}
+a{color:var(--cyan)}
+@media print{body{background:var(--bg)!important}*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}}
+</style></head><body>
+<h1 id="cronograma-de-execução---12-meses">CRONOGRAMA DE EXECUÇÃO - 12
+MESES</h1>
+<h2 id="techno-sutra-vr">TECHNO SUTRA VR</h2>
+<h3 id="edital-fomento-cultsp---pnab-nº-122025">Edital FOMENTO CULTSP -
+PNAB Nº 12/2025</h3>
+<hr />
+<h2 id="visão-geral">VISÃO GERAL</h2>
+<pre><code>MÊS:  1    2    3    4    5    6    7    8    9   10   11   12
+      ├────┼────┼────┼────┼────┼────┼────┼────┼────┼────┼────┤
+      │ PRÉ-PRODUÇÃO │    PRODUÇÃO PRINCIPAL    │TESTES│LANÇ│
+      └──────────────┴──────────────────────────┴──────┴────┘</code></pre>
+<hr />
+<h2 id="fase-1-pré-produção-meses-1-2">FASE 1: PRÉ-PRODUÇÃO (Meses
+1-2)</h2>
+<h3 id="mês-1---setup-e-planejamento">Mês 1 - Setup e Planejamento</h3>
+<table>
+<colgroup>
+<col style="width: 18%" />
+<col style="width: 25%" />
+<col style="width: 29%" />
+<col style="width: 27%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Semana</th>
+<th>Atividade</th>
+<th>Responsável</th>
+<th>Entregável</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Contratação da equipe</td>
+<td>Produtor</td>
+<td>Contratos assinados</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>Compra de equipamentos</td>
+<td>Produtor</td>
+<td>Equipamentos recebidos</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>Setup ambiente de desenvolvimento</td>
+<td>Dev Lead</td>
+<td>Repositório configurado</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Definição de pipeline de assets</td>
+<td>Artista Lead</td>
+<td>Documento de pipeline</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Prototipagem de mecânicas VR</td>
+<td>Dev Lead</td>
+<td>Protótipo jogável</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>Concept art inicial</td>
+<td>Artista Lead</td>
+<td>10 concepts</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>Revisão do GDD</td>
+<td>Diretor</td>
+<td>GDD v2.0</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Planejamento detalhado</td>
+<td>Produtor</td>
+<td>Cronograma Gantt</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Marcos do Mês 1:</strong> - ✅ Equipe completa contratada -
+✅ Ambiente de desenvolvimento funcional - ✅ Protótipo de navegação
+VR</p>
+<h3 id="mês-2---fundação-técnica">Mês 2 - Fundação Técnica</h3>
+<table>
+<colgroup>
+<col style="width: 18%" />
+<col style="width: 25%" />
+<col style="width: 29%" />
+<col style="width: 27%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Semana</th>
+<th>Atividade</th>
+<th>Responsável</th>
+<th>Entregável</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Sistema de carregamento de panoramas</td>
+<td>Dev Lead</td>
+<td>Módulo funcional</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>Modelagem do primeiro Kalyanamitra</td>
+<td>Artista Lead</td>
+<td>Modelo base</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>Conversão equirretangular→cubemap</td>
+<td>Dev Lead</td>
+<td>Shader funcional</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Rigging e animação base</td>
+<td>Artista Lead</td>
+<td>Rig humanoid</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Sistema de diálogos</td>
+<td>Dev Lead</td>
+<td>Sistema básico</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>UI/UX wireframes</td>
+<td>UX Designer</td>
+<td>Wireframes completos</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>Integração OpenXR</td>
+<td>Dev Lead</td>
+<td>Build Quest funcional</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Revisão de milestone</td>
+<td>Todos</td>
+<td>Relatório M1</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Marcos do Mês 2:</strong> - ✅ Pipeline técnico validado - ✅
+Primeiro personagem completo - ✅ Build funcional para Quest</p>
+<hr />
+<h2 id="fase-2-produção---sprint-1-meses-3-4">FASE 2: PRODUÇÃO - SPRINT
+1 (Meses 3-4)</h2>
+<h3 id="mês-3---capítulos-1-10">Mês 3 - Capítulos 1-10</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Semana</th>
+<th>Atividade</th>
+<th>Responsável</th>
+<th>Entregável</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Panoramas 1-3</td>
+<td>Artista Lead</td>
+<td>3 ambientes 360°</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>Kalyanamitras 1-3</td>
+<td>Artista Lead</td>
+<td>3 personagens</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>Panoramas 4-6</td>
+<td>Artista Lead</td>
+<td>3 ambientes 360°</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Kalyanamitras 4-6</td>
+<td>Artista Lead</td>
+<td>3 personagens</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Panoramas 7-10</td>
+<td>Artista Lead</td>
+<td>4 ambientes 360°</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>Kalyanamitras 7-10</td>
+<td>Artista Lead</td>
+<td>4 personagens</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>Integração Cap 1-10</td>
+<td>Dev Lead</td>
+<td>10 capítulos jogáveis</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Sistema de transições</td>
+<td>Dev Lead</td>
+<td>Portais funcionais</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Marcos do Mês 3:</strong> - ✅ 10 ambientes 360° prontos - ✅
+10 personagens modelados e animados - ✅ Primeiros 10 capítulos
+integrados</p>
+<h3 id="mês-4---capítulos-11-20">Mês 4 - Capítulos 11-20</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Semana</th>
+<th>Atividade</th>
+<th>Responsável</th>
+<th>Entregável</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Panoramas 11-14</td>
+<td>Artista Lead</td>
+<td>4 ambientes 360°</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>Kalyanamitras 11-14</td>
+<td>Artista Lead</td>
+<td>4 personagens</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>Panoramas 15-17</td>
+<td>Artista Lead</td>
+<td>3 ambientes 360°</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Kalyanamitras 15-17</td>
+<td>Artista Lead</td>
+<td>3 personagens</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Panoramas 18-20</td>
+<td>Artista Lead</td>
+<td>3 ambientes 360°</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>Kalyanamitras 18-20</td>
+<td>Artista Lead</td>
+<td>3 personagens</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>Integração Cap 11-20</td>
+<td>Dev Lead</td>
+<td>20 capítulos jogáveis</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Sistema de áudio espacial</td>
+<td>Dev Lead</td>
+<td>Áudio 3D funcional</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Marcos do Mês 4:</strong> - ✅ 20 ambientes 360° prontos - ✅
+20 personagens completos - ✅ Sistema de áudio espacial implementado</p>
+<hr />
+<h2 id="fase-3-produção---sprint-2-meses-5-6">FASE 3: PRODUÇÃO - SPRINT
+2 (Meses 5-6)</h2>
+<h3 id="mês-5---capítulos-21-35-áudio">Mês 5 - Capítulos 21-35 +
+Áudio</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Semana</th>
+<th>Atividade</th>
+<th>Responsável</th>
+<th>Entregável</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Panoramas 21-25</td>
+<td>Artista Lead</td>
+<td>5 ambientes 360°</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>Início composição trilha</td>
+<td>Sound Designer</td>
+<td>Demos de música</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>Kalyanamitras 21-25</td>
+<td>Artista Lead</td>
+<td>5 personagens</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Panoramas 26-30</td>
+<td>Artista Lead</td>
+<td>5 ambientes 360°</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Kalyanamitras 26-30</td>
+<td>Artista Lead</td>
+<td>5 personagens</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>Panoramas 31-35</td>
+<td>Artista Lead</td>
+<td>5 ambientes 360°</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>Kalyanamitras 31-35</td>
+<td>Artista Lead</td>
+<td>5 personagens</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Integração Cap 21-35</td>
+<td>Dev Lead</td>
+<td>35 capítulos jogáveis</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Marcos do Mês 5:</strong> - ✅ 35 ambientes 360° prontos - ✅
+35 personagens completos - ✅ Trilha sonora em produção</p>
+<h3 id="mês-6---capítulos-36-45-ui">Mês 6 - Capítulos 36-45 + UI</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Semana</th>
+<th>Atividade</th>
+<th>Responsável</th>
+<th>Entregável</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Panoramas 36-40</td>
+<td>Artista Lead</td>
+<td>5 ambientes 360°</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>UI principal</td>
+<td>UX Designer</td>
+<td>Menus implementados</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>Kalyanamitras 36-40</td>
+<td>Artista Lead</td>
+<td>5 personagens</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Panoramas 41-45</td>
+<td>Artista Lead</td>
+<td>5 ambientes 360°</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Kalyanamitras 41-45</td>
+<td>Artista Lead</td>
+<td>5 personagens</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>Sistema de salvamento</td>
+<td>Dev Lead</td>
+<td>Save/Load funcional</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>Integração Cap 36-45</td>
+<td>Dev Lead</td>
+<td>45 capítulos jogáveis</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Revisão de milestone</td>
+<td>Todos</td>
+<td>Relatório M2</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Marcos do Mês 6:</strong> - ✅ 45 ambientes 360° prontos - ✅
+45 personagens completos - ✅ UI/UX implementada - ✅ 50% do projeto
+concluído</p>
+<hr />
+<h2 id="fase-4-produção---sprint-3-meses-7-8">FASE 4: PRODUÇÃO - SPRINT
+3 (Meses 7-8)</h2>
+<h3 id="mês-7---capítulos-46-56-final">Mês 7 - Capítulos 46-56
+(Final)</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Semana</th>
+<th>Atividade</th>
+<th>Responsável</th>
+<th>Entregável</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Panoramas 46-50</td>
+<td>Artista Lead</td>
+<td>5 ambientes 360°</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>Kalyanamitras 46-50</td>
+<td>Artista Lead</td>
+<td>5 personagens</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>Panoramas 51-53</td>
+<td>Artista Lead</td>
+<td>3 ambientes 360°</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Kalyanamitras 51-53</td>
+<td>Artista Lead</td>
+<td>3 personagens</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Panoramas 54-56</td>
+<td>Artista Lead</td>
+<td>3 ambientes finais</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>Kalyanamitras 54-56</td>
+<td>Artista Lead</td>
+<td>3 personagens finais</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>Integração Cap 46-56</td>
+<td>Dev Lead</td>
+<td>56 capítulos jogáveis</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Cena final (Samantabhadra)</td>
+<td>Diretor</td>
+<td>Experiência de conclusão</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Marcos do Mês 7:</strong> - ✅ Todos os 56 ambientes prontos
+- ✅ Todos os 56 personagens completos - ✅ Jornada completa jogável</p>
+<h3 id="mês-8---áudio-e-narração">Mês 8 - Áudio e Narração</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Semana</th>
+<th>Atividade</th>
+<th>Responsável</th>
+<th>Entregável</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Gravação de narração</td>
+<td>Sound Designer</td>
+<td>Áudio bruto</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>Finalização trilha sonora</td>
+<td>Sound Designer</td>
+<td>Trilha completa</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>Edição de diálogos</td>
+<td>Sound Designer</td>
+<td>Diálogos editados</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Integração de áudio</td>
+<td>Dev Lead</td>
+<td>Áudio no jogo</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Mixagem espacial</td>
+<td>Sound Designer</td>
+<td>Mix 3D</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>Efeitos sonoros</td>
+<td>Sound Designer</td>
+<td>SFX completos</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>Masterização</td>
+<td>Sound Designer</td>
+<td>Áudio final</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Integração final de áudio</td>
+<td>Dev Lead</td>
+<td>Build com áudio</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Marcos do Mês 8:</strong> - ✅ Trilha sonora completa - ✅
+Narração gravada e editada - ✅ Áudio espacial implementado</p>
+<hr />
+<h2 id="fase-5-testes-e-otimização-meses-9-10">FASE 5: TESTES E
+OTIMIZAÇÃO (Meses 9-10)</h2>
+<h3 id="mês-9---qa-e-otimização">Mês 9 - QA e Otimização</h3>
+<table>
+<colgroup>
+<col style="width: 18%" />
+<col style="width: 25%" />
+<col style="width: 29%" />
+<col style="width: 27%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Semana</th>
+<th>Atividade</th>
+<th>Responsável</th>
+<th>Entregável</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Testes funcionais</td>
+<td>QA/Todos</td>
+<td>Lista de bugs</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>Otimização Quest</td>
+<td>Dev Lead</td>
+<td>Performance melhorada</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>Correção de bugs críticos</td>
+<td>Dev Lead</td>
+<td>Bugs corrigidos</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Testes de acessibilidade</td>
+<td>UX Designer</td>
+<td>Relatório de acessibilidade</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Implementação de acessibilidade</td>
+<td>Dev Lead</td>
+<td>Features de acessibilidade</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>Testes de performance</td>
+<td>Dev Lead</td>
+<td>Métricas de FPS</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>Beta testing interno</td>
+<td>Todos</td>
+<td>Feedback compilado</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Ajustes de balanceamento</td>
+<td>Diretor</td>
+<td>Experiência refinada</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Marcos do Mês 9:</strong> - ✅ Bugs críticos corrigidos - ✅
+Performance otimizada (90 FPS Quest) - ✅ Acessibilidade
+implementada</p>
+<h3 id="mês-10---polimento">Mês 10 - Polimento</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Semana</th>
+<th>Atividade</th>
+<th>Responsável</th>
+<th>Entregável</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Beta testing externo</td>
+<td>Produtor</td>
+<td>Feedback de usuários</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>Correções finais</td>
+<td>Dev Lead</td>
+<td>Build estável</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>Localização (PT/EN)</td>
+<td>Produtor</td>
+<td>Textos traduzidos</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Ajustes de UX</td>
+<td>UX Designer</td>
+<td>UX refinada</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Testes de regressão</td>
+<td>QA/Todos</td>
+<td>Build validada</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>Documentação técnica</td>
+<td>Dev Lead</td>
+<td>Docs completos</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>Preparação de builds</td>
+<td>Dev Lead</td>
+<td>Builds para lojas</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Revisão de milestone</td>
+<td>Todos</td>
+<td>Relatório M3</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Marcos do Mês 10:</strong> - ✅ Build estável e polida - ✅
+Localização completa - ✅ Pronto para submissão</p>
+<hr />
+<h2 id="fase-6-lançamento-meses-11-12">FASE 6: LANÇAMENTO (Meses
+11-12)</h2>
+<h3 id="mês-11---preparação-de-lançamento">Mês 11 - Preparação de
+Lançamento</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Semana</th>
+<th>Atividade</th>
+<th>Responsável</th>
+<th>Entregável</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Submissão Meta Quest Store</td>
+<td>Produtor</td>
+<td>Build submetida</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>Submissão Steam</td>
+<td>Produtor</td>
+<td>Build submetida</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>Produção de trailer</td>
+<td>Produtor</td>
+<td>Trailer final</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Press kit</td>
+<td>Produtor</td>
+<td>Kit de imprensa</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Contato com imprensa</td>
+<td>Produtor</td>
+<td>Lista de contatos</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>Making-of (democratização)</td>
+<td>Diretor</td>
+<td>Vídeos de making-of</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>Campanha de marketing</td>
+<td>Produtor</td>
+<td>Campanha ativa</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Preparação evento de lançamento</td>
+<td>Produtor</td>
+<td>Evento planejado</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Marcos do Mês 11:</strong> - ✅ Builds submetidas às lojas -
+✅ Material de marketing pronto - ✅ Making-of produzido</p>
+<h3 id="mês-12---lançamento-e-encerramento">Mês 12 - Lançamento e
+Encerramento</h3>
+<table>
+<colgroup>
+<col style="width: 18%" />
+<col style="width: 25%" />
+<col style="width: 29%" />
+<col style="width: 27%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Semana</th>
+<th>Atividade</th>
+<th>Responsável</th>
+<th>Entregável</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Aprovação das lojas</td>
+<td>Produtor</td>
+<td>Aprovação confirmada</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>Lançamento oficial</td>
+<td>Todos</td>
+<td>Jogo disponível</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>Evento de lançamento</td>
+<td>Produtor</td>
+<td>Evento realizado</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Monitoramento pós-lançamento</td>
+<td>Dev Lead</td>
+<td>Métricas coletadas</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Ações formativas (democratização)</td>
+<td>Diretor</td>
+<td>Workshops realizados</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>Cadastro Agenda VivaSP</td>
+<td>Produtor</td>
+<td>Cadastro completo</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>Relatório final</td>
+<td>Produtor</td>
+<td>Relatório de execução</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Prestação de contas</td>
+<td>Produtor</td>
+<td>Documentação financeira</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Marcos do Mês 12:</strong> - ✅ Jogo lançado nas lojas - ✅
+Evento de lançamento realizado - ✅ Ações de democratização executadas -
+✅ Prestação de contas entregue</p>
+<hr />
+<h2 id="diagrama-de-gantt-simplificado">DIAGRAMA DE GANTT
+(Simplificado)</h2>
+<pre><code>ATIVIDADE                    M1  M2  M3  M4  M5  M6  M7  M8  M9  M10 M11 M12
+─────────────────────────────────────────────────────────────────────────────
+Pré-Produção                 ███ ███
+Setup Técnico                ███ ███
+Produção Ambientes               ███ ███ ███ ███ ███
+Produção Personagens             ███ ███ ███ ███ ███
+Programação Core             ███ ███ ███ ███ ███ ███ ███
+Áudio/Música                             ███ ███ ███ ███
+UI/UX                            ███ ███ ███ ███
+Testes/QA                                            ███ ███
+Otimização                                           ███ ███
+Localização                                              ███
+Marketing                                                    ███ ███
+Lançamento                                                       ███
+Democratização                                               ███ ███
+Prestação de Contas                                              ███</code></pre>
+<hr />
+<h2 id="entregas-por-milestone">ENTREGAS POR MILESTONE</h2>
+<h3 id="milestone-1-mês-2">Milestone 1 (Mês 2)</h3>
+<ul class="task-list">
+<li><label><input type="checkbox" />Protótipo funcional VR</label></li>
+<li><label><input type="checkbox" />Pipeline de assets
+validado</label></li>
+<li><label><input type="checkbox" />1 capítulo completo
+(demo)</label></li>
+</ul>
+<h3 id="milestone-2-mês-6">Milestone 2 (Mês 6)</h3>
+<ul class="task-list">
+<li><label><input type="checkbox" />45 capítulos jogáveis</label></li>
+<li><label><input type="checkbox" />UI/UX implementada</label></li>
+<li><label><input type="checkbox" />Sistema de áudio
+funcional</label></li>
+</ul>
+<h3 id="milestone-3-mês-10">Milestone 3 (Mês 10)</h3>
+<ul class="task-list">
+<li><label><input type="checkbox" />56 capítulos completos</label></li>
+<li><label><input type="checkbox" />Build otimizada e
+polida</label></li>
+<li><label><input type="checkbox" />Pronto para submissão</label></li>
+</ul>
+<h3 id="milestone-final-mês-12">Milestone Final (Mês 12)</h3>
+<ul class="task-list">
+<li><label><input type="checkbox" />Jogo lançado</label></li>
+<li><label><input type="checkbox" />Ações de democratização</label></li>
+<li><label><input type="checkbox" />Prestação de contas</label></li>
+</ul>
+<hr />
+<h2 id="riscos-e-contingências">RISCOS E CONTINGÊNCIAS</h2>
+<table>
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 34%" />
+<col style="width: 43%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Risco</th>
+<th>Mitigação</th>
+<th>Contingência</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Atraso em assets</td>
+<td>Buffer de 2 semanas por sprint</td>
+<td>Reduzir escopo de ambientes</td>
+</tr>
+<tr class="even">
+<td>Rejeição na loja</td>
+<td>Seguir guidelines desde início</td>
+<td>Tempo extra para correções</td>
+</tr>
+<tr class="odd">
+<td>Bug crítico pós-lançamento</td>
+<td>Testes extensivos</td>
+<td>Patch de emergência</td>
+</tr>
+<tr class="even">
+<td>Membro da equipe sai</td>
+<td>Documentação detalhada</td>
+<td>Freelancer de backup</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="reuniões-e-comunicação">REUNIÕES E COMUNICAÇÃO</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Tipo</th>
+<th>Frequência</th>
+<th>Participantes</th>
+<th>Duração</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Daily Standup</td>
+<td>Diária</td>
+<td>Equipe core</td>
+<td>15 min</td>
+</tr>
+<tr class="even">
+<td>Sprint Review</td>
+<td>Quinzenal</td>
+<td>Todos</td>
+<td>1 hora</td>
+</tr>
+<tr class="odd">
+<td>Milestone Review</td>
+<td>Mensal</td>
+<td>Todos + stakeholders</td>
+<td>2 horas</td>
+</tr>
+<tr class="even">
+<td>Retrospectiva</td>
+<td>Mensal</td>
+<td>Equipe core</td>
+<td>1 hora</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><em>Cronograma de Execução - TECHNO SUTRA VR</em> <em>12 Meses de
+Desenvolvimento</em> <em>Versão 1.0 - Janeiro 2026</em></p>
+</body></html>
