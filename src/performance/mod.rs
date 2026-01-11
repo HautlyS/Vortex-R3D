@@ -252,8 +252,14 @@ fn auto_adjust_quality(
             settings.apply_level(new_level);
             monitor.cooldown = 3.0; // Longer cooldown after downgrade
             monitor.stable_frames = 0;
-            events.write(QualityChanged { old: current, new: new_level });
-            info!("⚡ Quality ↓ {:?}→{:?} (fps:{:.0})", current, new_level, fps);
+            events.write(QualityChanged {
+                old: current,
+                new: new_level,
+            });
+            info!(
+                "⚡ Quality ↓ {:?}→{:?} (fps:{:.0})",
+                current, new_level, fps
+            );
         }
     }
     // Upgrade: stable high FPS for 4+ seconds
@@ -263,8 +269,14 @@ fn auto_adjust_quality(
             settings.apply_level(new_level);
             monitor.cooldown = 5.0; // Longer cooldown after upgrade
             monitor.stable_frames = 0;
-            events.write(QualityChanged { old: current, new: new_level });
-            info!("⚡ Quality ↑ {:?}→{:?} (fps:{:.0})", current, new_level, fps);
+            events.write(QualityChanged {
+                old: current,
+                new: new_level,
+            });
+            info!(
+                "⚡ Quality ↑ {:?}→{:?} (fps:{:.0})",
+                current, new_level, fps
+            );
         }
     }
 }
@@ -276,7 +288,10 @@ pub struct FpsOverlay;
 pub fn spawn_fps_overlay(mut commands: Commands) {
     commands.spawn((
         Text::new("FPS: --"),
-        TextFont { font_size: 14.0, ..default() },
+        TextFont {
+            font_size: 14.0,
+            ..default()
+        },
         TextColor(Color::srgba(0.0, 1.0, 0.5, 0.8)),
         Node {
             position_type: PositionType::Absolute,

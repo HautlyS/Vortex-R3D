@@ -47,8 +47,8 @@ pub use panorama::PanoramaPlugin;
 #[cfg(feature = "particles")]
 pub use particles::GpuParticlesPlugin;
 pub use performance::{
-    spawn_fps_overlay, update_fps_overlay, FpsMonitor, FpsOverlay, PerformancePlugin,
-    QualityLevel, QualitySettings,
+    spawn_fps_overlay, update_fps_overlay, FpsMonitor, FpsOverlay, PerformancePlugin, QualityLevel,
+    QualitySettings,
 };
 pub use platform::{on_desktop, on_vr, on_webxr, Platform, PlatformPlugin, SwitchPlatform};
 pub use player::PlayerPlugin;

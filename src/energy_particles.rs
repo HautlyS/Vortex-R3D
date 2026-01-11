@@ -43,13 +43,17 @@ fn spawn_energy_effects(mut commands: Commands, mut effects: ResMut<Assets<Effec
     commands.spawn((
         ParticleEffect::new(effects.add(core)),
         Transform::from_translation(Vec3::new(0.0, -0.3, 0.0)),
-        EnergyCore { base_rate: CORE_RATE },
+        EnergyCore {
+            base_rate: CORE_RATE,
+        },
     ));
 
     commands.spawn((
         ParticleEffect::new(effects.add(aura)),
         Transform::from_translation(Vec3::new(0.0, -0.3, 0.0)),
-        EnergyAura { base_rate: AURA_RATE },
+        EnergyAura {
+            base_rate: AURA_RATE,
+        },
     ));
 
     info!("⚡ Energy particles spawned");
@@ -87,8 +91,14 @@ fn create_inner_core() -> EffectAsset {
         .init(init_vel)
         .init(init_life)
         .init(init_size)
-        .render(ColorOverLifetimeModifier { gradient: grad, ..default() })
-        .render(SizeOverLifetimeModifier { gradient: size_grad, ..default() })
+        .render(ColorOverLifetimeModifier {
+            gradient: grad,
+            ..default()
+        })
+        .render(SizeOverLifetimeModifier {
+            gradient: size_grad,
+            ..default()
+        })
 }
 
 fn create_outer_aura() -> EffectAsset {
@@ -124,8 +134,14 @@ fn create_outer_aura() -> EffectAsset {
         .init(init_vel)
         .init(init_life)
         .init(init_size)
-        .render(ColorOverLifetimeModifier { gradient: grad, ..default() })
-        .render(SizeOverLifetimeModifier { gradient: size_grad, ..default() })
+        .render(ColorOverLifetimeModifier {
+            gradient: grad,
+            ..default()
+        })
+        .render(SizeOverLifetimeModifier {
+            gradient: size_grad,
+            ..default()
+        })
 }
 
 fn follow_camera(

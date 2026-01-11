@@ -29,8 +29,7 @@ impl Plugin for HolographicParticlesPlugin {
         app.add_systems(OnEnter(GameState::Viewing), spawn_mesh_fallback)
             .add_systems(
                 Update,
-                (update_mesh_visibility, animate_mesh_beings)
-                    .run_if(in_state(GameState::Viewing)),
+                (update_mesh_visibility, animate_mesh_beings).run_if(in_state(GameState::Viewing)),
             );
     }
 }
@@ -73,7 +72,10 @@ fn spawn_holographic_particles(
         commands.spawn((
             ParticleEffect::new(beings_handle.clone()),
             Transform::from_translation(base_pos),
-            HolographicEffect { room, effect_type: HoloType::LightBeings },
+            HolographicEffect {
+                room,
+                effect_type: HoloType::LightBeings,
+            },
             RenderLayers::layer(room),
         ));
 
@@ -81,12 +83,18 @@ fn spawn_holographic_particles(
         commands.spawn((
             ParticleEffect::new(halos_handle.clone()),
             Transform::from_translation(base_pos + Vec3::Y * 0.5),
-            HolographicEffect { room, effect_type: HoloType::Halos },
+            HolographicEffect {
+                room,
+                effect_type: HoloType::Halos,
+            },
             RenderLayers::layer(room),
         ));
     }
 
-    info!("✨ Holographic GPU particles spawned for {} rooms", TOTAL_ROOMS);
+    info!(
+        "✨ Holographic GPU particles spawned for {} rooms",
+        TOTAL_ROOMS
+    );
 }
 
 #[cfg(feature = "particles")]
@@ -139,8 +147,14 @@ fn create_light_beings_effect(quality: &QualitySettings) -> EffectAsset {
         .init(init_lifetime)
         .init(init_size)
         .update(accel)
-        .render(ColorOverLifetimeModifier { gradient, ..default() })
-        .render(SizeOverLifetimeModifier { gradient: size_gradient, ..default() })
+        .render(ColorOverLifetimeModifier {
+            gradient,
+            ..default()
+        })
+        .render(SizeOverLifetimeModifier {
+            gradient: size_gradient,
+            ..default()
+        })
 }
 
 #[cfg(feature = "particles")]
@@ -186,8 +200,14 @@ fn create_halos_effect(quality: &QualitySettings) -> EffectAsset {
         .init(init_vel)
         .init(init_lifetime)
         .init(init_size)
-        .render(ColorOverLifetimeModifier { gradient, ..default() })
-        .render(SizeOverLifetimeModifier { gradient: size_gradient, ..default() })
+        .render(ColorOverLifetimeModifier {
+            gradient,
+            ..default()
+        })
+        .render(SizeOverLifetimeModifier {
+            gradient: size_gradient,
+            ..default()
+        })
 }
 
 #[cfg(feature = "particles")]
@@ -240,7 +260,12 @@ fn spawn_mesh_fallback(
                 Mesh3d(mesh.clone()),
                 MeshMaterial3d(materials.add(StandardMaterial {
                     base_color: color,
-                    emissive: LinearRgba::new(color.to_linear().red * 3.0, color.to_linear().green * 3.0, color.to_linear().blue * 3.0, 1.0),
+                    emissive: LinearRgba::new(
+                        color.to_linear().red * 3.0,
+                        color.to_linear().green * 3.0,
+                        color.to_linear().blue * 3.0,
+                        1.0,
+                    ),
                     unlit: true,
                     alpha_mode: AlphaMode::Add,
                     ..default()
@@ -248,7 +273,11 @@ fn spawn_mesh_fallback(
                 Transform::from_translation(pos),
                 Visibility::Hidden,
                 RenderLayers::layer(room),
-                MeshBeing { room, phase: angle, speed: 0.3 + (i % 3) as f32 * 0.1 },
+                MeshBeing {
+                    room,
+                    phase: angle,
+                    speed: 0.3 + (i % 3) as f32 * 0.1,
+                },
             ));
         }
     }
@@ -271,10 +300,7 @@ fn update_mesh_visibility(
 }
 
 #[cfg(not(feature = "particles"))]
-fn animate_mesh_beings(
-    time: Res<Time>,
-    mut beings: Query<(&mut Transform, &MeshBeing)>,
-) {
+fn animate_mesh_beings(time: Res<Time>, mut beings: Query<(&mut Transform, &MeshBeing)>) {
     let t = time.elapsed_secs();
 
     for (mut transform, being) in beings.iter_mut() {
@@ -283,11 +309,8 @@ fn animate_mesh_beings(
         let radius = 5.0;
         let vertical = (t * 0.5 + being.phase).sin() * 1.0;
 
-        transform.translation = center + Vec3::new(
-            angle.cos() * radius,
-            vertical,
-            angle.sin() * radius - 8.0,
-        );
+        transform.translation =
+            center + Vec3::new(angle.cos() * radius, vertical, angle.sin() * radius - 8.0);
     }
 }
 

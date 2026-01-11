@@ -4,8 +4,9 @@ use bevy::prelude::*;
 use bevy_egui::{egui, EguiContexts};
 
 use super::file_picker::{pick_file, FileKind};
-use super::{EguiReady, UploadModel, UploadSphere, UploadState};
+use super::{UploadModel, UploadSphere, UploadState};
 
+#[allow(clippy::too_many_arguments)]
 pub fn upload_hud(
     mut ctx: EguiContexts,
     mut state: ResMut<UploadState>,
@@ -14,10 +15,7 @@ pub fn upload_hud(
     sphere_mats: Query<&MeshMaterial3d<StandardMaterial>, With<UploadSphere>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
     windows: Query<&Window>,
-    ready: Res<EguiReady>,
 ) {
-    // Skip first 2 frames - fonts not ready until after Context::run()
-    if ready.0 < 2 { return; }
     let Ok(egui_ctx) = ctx.ctx_mut() else { return };
 
     // Mobile-responsive scaling
@@ -36,7 +34,10 @@ pub fn upload_hud(
     // Minimized icon button
     if !state.hud_open {
         egui::Area::new(egui::Id::new("upload_hud_icon"))
-            .fixed_pos(egui::pos2(margin, egui_ctx.viewport_rect().height() - margin - 48.0))
+            .fixed_pos(egui::pos2(
+                margin,
+                egui_ctx.viewport_rect().height() - margin - 48.0,
+            ))
             .order(egui::Order::Foreground)
             .interactable(true)
             .show(egui_ctx, |ui| {
@@ -53,7 +54,10 @@ pub fn upload_hud(
 
     // Main panel
     egui::Area::new(egui::Id::new("upload_hud_panel"))
-        .fixed_pos(egui::pos2(margin, egui_ctx.viewport_rect().height() - margin - 280.0))
+        .fixed_pos(egui::pos2(
+            margin,
+            egui_ctx.viewport_rect().height() - margin - 280.0,
+        ))
         .order(egui::Order::Foreground)
         .interactable(true)
         .show(egui_ctx, |ui| {
@@ -158,7 +162,10 @@ pub fn upload_hud(
 
                     // Clear button
                     let clear_btn = if is_mobile {
-                        ui.add_sized([btn_size.x, btn_size.y], egui::Button::new("🗑 Clear Objects"))
+                        ui.add_sized(
+                            [btn_size.x, btn_size.y],
+                            egui::Button::new("🗑 Clear Objects"),
+                        )
                     } else {
                         ui.button("🗑 Clear 3D Objects")
                     };

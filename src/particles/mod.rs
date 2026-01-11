@@ -61,12 +61,36 @@ fn spawn_room_particles(
 
         // Spawn with initial rate based on quality
         spawn_effect(&mut commands, orbs_h.clone(), base, room, ORBS_RATE, mult);
-        spawn_effect(&mut commands, wisps_h.clone(), base + Vec3::Y * 0.5, room, WISPS_RATE, mult);
-        spawn_effect(&mut commands, circles_h.clone(), base, room, CIRCLES_RATE, mult);
-        spawn_effect(&mut commands, sparkles_h.clone(), base, room, SPARKLES_RATE, mult);
+        spawn_effect(
+            &mut commands,
+            wisps_h.clone(),
+            base + Vec3::Y * 0.5,
+            room,
+            WISPS_RATE,
+            mult,
+        );
+        spawn_effect(
+            &mut commands,
+            circles_h.clone(),
+            base,
+            room,
+            CIRCLES_RATE,
+            mult,
+        );
+        spawn_effect(
+            &mut commands,
+            sparkles_h.clone(),
+            base,
+            room,
+            SPARKLES_RATE,
+            mult,
+        );
     }
 
-    info!("✨ GPU particles: {} rooms, quality {:?}", TOTAL_ROOMS, quality.level);
+    info!(
+        "✨ GPU particles: {} rooms, quality {:?}",
+        TOTAL_ROOMS, quality.level
+    );
 }
 
 fn spawn_effect(
@@ -146,8 +170,14 @@ fn create_ambient_orbs() -> EffectAsset {
         .init(init_vel)
         .init(init_life)
         .init(init_size)
-        .render(ColorOverLifetimeModifier { gradient: grad, ..default() })
-        .render(SizeOverLifetimeModifier { gradient: size_grad, ..default() })
+        .render(ColorOverLifetimeModifier {
+            gradient: grad,
+            ..default()
+        })
+        .render(SizeOverLifetimeModifier {
+            gradient: size_grad,
+            ..default()
+        })
 }
 
 fn create_energy_wisps() -> EffectAsset {
@@ -184,8 +214,14 @@ fn create_energy_wisps() -> EffectAsset {
         .init(init_life)
         .init(init_size)
         .update(drag)
-        .render(ColorOverLifetimeModifier { gradient: grad, ..default() })
-        .render(SizeOverLifetimeModifier { gradient: size_grad, ..default() })
+        .render(ColorOverLifetimeModifier {
+            gradient: grad,
+            ..default()
+        })
+        .render(SizeOverLifetimeModifier {
+            gradient: size_grad,
+            ..default()
+        })
 }
 
 fn create_sacred_circles() -> EffectAsset {
@@ -224,8 +260,14 @@ fn create_sacred_circles() -> EffectAsset {
         .init(init_life)
         .init(init_size)
         .update(accel)
-        .render(ColorOverLifetimeModifier { gradient: grad, ..default() })
-        .render(SizeOverLifetimeModifier { gradient: size_grad, ..default() })
+        .render(ColorOverLifetimeModifier {
+            gradient: grad,
+            ..default()
+        })
+        .render(SizeOverLifetimeModifier {
+            gradient: size_grad,
+            ..default()
+        })
 }
 
 fn create_sparkle_dust() -> EffectAsset {
@@ -261,6 +303,12 @@ fn create_sparkle_dust() -> EffectAsset {
         .init(init_vel)
         .init(init_life)
         .init(init_size)
-        .render(ColorOverLifetimeModifier { gradient: grad, ..default() })
-        .render(SizeOverLifetimeModifier { gradient: size_grad, ..default() })
+        .render(ColorOverLifetimeModifier {
+            gradient: grad,
+            ..default()
+        })
+        .render(SizeOverLifetimeModifier {
+            gradient: size_grad,
+            ..default()
+        })
 }

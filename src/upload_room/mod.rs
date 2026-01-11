@@ -23,13 +23,16 @@ impl Plugin for UploadRoomPlugin {
             .init_resource::<UploadState>()
             .init_resource::<EguiReady>()
             .add_systems(Startup, go_to_viewing)
-            .add_systems(OnEnter(GameState::Viewing), (setup_upload_room, hide_html_loading))
+            .add_systems(
+                OnEnter(GameState::Viewing),
+                (setup_upload_room, hide_html_loading),
+            )
             .add_systems(
                 Update,
                 (
                     mark_egui_ready,
                     update_ui_wants_pointer,
-                    upload_hud,
+                    upload_hud.run_if(|ready: Res<EguiReady>| ready.0 >= 2),
                     handle_keyboard_shortcuts,
                     poll_file_data,
                     load_pending_model,
@@ -47,10 +50,16 @@ pub struct EguiReady(pub u8);
 
 fn mark_egui_ready(mut ready: ResMut<EguiReady>) {
     // Increment counter - egui is ready after frame 1 (fonts initialized after first Context::run)
-    if ready.0 < 2 { ready.0 += 1; }
+    if ready.0 < 2 {
+        ready.0 += 1;
+    }
 }
 
-fn update_ui_wants_pointer(mut ctx: EguiContexts, mut ui_wants: ResMut<UiWantsPointer>, ready: Res<EguiReady>) {
+fn update_ui_wants_pointer(
+    mut ctx: EguiContexts,
+    mut ui_wants: ResMut<UiWantsPointer>,
+    ready: Res<EguiReady>,
+) {
     if ready.0 < 2 {
         ui_wants.0 = false;
         return;

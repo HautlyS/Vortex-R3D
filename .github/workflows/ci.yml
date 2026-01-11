@@ -62,11 +62,29 @@ jobs:
           cache-targets: true
           save-if: ${{ github.ref == 'refs/heads/main' }}
 
-      - name: Clippy
-        run: cargo clippy --release --features desktop -- -D warnings
-
-      - name: Build
-        run: cargo build --release --features desktop
+      - name: Build (with cache recovery)
+        run: |
+          build_or_clean() {
+            if ! cargo clippy --release --features desktop -- -D warnings 2>&1 | tee /tmp/out.log; then
+              if grep -qE "(cannot find -l|undefined reference|linking.*failed)" /tmp/out.log; then
+                echo "::warning::Linking error, cleaning cache..."
+                cargo clean --release -p techno_sutra || cargo clean --release
+                cargo clippy --release --features desktop -- -D warnings
+              else
+                exit 1
+              fi
+            fi
+            if ! cargo build --release --features desktop 2>&1 | tee /tmp/out.log; then
+              if grep -qE "(cannot find -l|undefined reference|linking.*failed)" /tmp/out.log; then
+                echo "::warning::Linking error, cleaning cache..."
+                cargo clean --release -p techno_sutra || cargo clean --release
+                cargo build --release --features desktop
+              else
+                exit 1
+              fi
+            fi
+          }
+          build_or_clean
 
       - name: Package
         run: |
@@ -101,11 +119,30 @@ jobs:
           cache-targets: true
           save-if: ${{ github.ref == 'refs/heads/main' }}
 
-      - name: Clippy
-        run: cargo clippy --release --features desktop -- -D warnings
-
-      - name: Build
-        run: cargo build --release --features desktop
+      - name: Build (with cache recovery)
+        shell: bash
+        run: |
+          build_or_clean() {
+            if ! cargo clippy --release --features desktop -- -D warnings 2>&1 | tee /tmp/out.log; then
+              if grep -qE "(cannot find -l|undefined reference|linking.*failed|LINK : fatal)" /tmp/out.log; then
+                echo "::warning::Linking error, cleaning cache..."
+                cargo clean --release -p techno_sutra || cargo clean --release
+                cargo clippy --release --features desktop -- -D warnings
+              else
+                exit 1
+              fi
+            fi
+            if ! cargo build --release --features desktop 2>&1 | tee /tmp/out.log; then
+              if grep -qE "(cannot find -l|undefined reference|linking.*failed|LINK : fatal)" /tmp/out.log; then
+                echo "::warning::Linking error, cleaning cache..."
+                cargo clean --release -p techno_sutra || cargo clean --release
+                cargo build --release --features desktop
+              else
+                exit 1
+              fi
+            fi
+          }
+          build_or_clean
 
       - name: Package
         shell: pwsh
@@ -144,13 +181,37 @@ jobs:
           cache-targets: true
           save-if: ${{ github.ref == 'refs/heads/main' }}
 
-      - name: Clippy
-        run: cargo clippy --release --features desktop -- -D warnings
+      - name: Build (with cache recovery)
+        run: |
+          build_or_clean() {
+            if ! cargo clippy --release --features desktop -- -D warnings 2>&1 | tee /tmp/out.log; then
+              if grep -qE "(cannot find -l|undefined reference|linking.*failed|ld: )" /tmp/out.log; then
+                echo "::warning::Linking error, cleaning cache..."
+                cargo clean --release -p techno_sutra || cargo clean --release
+                cargo clippy --release --features desktop -- -D warnings
+              else
+                exit 1
+              fi
+            fi
+          }
+          build_or_clean
 
       - name: Build universal binary
         run: |
-          cargo build --release --features desktop --target x86_64-apple-darwin
-          cargo build --release --features desktop --target aarch64-apple-darwin
+          build_target() {
+            local target=$1
+            if ! cargo build --release --features desktop --target $target 2>&1 | tee /tmp/out.log; then
+              if grep -qE "(cannot find -l|undefined reference|linking.*failed|ld: )" /tmp/out.log; then
+                echo "::warning::Linking error for $target, cleaning..."
+                cargo clean --release --target $target -p techno_sutra || cargo clean --release --target $target
+                cargo build --release --features desktop --target $target
+              else
+                exit 1
+              fi
+            fi
+          }
+          build_target x86_64-apple-darwin
+          build_target aarch64-apple-darwin
           mkdir -p target/universal/release
           lipo -create \
             target/x86_64-apple-darwin/release/techno_sutra \
