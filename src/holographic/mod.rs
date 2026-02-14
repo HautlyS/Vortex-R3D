@@ -36,6 +36,7 @@ impl Plugin for HolographicParticlesPlugin {
 
 /// Marker for holographic effects (particles feature only)
 #[cfg(feature = "particles")]
+#[allow(dead_code)]
 #[derive(Component)]
 pub struct HolographicEffect {
     pub room: usize,

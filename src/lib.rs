@@ -7,12 +7,14 @@ mod character;
 mod core;
 #[cfg(feature = "particles")]
 mod energy_particles;
+mod gaussian_splat;
 mod glb_character;
 mod holographic;
 mod ibl;
 mod input;
 mod js_bridge;
 mod loading;
+mod menu;
 mod panorama;
 #[cfg(feature = "particles")]
 mod particles;
@@ -38,6 +40,11 @@ pub use character::CharacterPlugin;
 pub use core::{CorePlugin, DesktopOnly, Os, PlatformEntity, VrOnly};
 #[cfg(feature = "particles")]
 pub use energy_particles::EnergyParticlesPlugin;
+pub use gaussian_splat::{
+    GaussianSplatPlugin, GaussianSplat, GaussianSplatBundle, GaussianSplatCloud,
+    SplatCloudInstance, SplatLOD, SplatPhysicsBody, SplatPhysicsBuilder, SplatSettings,
+    spawn_gaussian_cloud, create_splat_ground, create_splat_wall, create_splat_obstacle,
+};
 pub use glb_character::GlbCharacterPlugin;
 pub use holographic::HolographicParticlesPlugin;
 pub use ibl::IblPlugin;
@@ -60,6 +67,8 @@ pub use upload_room::UploadRoomPlugin;
 pub use vortex_transition::VortexTransitionPlugin;
 pub use world::WorldPlugin;
 
+pub use menu::{MenuConfig, MenuOrchestratorPlugin, MenuPlugin, MenuState, VortexMenuPlugin};
+
 #[cfg(feature = "webxr")]
 pub use camera::WebXrCameraPlugin;
 #[cfg(feature = "webxr")]
@@ -76,6 +85,7 @@ pub enum GameState {
     #[default]
     Loading,
     Viewing,
+    Menu,
 }
 
 /// Core game plugin - shared logic for all platforms
@@ -94,12 +104,13 @@ impl Plugin for GameCorePlugin {
         app.add_plugins(PerformancePlugin);
 
         // Shared plugins for all modes
-        app.add_plugins((CorePlugin, InputPlugin, CameraPlugin));
+        app.add_plugins((CorePlugin, InputPlugin, CameraPlugin, VortexMenuPlugin));
 
         match mode {
             AppMode::FullExperience => {
                 app.add_plugins((
                     LoadingPlugin,
+                    GaussianSplatPlugin,
                     PanoramaPlugin,
                     CharacterPlugin,
                     VortexTransitionPlugin,
@@ -118,7 +129,7 @@ impl Plugin for GameCorePlugin {
                 #[cfg(feature = "particles")]
                 app.add_plugins((EnergyParticlesPlugin, GpuParticlesPlugin));
 
-                info!("🏠 Full Experience Mode (Room 1)");
+                info!("🏠 Full Experience Mode with Gaussian Splats (Room 1)");
             }
             AppMode::UploadRoom => {
                 app.add_plugins(UploadRoomPlugin);

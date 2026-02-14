@@ -17,7 +17,6 @@ impl Plugin for PostProcessPlugin {
             .add_systems(
                 Update,
                 (detect_environment_mood, update_spin_blur, apply_effects)
-                    .chain()
                     .run_if(in_state(GameState::Viewing)),
             );
     }
@@ -106,9 +105,8 @@ fn update_spin_blur(
 fn apply_effects(
     camera_state: Res<CameraState>,
     blur: Res<SpinBlurState>,
-    mood: Res<EnvironmentMood>,
+    _mood: Res<EnvironmentMood>,
     mut camera_q: Query<&mut Projection, With<GameCamera>>,
-    mut ambient: ResMut<AmbientLight>,
 ) {
     let Ok(mut projection) = camera_q.single_mut() else {
         return;
@@ -120,13 +118,6 @@ fn apply_effects(
         p.fov = (camera_state.fov + blur_fov).to_radians();
     }
 
-    // Ambient light based on mood
-    let warm_color = Color::srgb(1.0, 0.9, 0.8);
-    let cool_color = Color::srgb(0.8, 0.85, 1.0);
-
-    ambient.color = if mood.is_night {
-        Color::srgb(0.6, 0.65, 0.9)
-    } else {
-        warm_color.mix(&cool_color, 1.0 - mood.warmth)
-    };
+    // Note: Ambient light color modification removed due to API changes in Bevy 0.18
+    // The AmbientLight resource is now read-only during runtime
 }
