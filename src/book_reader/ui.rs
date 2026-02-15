@@ -35,10 +35,10 @@ pub fn setup_book_ui(mut commands: Commands, theme: Res<BookTheme>) {
                     max_height: Percent(90.0),
                     flex_direction: FlexDirection::Column,
                     padding: UiRect::all(Px(24.0)),
-                    border_radius: BorderRadius::all(Px(20.0)),
                     ..default()
                 },
                 BackgroundColor(theme.bg),
+                BorderRadius::all(Px(20.0)),
             ))
             .with_children(|panel| {
                 spawn_header(panel, &theme);
@@ -84,10 +84,10 @@ fn spawn_header(parent: &mut ChildSpawnerCommands, theme: &BookTheme) {
                     height: Px(36.0),
                     justify_content: JustifyContent::Center,
                     align_items: AlignItems::Center,
-                    border_radius: BorderRadius::all(Px(8.0)),
                     ..default()
                 },
                 BackgroundColor(Color::NONE),
+                BorderRadius::all(Px(8.0)),
             ))
             .with_child((
                 Text::new("✕"),
@@ -116,10 +116,10 @@ fn spawn_tabs(parent: &mut ChildSpawnerCommands, theme: &BookTheme) {
                     TabButton(tab),
                     Node {
                         padding: UiRect::axes(Px(16.0), Px(8.0)),
-                        border_radius: BorderRadius::all(Px(8.0)),
                         ..default()
                     },
                     BackgroundColor(if selected { theme.surface } else { Color::NONE }),
+                    BorderRadius::all(Px(8.0)),
                 ))
                 .with_child((
                     Text::new(label),
@@ -139,10 +139,10 @@ fn spawn_content(parent: &mut ChildSpawnerCommands, theme: &BookTheme) {
                 flex_grow: 1.0,
                 padding: UiRect::all(Px(20.0)),
                 overflow: Overflow::scroll_y(),
-                border_radius: BorderRadius::all(Px(12.0)),
                 ..default()
             },
             BackgroundColor(theme.surface),
+            BorderRadius::all(Px(12.0)),
         ))
         .with_children(|content| {
             spawn_book_content(content, theme);
@@ -201,10 +201,10 @@ fn spawn_book_content(content: &mut ChildSpawnerCommands, theme: &BookTheme) {
                     NavButton(NavAction::Prev),
                     Node {
                         padding: UiRect::axes(Px(16.0), Px(8.0)),
-                        border_radius: BorderRadius::all(Px(8.0)),
                         ..default()
                     },
                     BackgroundColor(theme.surface),
+                    BorderRadius::all(Px(8.0)),
                 ))
                 .with_child((
                     Text::new("◀ Previous"),
@@ -224,10 +224,10 @@ fn spawn_book_content(content: &mut ChildSpawnerCommands, theme: &BookTheme) {
                     NavButton(NavAction::Next),
                     Node {
                         padding: UiRect::axes(Px(16.0), Px(8.0)),
-                        border_radius: BorderRadius::all(Px(8.0)),
                         ..default()
                     },
                     BackgroundColor(theme.surface),
+                    BorderRadius::all(Px(8.0)),
                 ))
                 .with_child((
                     Text::new("Next ▶"),
@@ -264,10 +264,10 @@ fn spawn_character_content(content: &mut ChildSpawnerCommands, theme: &BookTheme
                         height: Px(150.0),
                         justify_content: JustifyContent::Center,
                         align_items: AlignItems::Center,
-                        border_radius: BorderRadius::all(Px(12.0)),
                         ..default()
                     },
                     BackgroundColor(Color::srgb(0.16, 0.14, 0.22)),
+                    BorderRadius::all(Px(12.0)),
                 ))
                 .with_child((
                     Text::new("🧘"),

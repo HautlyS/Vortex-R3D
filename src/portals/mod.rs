@@ -1,16 +1,12 @@
-//! Portals module - Portal doors with Gaussian Splat and Avian physics integration
+//! Portals module - Portal doors, crossing logic, render textures
 
-use avian3d::collision::collision_events::{CollisionEnd, CollisionStart};
-use avian3d::prelude::*;
 use bevy::camera::visibility::RenderLayers;
-use bevy::camera::RenderTarget;
 use bevy::prelude::*;
 use bevy::render::render_resource::{AsBindGroup, TextureFormat};
 use bevy::shader::ShaderRef;
 
-use crate::gaussian_splat::SplatPhysicsBuilder;
 use crate::panorama::PanoramaCamera;
-use crate::player::{teleport_player, Player, PlayerState};
+use crate::player::PlayerState;
 use crate::world::{room_center, TOTAL_ROOMS};
 use crate::GameState;
 
@@ -20,27 +16,17 @@ impl Plugin for PortalsPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(MaterialPlugin::<PortalMaterial>::default())
             .insert_resource(PortalState::default())
-            .add_message::<PortalCrossingEvent>()
             .add_systems(OnEnter(GameState::Viewing), setup_portal_frames)
             .add_systems(
                 Update,
-                spawn_portal_views.run_if(in_state(GameState::Viewing)),
-            )
-            .add_systems(
-                Update,
-                sync_portal_cameras.run_if(in_state(GameState::Viewing)),
-            )
-            .add_systems(
-                Update,
-                update_portal_time.run_if(in_state(GameState::Viewing)),
-            )
-            .add_systems(
-                Update,
-                portal_crossing_physics.run_if(in_state(GameState::Viewing)),
-            )
-            .add_systems(
-                Update,
-                detect_portal_trigger.run_if(in_state(GameState::Viewing)),
+                (
+                    spawn_portal_views,
+                    sync_portal_cameras,
+                    update_portal_time,
+                    portal_crossing,
+                )
+                    .chain()
+                    .run_if(in_state(GameState::Viewing)),
             );
     }
 }
@@ -60,7 +46,7 @@ pub struct DoorConfig {
     pub local_pos: Vec3,
     pub rotation: f32,
     pub target_room: usize,
-    pub door_index: usize,
+    pub door_index: usize, // 0 = left door, 1 = right door
 }
 
 pub fn get_doors(room: usize) -> [DoorConfig; 2] {
@@ -82,6 +68,7 @@ pub fn get_doors(room: usize) -> [DoorConfig; 2] {
     ]
 }
 
+/// Portal material with liquid effect
 #[derive(Asset, TypePath, AsBindGroup, Debug, Clone)]
 pub struct PortalMaterial {
     #[uniform(0)]
@@ -113,9 +100,8 @@ pub struct PortalDoor {
     pub room: usize,
     pub target_room: usize,
     pub door_index: usize,
-    pub local_pos: Vec3,
+    pub local_pos: Vec2,
     pub rotation: f32,
-    pub is_triggered: bool,
 }
 
 #[derive(Component)]
@@ -128,17 +114,6 @@ struct PortalCamera {
 #[derive(Component)]
 struct PortalFrame;
 
-#[derive(Component)]
-struct PortalTrigger;
-
-#[allow(dead_code)]
-#[derive(Message, Debug, Clone)]
-pub struct PortalCrossingEvent {
-    pub from_room: usize,
-    pub to_room: usize,
-    pub door_index: usize,
-}
-
 fn setup_portal_frames(
     mut cmd: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
@@ -148,12 +123,14 @@ fn setup_portal_frames(
     state.spawned = false;
     state.frames_waited = 0;
 
+    // Chinese red lacquered wood frame
     let frame_mat = mats.add(StandardMaterial {
         base_color: Color::srgb(0.25, 0.02, 0.02),
         perceptual_roughness: 0.4,
         metallic: 0.05,
         ..default()
     });
+    // Gold trim accents
     let gold_mat = mats.add(StandardMaterial {
         base_color: Color::srgb(1.0, 0.84, 0.0),
         metallic: 0.95,
@@ -161,6 +138,7 @@ fn setup_portal_frames(
         emissive: LinearRgba::new(0.4, 0.28, 0.0, 1.0),
         ..default()
     });
+    // Red energy glow
     let glow_mat = mats.add(StandardMaterial {
         base_color: Color::srgba(0.86, 0.08, 0.24, 0.8),
         emissive: LinearRgba::new(3.0, 0.3, 0.5, 1.0),
@@ -182,14 +160,8 @@ fn setup_portal_frames(
             let rot = Quat::from_rotation_y(door.rotation);
             let half_w = PORTAL_WIDTH / 2.0 + 0.06;
 
+            // Pillars
             for x in [-half_w, half_w] {
-                let builder = SplatPhysicsBuilder::static_body().with_box(Vec3::new(
-                    0.06,
-                    (PORTAL_HEIGHT + 0.3) / 2.0,
-                    FRAME_DEPTH / 2.0,
-                ));
-                let (body, rb, collider, mass, fric, rest, linear_damp, angular_damp, locked) =
-                    builder.build();
                 cmd.spawn((
                     Mesh3d(pillar.clone()),
                     MeshMaterial3d(frame_mat.clone()),
@@ -199,25 +171,9 @@ fn setup_portal_frames(
                     .with_rotation(rot),
                     RenderLayers::layer(room),
                     PortalFrame,
-                    body,
-                    rb,
-                    collider,
-                    mass,
-                    fric,
-                    rest,
-                    linear_damp,
-                    angular_damp,
-                    locked,
                 ));
             }
-
-            let builder = SplatPhysicsBuilder::static_body().with_box(Vec3::new(
-                (PORTAL_WIDTH + 0.3) / 2.0,
-                0.075,
-                FRAME_DEPTH / 2.0,
-            ));
-            let (body, rb, collider, mass, fric, rest, linear_damp, angular_damp, locked) =
-                builder.build();
+            // Lintel
             cmd.spawn((
                 Mesh3d(lintel.clone()),
                 MeshMaterial3d(frame_mat.clone()),
@@ -227,17 +183,8 @@ fn setup_portal_frames(
                 .with_rotation(rot),
                 RenderLayers::layer(room),
                 PortalFrame,
-                body,
-                rb,
-                collider,
-                mass,
-                fric,
-                rest,
-                linear_damp,
-                angular_damp,
-                locked,
             ));
-
+            // Gold trim
             for x in [-half_w - 0.01, half_w + 0.01] {
                 cmd.spawn((
                     Mesh3d(trim_v.clone()),
@@ -260,6 +207,7 @@ fn setup_portal_frames(
                 RenderLayers::layer(room),
                 PortalFrame,
             ));
+            // Glow
             for x in [-half_w + 0.08, half_w - 0.08] {
                 cmd.spawn((
                     Mesh3d(glow_ring.clone()),
@@ -274,7 +222,7 @@ fn setup_portal_frames(
             }
         }
     }
-    info!("🚪 Portal frames created with physics");
+    info!("🚪 Portal frames created");
 }
 
 fn spawn_portal_views(
@@ -310,16 +258,16 @@ fn spawn_portal_views(
                 512,
                 1024,
                 TextureFormat::bevy_default(),
-                Some(TextureFormat::bevy_default()),
             ));
 
+            // Portal camera - positioned at target room
             let target_center = room_center(door.target_room);
             cmd.spawn((
                 Camera3d::default(),
                 Camera {
+                    target: rt.clone().into(),
                     order: -10 - (room * 2 + idx) as isize,
                     clear_color: Color::srgb(0.01, 0.005, 0.02).into(),
-                    target: RenderTarget::Image(rt.clone().into()),
                     ..default()
                 },
                 Transform::from_translation(target_center)
@@ -330,9 +278,9 @@ fn spawn_portal_views(
                     target_room: door.target_room,
                     door_rotation: door.rotation,
                 },
-                Name::new(format!("PortalCamera_{}_{}", room, idx)),
             ));
 
+            // Portal surface
             cmd.spawn((
                 Mesh3d(portal_mesh.clone()),
                 MeshMaterial3d(portal_mats.add(PortalMaterial {
@@ -345,20 +293,13 @@ fn spawn_portal_views(
                     room,
                     target_room: door.target_room,
                     door_index: door.door_index,
-                    local_pos: world_pos,
+                    local_pos: Vec2::new(door.local_pos.x, door.local_pos.z),
                     rotation: door.rotation,
-                    is_triggered: false,
                 },
-                PortalTrigger,
-                Sensor,
-                Collider::cuboid(PORTAL_WIDTH / 2.0, PORTAL_HEIGHT / 2.0, 0.1),
             ));
         }
     }
-    info!(
-        "🌀 {} portals spawned with physics triggers",
-        TOTAL_ROOMS * 2
-    );
+    info!("🌀 {} portals spawned", TOTAL_ROOMS * 2);
 }
 
 fn sync_portal_cameras(
@@ -379,6 +320,7 @@ fn sync_portal_cameras(
         let target_center = room_center(portal.target_room);
         cam_tf.translation = target_center + Vec3::Y * 1.7;
 
+        // Mirror the view through the portal
         let mirrored_yaw = yaw + std::f32::consts::PI + portal.door_rotation * 2.0;
         cam_tf.rotation = Quat::from_euler(EulerRot::YXZ, mirrored_yaw, pitch, 0.0);
     }
@@ -397,100 +339,66 @@ fn update_portal_time(
     }
 }
 
-fn portal_crossing_physics(
-    mut player_state: ResMut<PlayerState>,
-    mut event_writer: MessageWriter<PortalCrossingEvent>,
-    mut portal_query: Query<&mut PortalDoor>,
-    player_query: Query<&mut Transform, With<Player>>,
-    _spatial_query: SpatialQuery,
+fn portal_crossing(
+    mut cmd: Commands,
+    mut player: ResMut<PlayerState>,
+    mut cam_q: Query<(Entity, &mut Transform, Option<&mut RenderLayers>), With<PanoramaCamera>>,
+    portals: Query<&PortalDoor>,
 ) {
-    let Ok(player_transform) = player_query.single() else {
+    let Ok((cam_entity, mut cam, layers_opt)) = cam_q.single_mut() else {
         return;
     };
 
-    let player_pos = player_transform.translation;
-
-    for mut portal in portal_query.iter_mut() {
-        if portal.is_triggered || portal.room != player_state.room {
+    for portal in portals.iter() {
+        if portal.room != player.room {
             continue;
         }
 
-        let portal_pos = portal.local_pos;
-        let distance = player_pos.distance(portal_pos);
-
-        if distance < 1.5 {
-            let normal = Vec3::new(portal.rotation.sin(), 0.0, -portal.rotation.cos());
-            let to_player = (player_pos - portal_pos).normalize();
-            let dot = to_player.dot(normal);
-
-            if dot > 0.5 {
-                portal.is_triggered = true;
-
-                let target_doors = get_doors(portal.target_room);
-                let exit_door = &target_doors[portal.door_index];
-                let exit_pos = room_center(portal.target_room)
-                    + exit_door.local_pos
-                    + Vec3::new(0.0, 1.7, 0.0);
-
-                teleport_player(player_query, exit_pos);
-
-                player_state.room = portal.target_room;
-                player_state.pos = Vec2::new(exit_pos.x, exit_pos.z);
-                player_state.prev_pos = player_state.pos;
-
-                event_writer.write(PortalCrossingEvent {
-                    from_room: portal.room,
-                    to_room: portal.target_room,
-                    door_index: portal.door_index,
-                });
-
-                info!(
-                    "🌀 Portal {} → Room {}",
-                    portal.door_index + 1,
-                    portal.target_room + 1
-                );
-
-                return;
-            }
+        let dist = player.pos.distance(portal.local_pos);
+        if dist > 1.5 {
+            continue;
         }
-    }
-}
 
-fn detect_portal_trigger(
-    mut collision_started_events: MessageReader<CollisionStart>,
-    mut collision_ended_events: MessageReader<CollisionEnd>,
-    mut portal_query: Query<&mut PortalDoor>,
-    player_query: Query<Entity, With<Player>>,
-) {
-    let Ok(player_entity) = player_query.single() else {
+        // Door normal
+        let normal = Vec2::new(portal.rotation.sin(), -portal.rotation.cos());
+        let prev_dot = (player.prev_pos - portal.local_pos).dot(normal);
+        let curr_dot = (player.pos - portal.local_pos).dot(normal);
+
+        // Check crossing (sign change)
+        if prev_dot * curr_dot >= 0.0 {
+            continue;
+        }
+
+        // Lateral distance check
+        let lateral = ((player.pos - portal.local_pos) - normal * curr_dot).length();
+        if lateral > PORTAL_WIDTH * 0.6 {
+            continue;
+        }
+
+        // Exit at SAME door index in target room
+        let target_doors = get_doors(portal.target_room);
+        let exit_door = &target_doors[portal.door_index];
+        let exit_offset = if curr_dot < 0.0 { 1.2 } else { -1.2 };
+        let exit_pos = Vec2::new(exit_door.local_pos.x, exit_door.local_pos.z + exit_offset);
+
+        player.room = portal.target_room;
+        player.pos = exit_pos;
+        player.prev_pos = exit_pos;
+        cam.translation =
+            room_center(portal.target_room) + Vec3::new(exit_pos.x, player.height, exit_pos.y);
+
+        if let Some(mut layers) = layers_opt {
+            *layers = RenderLayers::layer(portal.target_room);
+        } else {
+            cmd.entity(cam_entity)
+                .insert(RenderLayers::layer(portal.target_room));
+        }
+
+        info!(
+            "🌀 Portal {} → Room {}",
+            portal.door_index + 1,
+            portal.target_room + 1
+        );
         return;
-    };
-
-    for event in collision_started_events.read() {
-        let portal_entity = if event.collider1 == player_entity {
-            event.collider2
-        } else if event.collider2 == player_entity {
-            event.collider1
-        } else {
-            continue;
-        };
-
-        if let Ok(mut portal) = portal_query.get_mut(portal_entity) {
-            portal.is_triggered = true;
-        }
-    }
-
-    for event in collision_ended_events.read() {
-        let portal_entity = if event.collider1 == player_entity {
-            event.collider2
-        } else if event.collider2 == player_entity {
-            event.collider1
-        } else {
-            continue;
-        };
-
-        if let Ok(mut portal) = portal_query.get_mut(portal_entity) {
-            portal.is_triggered = false;
-        }
     }
 }

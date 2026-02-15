@@ -7,18 +7,12 @@ mod character;
 mod core;
 #[cfg(feature = "particles")]
 mod energy_particles;
-mod gaussian_splat;
 mod glb_character;
 mod holographic;
 mod ibl;
 mod input;
-mod js_bridge;
 mod loading;
-mod menu;
 mod panorama;
-#[cfg(feature = "particles")]
-mod particles;
-mod performance;
 mod platform;
 mod player;
 mod portals;
@@ -40,23 +34,12 @@ pub use character::CharacterPlugin;
 pub use core::{CorePlugin, DesktopOnly, Os, PlatformEntity, VrOnly};
 #[cfg(feature = "particles")]
 pub use energy_particles::EnergyParticlesPlugin;
-pub use gaussian_splat::{
-    GaussianSplatPlugin, GaussianSplat, GaussianSplatBundle, GaussianSplatCloud,
-    SplatCloudInstance, SplatLOD, SplatPhysicsBody, SplatPhysicsBuilder, SplatSettings,
-    spawn_gaussian_cloud, create_splat_ground, create_splat_wall, create_splat_obstacle,
-};
 pub use glb_character::GlbCharacterPlugin;
 pub use holographic::HolographicParticlesPlugin;
 pub use ibl::IblPlugin;
 pub use input::{InputEvent, InputPlugin, InputState, UiWantsPointer};
 pub use loading::LoadingPlugin;
 pub use panorama::PanoramaPlugin;
-#[cfg(feature = "particles")]
-pub use particles::GpuParticlesPlugin;
-pub use performance::{
-    spawn_fps_overlay, update_fps_overlay, FpsMonitor, FpsOverlay, PerformancePlugin, QualityLevel,
-    QualitySettings,
-};
 pub use platform::{on_desktop, on_vr, on_webxr, Platform, PlatformPlugin, SwitchPlatform};
 pub use player::PlayerPlugin;
 pub use portals::PortalsPlugin;
@@ -66,8 +49,6 @@ pub use routes::{get_app_mode, AppMode};
 pub use upload_room::UploadRoomPlugin;
 pub use vortex_transition::VortexTransitionPlugin;
 pub use world::WorldPlugin;
-
-pub use menu::{MenuConfig, MenuOrchestratorPlugin, MenuPlugin, MenuState, VortexMenuPlugin};
 
 #[cfg(feature = "webxr")]
 pub use camera::WebXrCameraPlugin;
@@ -85,7 +66,6 @@ pub enum GameState {
     #[default]
     Loading,
     Viewing,
-    Menu,
 }
 
 /// Core game plugin - shared logic for all platforms
@@ -97,20 +77,13 @@ impl Plugin for GameCorePlugin {
 
         let mode = get_app_mode();
 
-        // JS Bridge FIRST - needed for loading state communication
-        app.add_plugins(js_bridge::JsBridgePlugin);
-
-        // Performance system - other plugins depend on QualitySettings
-        app.add_plugins(PerformancePlugin);
-
         // Shared plugins for all modes
-        app.add_plugins((CorePlugin, InputPlugin, CameraPlugin, VortexMenuPlugin));
+        app.add_plugins((CorePlugin, InputPlugin, CameraPlugin));
 
         match mode {
             AppMode::FullExperience => {
                 app.add_plugins((
                     LoadingPlugin,
-                    GaussianSplatPlugin,
                     PanoramaPlugin,
                     CharacterPlugin,
                     VortexTransitionPlugin,
@@ -124,12 +97,7 @@ impl Plugin for GameCorePlugin {
                     BookReaderPlugin,
                     PostProcessPlugin,
                 ));
-
-                // GPU particles (desktop only)
-                #[cfg(feature = "particles")]
-                app.add_plugins((EnergyParticlesPlugin, GpuParticlesPlugin));
-
-                info!("🏠 Full Experience Mode with Gaussian Splats (Room 1)");
+                info!("🏠 Full Experience Mode (Room 1)");
             }
             AppMode::UploadRoom => {
                 app.add_plugins(UploadRoomPlugin);

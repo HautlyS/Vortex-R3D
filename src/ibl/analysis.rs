@@ -241,7 +241,7 @@ pub fn apply_ibl_lighting_system(
         up_color.z.clamp(0.0, 1.0),
     );
 
-    commands.spawn(AmbientLight {
+    commands.insert_resource(AmbientLight {
         color: ambient,
         brightness: light_probe.ambient_intensity,
         affects_lightmapped_meshes: true,
